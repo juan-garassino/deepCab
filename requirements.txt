@@ -18,6 +18,7 @@ google-cloud-storage
 pyarrow
 
 mlflow
+docker-compose
 
 #prefect==1.*
 prefect<2
@@ -28,6 +29,7 @@ psycopg2-binary
 fastapi
 pytz
 uvicorn
+
 # tests
 httpx
 pytest-asyncio

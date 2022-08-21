@@ -192,6 +192,8 @@ def train():
         dataset_timestamp=get_dataset_timestamp(),
     )
 
+    ##################################### HEREEEEEE SAVE MODEL DEPENDING WHERE YOU WANNA SAVE
+
     # save model
     save_model(model=model, params=params, metrics=dict(mae=val_mae))
 

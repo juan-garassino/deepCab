@@ -1,4 +1,8 @@
+from sqlite3 import Timestamp
 from taxifare.ml_logic.params import LOCAL_REGISTRY_PATH
+
+from taxifare.model_target.local_model import save_local_model
+from taxifare.model_target.cloud_model import save_cloud_model
 
 import mlflow
 from mlflow.tracking import MlflowClient
@@ -22,7 +26,15 @@ def save_model(model: Model = None,
 
     timestamp = time.strftime("%Y%m%d-%H%M%S")
 
-    if os.environ.get("MODEL_TARGET") == "mlflow":
+    if os.environ['MODEL_TARGET'] == "local":
+
+        save_local_model(model, timestamp)
+
+    elif os.environ["MODEL_TARGET"] == "gcs":
+
+        save_cloud_model(model, timestamp)
+
+    elif os.environ.get("MODEL_TARGET") == "mlflow":
 
         # retrieve mlflow env params
         mlflow_tracking_uri = os.environ.get("MLFLOW_TRACKING_URI")
@@ -51,35 +63,13 @@ def save_model(model: Model = None,
                                        keras_module="tensorflow.keras",
                                        registered_model_name=mlflow_model_name)
 
-        print("\n✅ data saved to mlflow")
+        print("\n✅ data saved in mlflow")
 
         return None
 
-    print(Fore.BLUE + "\nSave model to local disk..." + Style.RESET_ALL)
+    else:
 
-    # save params
-    if params is not None:
-        params_path = os.path.join(LOCAL_REGISTRY_PATH, "params", timestamp + ".pickle")
-        print(f"- params path: {params_path}")
-        with open(params_path, "wb") as file:
-            pickle.dump(params, file)
-
-    # save metrics
-    if metrics is not None:
-        metrics_path = os.path.join(LOCAL_REGISTRY_PATH, "metrics", timestamp + ".pickle")
-        print(f"- metrics path: {metrics_path}")
-        with open(metrics_path, "wb") as file:
-            pickle.dump(metrics, file)
-
-    # save model
-    if model is not None:
-        model_path = os.path.join(LOCAL_REGISTRY_PATH, "models", timestamp)
-        print(f"- model path: {model_path}")
-        model.save(model_path)
-
-    print("\n✅ data saved locally")
-
-    return None
+        raise ValueError(f"Value for .env var {os.environ['MODEL_TARGET']} unknown")
 
 
 def load_model() -> Model:

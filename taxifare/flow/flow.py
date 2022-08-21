@@ -35,9 +35,9 @@ def re_train(status):
 @task
 def notify(eval_mae, train_mae):
     base_url = 'https://wagon-chat.herokuapp.com'
-    channel = 'krokrob'
+    channel = 'johnini'
     url = f"{base_url}/{channel}/messages"
-    author = 'krokrob'
+    author = 'johnini'
     content = "Evaluation MAE: {} - New training MAE: {}".format(
         round(eval_mae, 2), round(train_mae, 2))
     data = dict(author=author, content=content)

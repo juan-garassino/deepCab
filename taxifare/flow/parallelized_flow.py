@@ -1,5 +1,6 @@
 import os
-from prefect import task, Flow, Parameterfrom taxifare.interface.main import preprocess, train, evaluate
+from prefect import task, Flow, Parameter
+from taxifare.interface.main import preprocess, train, evaluate
 from taxifare.flow.flow import notify
 
 
@@ -50,7 +51,8 @@ def build_parallel_flow():
         # create workflow parameters
         experiment = Parameter(name="experiment", default=mlflow_experiment)
 
-        # register tasks in the workflow        preproc_train_status = preprocess_new_train(experiment)
+        # register tasks in the workflow
+        preproc_train_status = preprocess_new_train(experiment)
         preproc_val_status = preprocess_new_val(experiment)
         eval_mae = evaluate_production_model(preproc_train_status, preproc_val_status)
         train_mae = re_train(preproc_train_status, preproc_val_status)

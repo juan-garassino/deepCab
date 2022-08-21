@@ -1,9 +1,12 @@
 import os
+
 from prefect.executors import LocalDaskExecutor
 from prefect.run_configs import LocalRun
+from prefect.schedules import IntervalSchedule
 
 from taxifare.flow.flow import build_flow
 flow = build_flow()
+
 from taxifare.flow.parallelized_flow import build_parallel_flow
 flow = build_parallel_flow()
 

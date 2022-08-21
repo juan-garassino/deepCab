@@ -7,6 +7,9 @@ reinstall_package:
 run_model:
 	python -m taxifare.interface.main
 
+run_flow:
+	python -m taxifare.flow.main
+
 run_preprocess:
 	python -c 'from taxifare.interface.main import preprocess; preprocess(); preprocess(source_type="val")'
 

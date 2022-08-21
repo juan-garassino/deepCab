@@ -39,6 +39,44 @@ test_api_root:
 test_api_predict:
 	TEST_ENV=development pytest tests/api -k 'test_predict' --asyncio-mode=strict -W "ignore"
 
+## MINE GCP ##
+
+GCP_PROJECT_ID=mlops-taxifare
+
+DOCKER_IMAGE_NAME=api-garassino
+
+GCR_MULTI_REGION=eu.gcr.io
+
+GCR_REGION=europe-west1
+
+SERVICE_ACCOUNT_EMAIL=manager@mlops-taxifare.iam.gserviceaccount.com
+
+gcp_login:
+	@gcloud auth login --cred-file=${GOOGLE_APPLICATION_CREDENTIALS}
+
+set_project:
+	@gcloud config set project ${GCP_PROJECT_ID}
+
+set_credentials:
+	@gcloud projects get-iam-policy ${GCP_PROJECT_ID} \
+--flatten="bindings[].members" \
+--format='table(bindings.role)' \
+--filter="bindings.members:${SERVICE_ACCOUNT_EMAIL}"
+
+## MINE Docker ##
+
+build_docker:
+	sudo docker build -t ${GCR_MULTI_REGION}/${GCP_PROJECT_ID}/${DOCKER_IMAGE_NAME} .
+
+run_docker:
+	sudo docker run -e PORT=8000 -p 8080:8000 ${GCR_MULTI_REGION}/${GCP_PROJECT_ID}/${DOCKER_IMAGE_NAME}
+
+push_docker:
+	docker push ${GCR_MULTI_REGION}/${GCP_PROJECT_ID}/${DOCKER_IMAGE_NAME}
+
+deploy_docker_gcp:
+	gcloud run deploy --image ${GCR_MULTI_REGION}/${GCP_PROJECT_ID}/${DOCKER_IMAGE_NAME} --platform managed --region ${GCR_REGION}
+
 ################### DATA SOURCES ACTIONS ################
 
 # Data sources: targets for monthly data imports

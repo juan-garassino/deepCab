@@ -71,12 +71,23 @@ def get_chunk(source_name: str,
 
         return chunk_df
 
-    chunk_df = get_pandas_chunk(path=source_name,
-                                index=index,
-                                chunk_size=chunk_size,
-                                dtypes=dtypes,
-                                columns=columns,
-                                verbose=verbose)
+    if os.environ.get("DATA_SOURCE") == "local":
+
+        chunk_df = get_pandas_chunk(path=source_name,
+                                    index=index,
+                                    chunk_size=chunk_size,
+                                    dtypes=dtypes,
+                                    columns=columns,
+                                    verbose=verbose)
+
+    if os.environ.get("DATA_SOURCE") == "cloud":
+
+        chunk_df = get_pandas_chunk(path=source_name,
+                                    index=index,
+                                    chunk_size=chunk_size,
+                                    dtypes=dtypes,
+                                    columns=columns,
+                                    verbose=verbose)
 
     return chunk_df
 

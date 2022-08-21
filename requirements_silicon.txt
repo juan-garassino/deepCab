@@ -1,0 +1,30 @@
+colorama
+ipdb
+ipykernel
+matplotlib
+numpy
+pandas
+nbresult
+pygeohash
+pytest
+seaborn
+sklearn
+yapf
+
+# prevent bq 3+ db-dtypes package error when running training from bq
+google-cloud-bigquery<3.0.0
+google-cloud-storage
+
+mlflow
+
+prefect<2
+prefect[viz]
+psycopg2-binary
+
+# API
+fastapi
+pytz
+uvicorn
+# tests
+httpx
+pytest-asyncio

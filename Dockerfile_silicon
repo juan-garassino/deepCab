@@ -1,0 +1,26 @@
+# $DEL_BEGIN
+# apple silicon tensorflow base image https://hub.docker.com/r/armswdev/tensorflow-arm-neoverse-n1/tags
+FROM armswdev/tensorflow-arm-neoverse-n1:r21.12-tf-2.7.0-eigen
+WORKDIR /prod
+COPY taxifare taxifare
+COPY requirements_silicon.txt requirements.txt
+COPY setup.py setup.py
+RUN pip install .
+CMD uvicorn taxifare.api.fast:app --host 0.0.0.0 --port $PORT
+# $DEL_END
+
+# use case 1: apple silicon - build for local use
+#
+#   docker build -f Dockerfile_silicon --tag=$IMAGE .
+#   docker run -it -e PORT=8000 -p 8000:8000 --env-file .env $IMAGE
+
+# use case 2: apple silicon: build for intel prod
+#
+#   PROD_IMAGE=prod-$IMAGE
+#   docker build -t $MULTI_REGION/$PROJECT/$PROD_IMAGE --platform linux/amd64 .
+#   docker push $MULTI_REGION/$PROJECT/$PROD_IMAGE
+#   gcloud run deploy \
+#       --image $MULTI_REGION/$PROJECT/$PROD_IMAGE \
+#       --region $REGION \
+#       --memory $MEMORY \
+#       --env-vars-file .env.yaml

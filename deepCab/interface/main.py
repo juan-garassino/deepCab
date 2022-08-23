@@ -1,14 +1,14 @@
-from taxifare.ml_logic.data import (clean_data,
+from deepCab.ml_logic.data import (clean_data,
                                     get_chunk,
                                     save_chunk)
 
-from taxifare.ml_logic.params import (CHUNK_SIZE,
+from deepCab.ml_logic.params import (CHUNK_SIZE,
                                       DATASET_SIZE,
                                       VALIDATION_DATASET_SIZE)
 
-from taxifare.ml_logic.preprocessor import preprocess_features
+from deepCab.ml_logic.preprocessor import preprocess_features
 
-from taxifare.ml_logic.utils import get_dataset_timestamp
+from deepCab.ml_logic.utils import get_dataset_timestamp
 
 import numpy as np
 import pandas as pd
@@ -89,9 +89,9 @@ def train():
     """
     print("\n⭐️ use case: train")
 
-    from taxifare.ml_logic.model import (initialize_model, compile_model, train_model)
-    from taxifare.ml_logic.registry import load_model, save_model
-    from taxifare.ml_logic.registry import get_model_version
+    from deepCab.ml_logic.model import (initialize_model, compile_model, train_model)
+    from deepCab.ml_logic.registry import load_model, save_model
+    from deepCab.ml_logic.registry import get_model_version
 
     print(Fore.BLUE + "\nLoading preprocessed validation data..." + Style.RESET_ALL)
 
@@ -207,9 +207,9 @@ def evaluate():
 
     print("\n⭐️ use case: evaluate")
 
-    from taxifare.ml_logic.model import evaluate_model
-    from taxifare.ml_logic.registry import load_model, save_model
-    from taxifare.ml_logic.registry import get_model_version
+    from deepCab.ml_logic.model import evaluate_model
+    from deepCab.ml_logic.registry import load_model, save_model
+    from deepCab.ml_logic.registry import get_model_version
 
     # load new data
     new_data = get_chunk(source_name=f"val_processed_{DATASET_SIZE}",
@@ -253,7 +253,7 @@ def pred(X_pred: pd.DataFrame = None) -> np.ndarray:
 
     print("\n⭐️ use case: predict")
 
-    from taxifare.ml_logic.registry import load_model
+    from deepCab.ml_logic.registry import load_model
 
     if X_pred is None:
 

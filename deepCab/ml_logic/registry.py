@@ -1,8 +1,8 @@
 from sqlite3 import Timestamp
-from taxifare.ml_logic.params import LOCAL_REGISTRY_PATH
+from deepCab.ml_logic.params import LOCAL_REGISTRY_PATH
 
-from taxifare.model_target.local_model import save_local_model
-from taxifare.model_target.cloud_model import save_cloud_model
+from deepCab.model_target.local_model import save_local_model
+from deepCab.model_target.cloud_model import save_cloud_model
 
 import mlflow
 from mlflow.tracking import MlflowClient

@@ -5,7 +5,7 @@ import pandas as pd
 
 from colorama import Fore, Style
 
-from taxifare.ml_logic.params import PROJECT, DATASET
+from deepCab.ml_logic.params import PROJECT, DATASET
 
 
 def get_bq_chunk(table: str,

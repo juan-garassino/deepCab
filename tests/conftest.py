@@ -4,7 +4,7 @@ import os
 import pytest
 import numpy as np
 
-from taxifare.ml_logic.params import DTYPES_RAW_OPTIMIZED
+from deepCab.ml_logic.params import DTYPES_RAW_OPTIMIZED
 
 
 @pytest.fixture(scope="session")  # cached fixture

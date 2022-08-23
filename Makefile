@@ -5,30 +5,30 @@ reinstall_package:
 	@pip install -e .
 
 run_model:
-	python -m taxifare.interface.main
+	python -m deepCab.interface.main
 
 run_flow:
-	python -m taxifare.flow.main
+	python -m deepCab.flow.main
 
 run_preprocess:
-	python -c 'from taxifare.interface.main import preprocess; preprocess(); preprocess(source_type="val")'
+	python -c 'from deepCab.interface.main import preprocess; preprocess(); preprocess(source_type="val")'
 
 run_train:
-	python -c 'from taxifare.interface.main import train; train()'
+	python -c 'from deepCab.interface.main import train; train()'
 
 run_pred:
-	python -c 'from taxifare.interface.main import pred; pred()'
+	python -c 'from deepCab.interface.main import pred; pred()'
 
 run_evaluate:
-	python -c 'from taxifare.interface.main import evaluate; evaluate()'
+	python -c 'from deepCab.interface.main import evaluate; evaluate()'
 
 run_all: run_preprocess run_train run_pred run_evaluate
 
 run_workflow:
-	PREFECT__LOGGING__LEVEL=${PREFECT_LOG_LEVEL} python -m taxifare.flow.main
+	PREFECT__LOGGING__LEVEL=${PREFECT_LOG_LEVEL} python -m deepCab.flow.main
 
 run_api:
-	uvicorn taxifare.api.fast:app --reload
+	uvicorn deepCab.api.fast:app --reload
 
 ##################### TESTS #####################
 default:
@@ -52,7 +52,7 @@ GCR_MULTI_REGION=eu.gcr.io
 
 GCR_REGION=europe-west1
 
-SERVICE_ACCOUNT_EMAIL=manager@mlops-taxifare.iam.gserviceaccount.com
+SERVICE_ACCOUNT_EMAIL=manager@mlops-deepCab.iam.gserviceaccount.com
 
 gcp_login:
 	@gcloud auth login --cred-file=${GOOGLE_APPLICATION_CREDENTIALS}
@@ -241,10 +241,10 @@ list:
 
 	@echo "\n    $(ccgreen)$(fbold)run rules:$(ccreset)"
 	@echo "\n        $(fbold)run_all$(ccreset)"
-	@echo "            Run the package (\`taxifare.interface.main\` module)."
+	@echo "            Run the package (\`deepCab.interface.main\` module)."
 
 	@echo "\n        $(fbold)run_workflow$(ccreset)"
-	@echo "            Start a prefect workflow locally (run the \`taxifare.flow.main\` module)."
+	@echo "            Start a prefect workflow locally (run the \`deepCab.flow.main\` module)."
 
 	@echo "\n$(ccgreen)$(fbold)WORKFLOW$(ccreset)"
 

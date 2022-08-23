@@ -6,7 +6,7 @@ import sys
 # External libraries
 import requests
 from google.cloud import bigquery
-from taxifare.ml_logic.params import LOCAL_DATA_PATH
+from deepCab.ml_logic.params import LOCAL_DATA_PATH
 
 
 def get_new_data(month):

@@ -1,12 +1,12 @@
-from taxifare.ml_logic.params import (COLUMN_NAMES_RAW,
+from deepCab.ml_logic.params import (COLUMN_NAMES_RAW,
                                             DTYPES_RAW_OPTIMIZED,
                                             DTYPES_RAW_OPTIMIZED_HEADLESS,
                                             DTYPES_PROCESSED_OPTIMIZED
                                             )
 
-from taxifare.data_sources.local_disk import (get_pandas_chunk, save_local_chunk)
+from deepCab.data_sources.local_disk import (get_pandas_chunk, save_local_chunk)
 
-from taxifare.data_sources.big_query import (get_bq_chunk, save_bq_chunk)
+from deepCab.data_sources.big_query import (get_bq_chunk, save_bq_chunk)
 
 import os
 import pandas as pd

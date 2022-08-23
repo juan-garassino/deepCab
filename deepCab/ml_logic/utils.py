@@ -1,7 +1,7 @@
 import time
 import tracemalloc
 
-from taxifare.ml_logic.params import DATASET_SIZE
+from deepCab.ml_logic.params import DATASET_SIZE
 
 def get_dataset_timestamp(df=None):
     """
@@ -9,7 +9,7 @@ def get_dataset_timestamp(df=None):
     """
 
     import pandas as pd
-    from taxifare.ml_logic.data import get_chunk
+    from deepCab.ml_logic.data import get_chunk
 
     if df is None:
         # Trick specific to this taxifare challenge:

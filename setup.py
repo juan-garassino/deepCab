@@ -5,13 +5,13 @@ with open("requirements.txt") as f:
     content = f.readlines()
 requirements = [x.strip() for x in content if "git+" not in x]
 
-setup(name='taxifare',
+setup(name='deepCab',
       version="0.0.9",
-      description="TaxiFare Model (api_pred)",
+      description="deepCab",
       license="MIT",
-      author="Le Wagon",
-      author_email="contact@lewagon.org",
-      url="https://github.com/lewagon/taxi-fare",
+      author="Juan Garassino",
+      author_email="juan.garassino@hotmail.com",
+      url="https://https://github.com/juan-garassino/deepCab",
       install_requires=requirements,
       packages=find_packages(),
       test_suite="tests",

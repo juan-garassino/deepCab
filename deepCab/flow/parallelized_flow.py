@@ -1,21 +1,25 @@
-
-from taxifare.interface.main import preprocess, train, evaluate
-
-from prefect import task, Flow, Parameter
-
 import os
-import requests
+from prefect import task, Flow, Parameter
+from deepCab.interface.main import preprocess, train, evaluate
+from deepCab.flow.flow import notify
+
 
 @task
-def preprocess_new_data(experiment):
+def preprocess_new_train(experiment):
     """
-    Run the preprocessing of the new data
+    Run the preprocessing of the train_new data
     """
     preprocess()
+
+@task
+def preprocess_new_val(experiment):
+    """
+    Run the preprocessing of the val_new data
+    """
     preprocess(source_type='val')
 
 @task
-def evaluate_production_model(status):
+def evaluate_production_model(preproc_train_status, preproc_val_status):
     """
     Run the `Production` stage evaluation on new data
     Returns `eval_mae`
@@ -23,8 +27,9 @@ def evaluate_production_model(status):
     eval_mae = evaluate()
     return eval_mae
 
+
 @task
-def re_train(status):
+def re_train(preproc_train_status, preproc_val_status):
     """
     Run the training
     Returns train_mae
@@ -32,19 +37,7 @@ def re_train(status):
     train_mae = train()
     return train_mae
 
-@task
-def notify(eval_mae, train_mae):
-    base_url = 'https://wagon-chat.herokuapp.com'
-    channel = 'johnini'
-    url = f"{base_url}/{channel}/messages"
-    author = 'johnini'
-    content = "Evaluation MAE: {} - New training MAE: {}".format(
-        round(eval_mae, 2), round(train_mae, 2))
-    data = dict(author=author, content=content)
-    response = requests.post(url, data=data)
-    response.raise_for_status()
-
-def build_flow():
+def build_parallel_flow():
     """
     build the prefect workflow for the `taxifare` package
     """
@@ -59,9 +52,9 @@ def build_flow():
         experiment = Parameter(name="experiment", default=mlflow_experiment)
 
         # register tasks in the workflow
-        status = preprocess_new_data(experiment)
-        eval_mae = evaluate_production_model(status)
-        train_mae = re_train(status)
+        preproc_train_status = preprocess_new_train(experiment)
+        preproc_val_status = preprocess_new_val(experiment)
+        eval_mae = evaluate_production_model(preproc_train_status, preproc_val_status)
+        train_mae = re_train(preproc_train_status, preproc_val_status)
         notify(eval_mae, train_mae)
-
     return flow

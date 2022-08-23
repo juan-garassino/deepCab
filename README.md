@@ -214,7 +214,7 @@ Have you put a trained model in _Production_ in mlflow? If not, you can use the 
   <summary markdown='span'>🍔 Food for thought</summary>
 
 1. Investigate the data types of the query parameters, you may need to convert them into the types the model requires
-1. Of course you must re-use the `taxifare.interface.main.pred()` or the `taxifare.ml_logic.registry.load_model()` functions!
+1. Of course you must re-use the `deepCab.interface.main.pred()` or the `deepCab.ml_logic.registry.load_model()` functions!
 1. In order to make a prediction with the trained model, you must provide a valid `X_pred` but the `key` is missing!
 1. FastAPI can only render data type from the [Python Standard Library](https://docs.python.org/3.8/library/stdtypes.html), you may need to convert `y_pred` to match this requirement
 

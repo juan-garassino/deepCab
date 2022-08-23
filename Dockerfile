@@ -5,5 +5,5 @@ COPY taxifare taxifare
 COPY requirements.txt requirements.txt
 COPY setup.py setup.py
 RUN pip install .
-CMD uvicorn taxifare.api.fast:app --host 0.0.0.0 --port $PORT
+CMD uvicorn deepCab.api.fast:app --host 0.0.0.0 --port $PORT
 # $DEL_END

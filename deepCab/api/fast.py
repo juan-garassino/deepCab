@@ -5,9 +5,9 @@ import pytz
 
 import pandas as pd
 
-# from taxifare.ml_logic.registry import load_model
-# from taxifare.ml_logic.preprocessor import preprocess_features
-from taxifare.interface.main import pred
+# from deepCab.ml_logic.registry import load_model
+# from deepCab.ml_logic.preprocessor import preprocess_features
+from deepCab.interface.main import pred
 
 # $WIPE_END
 

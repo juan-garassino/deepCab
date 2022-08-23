@@ -33,7 +33,7 @@ def preprocess(source_type="train"):
         print(Fore.BLUE + f"\nProcessing chunk n°{chunk_id}..." + Style.RESET_ALL)
 
         data_chunk = get_chunk(
-            source_name=source_name, index=chunk_id * CHUNK_SIZE, chunk_size=CHUNK_SIZE
+            source_name=source_name, index=chunk_id * CHUNK_SIZE, chunk_size=CHUNK_SIZE, verbose=True
         )
 
         # Break out of while loop if data is none

@@ -11,12 +11,12 @@ seaborn
 sklearn
 yapf
 tensorflow
+black
 google-cloud-bigquery<3.0.0
 google-cloud-storage
 pyarrow
 mlflow
 docker-compose
-black
 prefect<2
 prefect[viz]
 psycopg2-binary

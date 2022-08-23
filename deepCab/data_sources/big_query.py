@@ -1,10 +1,8 @@
-from google.cloud import bigquery
-
 import pandas as pd
-
+import os
 from colorama import Fore, Style
 
-from deepCab.ml_logic.params import PROJECT, DATASET
+from google.cloud import bigquery
 
 
 def get_bq_chunk(
@@ -21,17 +19,19 @@ def get_bq_chunk(
             + Style.RESET_ALL
         )
 
-    table = f"{PROJECT}.{DATASET}.{table}"
+    table = f"{os.environ['PROJECT']}.{os.environ['DATASET']}.{table}"
 
     client = bigquery.Client()
 
     if verbose:
         if chunk_size is None:
-            print(f"\nQuery {table} whole content...")
+            print(Fore.RED + f"\nQuery {table} whole content..." + Style.RESET_ALL)
         else:
             print(
-                f"\nQuery {table} chunk {index // chunk_size} "
+                Fore.GREEN
+                + f"\nQuery {table} chunk {index // chunk_size} "
                 + f"([{index}-{index + chunk_size - 1}])..."
+                + Style.RESET_ALL
             )
 
     rows = client.list_rows(table, start_index=index, max_results=chunk_size)
@@ -55,7 +55,7 @@ def save_bq_chunk(table: str, data: pd.DataFrame, is_first: bool):
 
     print(Fore.BLUE + f"\nSave data to big query {table}:" + Style.RESET_ALL)
 
-    table = f"{PROJECT}.{DATASET}.{table}"
+    table = f"{os.environ['PROJECT']}.{os.environ['DATASET']}.{table}"
 
     # bq requires str columns starting with a letter or underscore
     data.columns = [
@@ -68,8 +68,13 @@ def save_bq_chunk(table: str, data: pd.DataFrame, is_first: bool):
     write_mode = "WRITE_TRUNCATE" if is_first else "WRITE_APPEND"
     job_config = bigquery.LoadJobConfig(write_disposition=write_mode)
 
-    print(f"\n{'Write' if is_first else 'Append'} {table} ({data.shape[0]} rows)")
+    print(
+        Fore.YELLOW
+        + f"\n{'Write' if is_first else 'Append'} {table} ({data.shape[0]} rows)"
+        + Style.RESET_ALL
+    )
 
     # load data
     job = client.load_table_from_dataframe(data, table, job_config=job_config)
+
     result = job.result()  # wait for the job to complete

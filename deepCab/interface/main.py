@@ -1,15 +1,11 @@
-from deepCab.ml_logic.data import clean_data, get_chunk, save_chunk
-
-from deepCab.ml_logic.params import CHUNK_SIZE, DATASET_SIZE, VALIDATION_DATASET_SIZE
-
-from deepCab.ml_logic.preprocessor import preprocess_features
-
-from deepCab.ml_logic.utils import get_dataset_timestamp
-
 import numpy as np
 import pandas as pd
-
+import os
 from colorama import Fore, Style
+
+from deepCab.ml_logic.data import clean_data, get_chunk, save_chunk
+from deepCab.ml_logic.preprocessor import preprocess_features
+from deepCab.ml_logic.utils import get_dataset_timestamp
 
 
 def preprocess(source_type="train"):
@@ -25,15 +21,18 @@ def preprocess(source_type="train"):
     chunk_id = 0
     row_count = 0
     cleaned_row_count = 0
-    source_name = f"{source_type}_{DATASET_SIZE}"
-    destination_name = f"{source_type}_processed_{DATASET_SIZE}"
+    source_name = f"{source_type}_{os.environ['DATASET_SIZE']}"
+    destination_name = f"{source_type}_processed_{os.environ['DATASET_SIZE']}"
 
     while True:
 
         print(Fore.BLUE + f"\nProcessing chunk n°{chunk_id}..." + Style.RESET_ALL)
 
         data_chunk = get_chunk(
-            source_name=source_name, index=chunk_id * CHUNK_SIZE, chunk_size=CHUNK_SIZE, verbose=True
+            source_name=source_name,
+            index=chunk_id * int(os.environ["CHUNK_SIZE"]),
+            chunk_size=int(os.environ["CHUNK_SIZE"]),
+            verbose=True,
         )
 
         # Break out of while loop if data is none
@@ -100,7 +99,7 @@ def train():
 
     # load a validation set common to all chunks, used to early stop model training
     data_val_processed = get_chunk(
-        source_name=f"val_processed_{VALIDATION_DATASET_SIZE}",
+        source_name=f"val_processed_{os.environ['VALIDATION_DATASET_SIZE']}",
         index=0,  # retrieve from first row
         chunk_size=None,
     ).to_numpy()  # retrieve all further data
@@ -134,9 +133,9 @@ def train():
         )
 
         data_processed_chunk = get_chunk(
-            source_name=f"train_processed_{DATASET_SIZE}",
-            index=chunk_id * CHUNK_SIZE,
-            chunk_size=CHUNK_SIZE,
+            source_name=f"train_processed_{os.environ['DATASET_SIZE']}",
+            index=chunk_id * int(os.environ["CHUNK_SIZE"]),
+            chunk_size=int(os.environ["CHUNK_SIZE"]),
         )
 
         # check whether data source contain more data
@@ -173,7 +172,7 @@ def train():
         print(f"chunk MAE: {round(metrics_val_chunk,2)}")
 
         # check if chunk was full
-        if chunk_row_count < CHUNK_SIZE:
+        if chunk_row_count < int(os.environ["CHUNK_SIZE"]):
             print(Fore.BLUE + "\nNo more chunks..." + Style.RESET_ALL)
             break
 
@@ -195,16 +194,14 @@ def train():
         patience=patience,
         # package behavior
         context="train",
-        chunk_size=CHUNK_SIZE,
+        chunk_size=int(os.environ["CHUNK_SIZE"]),
         # data source
-        training_set_size=DATASET_SIZE,
-        val_set_size=VALIDATION_DATASET_SIZE,
+        training_set_size=os.environ["DATASET_SIZE"],
+        val_set_size=os.environ["VALIDATION_DATASET_SIZE"],
         row_count=row_count,
         model_version=get_model_version(),
         dataset_timestamp=get_dataset_timestamp(),
     )
-
-    ##################################### HEREEEEEE SAVE MODEL DEPENDING WHERE YOU WANNA SAVE
 
     # save model
     save_model(model=model, params=params, metrics=dict(mae=val_mae))
@@ -225,7 +222,9 @@ def evaluate():
 
     # load new data
     new_data = get_chunk(
-        source_name=f"val_processed_{DATASET_SIZE}", index=0, chunk_size=None
+        source_name=f"val_processed_{os.environ['DATASET_SIZE']}",
+        index=0,
+        chunk_size=None,
     )  # retrieve all further data
 
     if new_data is None:
@@ -249,8 +248,8 @@ def evaluate():
         # package behavior
         context="evaluate",
         # data source
-        training_set_size=DATASET_SIZE,
-        val_set_size=VALIDATION_DATASET_SIZE,
+        training_set_size=os.environ["DATASET_SIZE"],
+        val_set_size=os.environ["VALIDATION_DATASET_SIZE"],
         row_count=len(X_new),
     )
 
@@ -294,8 +293,8 @@ def pred(X_pred: pd.DataFrame = None) -> np.ndarray:
 
 
 if __name__ == "__main__":
-    # preprocess()
-    preprocess(source_type="val")
+    # preprocess(source_type="val")
+    preprocess()
     train()
-    # pred()
-    # evaluate()
+    pred()
+    evaluate()

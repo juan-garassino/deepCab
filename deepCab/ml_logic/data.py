@@ -1,16 +1,14 @@
+import os
+import pandas as pd
+
+from deepCab.data_sources.local_disk import get_pandas_chunk, save_local_chunk
+from deepCab.data_sources.big_query import get_bq_chunk, save_bq_chunk
 from deepCab.ml_logic.params import (
     COLUMN_NAMES_RAW,
     DTYPES_RAW_OPTIMIZED,
     DTYPES_RAW_OPTIMIZED_HEADLESS,
     DTYPES_PROCESSED_OPTIMIZED,
 )
-
-from deepCab.data_sources.local_disk import get_pandas_chunk, save_local_chunk
-
-from deepCab.data_sources.big_query import get_bq_chunk, save_bq_chunk
-
-import os
-import pandas as pd
 
 
 def clean_data(df: pd.DataFrame) -> pd.DataFrame:
@@ -26,6 +24,7 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
     df = (
         df.drop_duplicates()
     )  # TODO: handle in the data source if the data is consumed by chunks
+
     df = df.dropna(how="any", axis=0)
     df = df[
         (df.dropoff_latitude != 0)
@@ -58,6 +57,8 @@ def get_chunk(
     and do not consider them as part of the data `index` count.
     """
 
+    ######################################################################################
+
     if "processed" in source_name:
         columns = None
         dtypes = DTYPES_PROCESSED_OPTIMIZED
@@ -67,6 +68,8 @@ def get_chunk(
             dtypes = DTYPES_RAW_OPTIMIZED
         else:
             dtypes = DTYPES_RAW_OPTIMIZED_HEADLESS
+
+    ######################################################################################
 
     if os.environ.get("DATA_SOURCE") == "big query":
 
@@ -91,6 +94,8 @@ def get_chunk(
             verbose=verbose,
         )
 
+        return chunk_df
+
     if os.environ.get("DATA_SOURCE") == "cloud":
 
         chunk_df = get_pandas_chunk(
@@ -102,7 +107,7 @@ def get_chunk(
             verbose=verbose,
         )
 
-    return chunk_df
+        return chunk_df
 
 
 def save_chunk(destination_name: str, is_first: bool, data: pd.DataFrame) -> None:

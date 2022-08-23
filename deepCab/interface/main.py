@@ -1,10 +1,6 @@
-from deepCab.ml_logic.data import (clean_data,
-                                    get_chunk,
-                                    save_chunk)
+from deepCab.ml_logic.data import clean_data, get_chunk, save_chunk
 
-from deepCab.ml_logic.params import (CHUNK_SIZE,
-                                      DATASET_SIZE,
-                                      VALIDATION_DATASET_SIZE)
+from deepCab.ml_logic.params import CHUNK_SIZE, DATASET_SIZE, VALIDATION_DATASET_SIZE
 
 from deepCab.ml_logic.preprocessor import preprocess_features
 
@@ -15,7 +11,8 @@ import pandas as pd
 
 from colorama import Fore, Style
 
-def preprocess(source_type='train'):
+
+def preprocess(source_type="train"):
     """
     Preprocess the dataset by chunks fitting in memory.
     parameters:
@@ -31,13 +28,13 @@ def preprocess(source_type='train'):
     source_name = f"{source_type}_{DATASET_SIZE}"
     destination_name = f"{source_type}_processed_{DATASET_SIZE}"
 
-    while (True):
+    while True:
 
         print(Fore.BLUE + f"\nProcessing chunk n°{chunk_id}..." + Style.RESET_ALL)
 
-        data_chunk = get_chunk(source_name=source_name,
-                               index=chunk_id * CHUNK_SIZE,
-                               chunk_size=CHUNK_SIZE)
+        data_chunk = get_chunk(
+            source_name=source_name, index=chunk_id * CHUNK_SIZE, chunk_size=CHUNK_SIZE
+        )
 
         # Break out of while loop if data is none
         if data_chunk is None:
@@ -61,14 +58,17 @@ def preprocess(source_type='train'):
         X_processed_chunk = preprocess_features(X_chunk)
 
         data_processed_chunk = pd.DataFrame(
-            np.concatenate((X_processed_chunk, y_chunk), axis=1))
+            np.concatenate((X_processed_chunk, y_chunk), axis=1)
+        )
 
         # save and append the chunk
         is_first = chunk_id == 0
 
-        save_chunk(destination_name=destination_name,
-                   is_first=is_first,
-                   data=data_processed_chunk)
+        save_chunk(
+            destination_name=destination_name,
+            is_first=is_first,
+            data=data_processed_chunk,
+        )
 
         chunk_id += 1
 
@@ -76,9 +76,12 @@ def preprocess(source_type='train'):
         print("\n✅ no new data for the preprocessing 👌")
         return None
 
-    print(f"\n✅ data processed saved entirely: {row_count} rows ({cleaned_row_count} cleaned)")
+    print(
+        f"\n✅ data processed saved entirely: {row_count} rows ({cleaned_row_count} cleaned)"
+    )
 
     return None
+
 
 def train():
     """
@@ -89,7 +92,7 @@ def train():
     """
     print("\n⭐️ use case: train")
 
-    from deepCab.ml_logic.model import (initialize_model, compile_model, train_model)
+    from deepCab.ml_logic.model import initialize_model, compile_model, train_model
     from deepCab.ml_logic.registry import load_model, save_model
     from deepCab.ml_logic.registry import get_model_version
 
@@ -99,7 +102,8 @@ def train():
     data_val_processed = get_chunk(
         source_name=f"val_processed_{VALIDATION_DATASET_SIZE}",
         index=0,  # retrieve from first row
-        chunk_size=None).to_numpy()  # retrieve all further data
+        chunk_size=None,
+    ).to_numpy()  # retrieve all further data
 
     if data_val_processed is None:
         print("\n✅ no data to train")
@@ -121,13 +125,19 @@ def train():
     row_count = 0
     metrics_val_list = []
 
-    while (True):
+    while True:
 
-        print(Fore.BLUE + f"\nLoading and training on preprocessed chunk n°{chunk_id}..." + Style.RESET_ALL)
+        print(
+            Fore.BLUE
+            + f"\nLoading and training on preprocessed chunk n°{chunk_id}..."
+            + Style.RESET_ALL
+        )
 
-        data_processed_chunk = get_chunk(source_name=f"train_processed_{DATASET_SIZE}",
-                                         index=chunk_id * CHUNK_SIZE,
-                                         chunk_size=CHUNK_SIZE)
+        data_processed_chunk = get_chunk(
+            source_name=f"train_processed_{DATASET_SIZE}",
+            index=chunk_id * CHUNK_SIZE,
+            chunk_size=CHUNK_SIZE,
+        )
 
         # check whether data source contain more data
         if data_processed_chunk is None:
@@ -149,14 +159,16 @@ def train():
 
         # (re)compile and train the model incrementally
         model = compile_model(model, learning_rate)
-        model, history = train_model(model,
-                                     X_train_chunk,
-                                     y_train_chunk,
-                                     batch_size=batch_size,
-                                     patience=patience,
-                                     validation_data=(X_val_processed, y_val))
+        model, history = train_model(
+            model,
+            X_train_chunk,
+            y_train_chunk,
+            batch_size=batch_size,
+            patience=patience,
+            validation_data=(X_val_processed, y_val),
+        )
 
-        metrics_val_chunk = np.min(history.history['val_mae'])
+        metrics_val_chunk = np.min(history.history["val_mae"])
         metrics_val_list.append(metrics_val_chunk)
         print(f"chunk MAE: {round(metrics_val_chunk,2)}")
 
@@ -212,9 +224,9 @@ def evaluate():
     from deepCab.ml_logic.registry import get_model_version
 
     # load new data
-    new_data = get_chunk(source_name=f"val_processed_{DATASET_SIZE}",
-                         index=0,
-                         chunk_size=None)  # retrieve all further data
+    new_data = get_chunk(
+        source_name=f"val_processed_{DATASET_SIZE}", index=0, chunk_size=None
+    )  # retrieve all further data
 
     if new_data is None:
         print("\n✅ no data to evaluate")
@@ -239,7 +251,8 @@ def evaluate():
         # data source
         training_set_size=DATASET_SIZE,
         val_set_size=VALIDATION_DATASET_SIZE,
-        row_count=len(X_new))
+        row_count=len(X_new),
+    )
 
     save_model(params=params, metrics=dict(mae=mae))
 
@@ -257,14 +270,17 @@ def pred(X_pred: pd.DataFrame = None) -> np.ndarray:
 
     if X_pred is None:
 
-        X_pred = pd.DataFrame(dict(
-            key=["2013-07-06 17:18:00"],  # useless but the pipeline requires it
-            pickup_datetime=["2013-07-06 17:18:00 UTC"],
-            pickup_longitude=[-73.950655],
-            pickup_latitude=[40.783282],
-            dropoff_longitude=[-73.984365],
-            dropoff_latitude=[40.769802],
-            passenger_count=[1]))
+        X_pred = pd.DataFrame(
+            dict(
+                key=["2013-07-06 17:18:00"],  # useless but the pipeline requires it
+                pickup_datetime=["2013-07-06 17:18:00 UTC"],
+                pickup_longitude=[-73.950655],
+                pickup_latitude=[40.783282],
+                dropoff_longitude=[-73.984365],
+                dropoff_latitude=[40.769802],
+                passenger_count=[1],
+            )
+        )
 
     model = load_model()
 
@@ -277,9 +293,9 @@ def pred(X_pred: pd.DataFrame = None) -> np.ndarray:
     return y_pred
 
 
-if __name__ == '__main__':
-    #preprocess()
-    preprocess(source_type='val')
+if __name__ == "__main__":
+    # preprocess()
+    preprocess(source_type="val")
     train()
     # pred()
     # evaluate()

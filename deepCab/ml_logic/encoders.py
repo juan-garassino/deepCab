@@ -5,12 +5,13 @@ import pygeohash as gh
 
 from deepCab.ml_logic.utils import simple_time_and_memory_tracker
 
+
 def transform_time_features(X: pd.DataFrame) -> np.ndarray:
 
     assert isinstance(X, pd.DataFrame)
-    pickup_dt = pd.to_datetime(X["pickup_datetime"],
-                               format="%Y-%m-%d %H:%M:%S UTC",
-                               utc=True)
+    pickup_dt = pd.to_datetime(
+        X["pickup_datetime"], format="%Y-%m-%d %H:%M:%S UTC", utc=True
+    )
     pickup_dt = pickup_dt.dt.tz_convert("America/New_York").dt
     dow = pickup_dt.weekday
     hour = pickup_dt.hour
@@ -26,9 +27,16 @@ def transform_time_features(X: pd.DataFrame) -> np.ndarray:
 def transform_lonlat_features(X: pd.DataFrame) -> pd.DataFrame:
 
     assert isinstance(X, pd.DataFrame)
-    lonlat_features = ["pickup_latitude", "pickup_longitude", "dropoff_latitude", "dropoff_longitude"]
+    lonlat_features = [
+        "pickup_latitude",
+        "pickup_longitude",
+        "dropoff_latitude",
+        "dropoff_longitude",
+    ]
 
-    def distances_vectorized(df: pd.DataFrame, start_lat: str, start_lon: str, end_lat: str, end_lon: str) -> dict:
+    def distances_vectorized(
+        df: pd.DataFrame, start_lat: str, start_lon: str, end_lat: str, end_lon: str
+    ) -> dict:
         """
         Calculate the haverzine and manhattan distance between two points on the earth (specified in decimal degrees).
         Vectorized version for pandas df
@@ -45,17 +53,19 @@ def transform_lonlat_features(X: pd.DataFrame) -> pd.DataFrame:
         manhattan_rad = np.abs(dlon_rad) + np.abs(dlat_rad)
         manhattan_km = manhattan_rad * earth_radius
 
-        a = (np.sin(dlat_rad / 2.0)**2 + np.cos(lat_1_rad) * np.cos(lat_2_rad) * np.sin(dlon_rad / 2.0)**2)
+        a = (
+            np.sin(dlat_rad / 2.0) ** 2
+            + np.cos(lat_1_rad) * np.cos(lat_2_rad) * np.sin(dlon_rad / 2.0) ** 2
+        )
         haversine_rad = 2 * np.arcsin(np.sqrt(a))
         haversine_km = haversine_rad * earth_radius
 
-        return dict(
-            haversize=haversine_km,
-            manhattan=manhattan_km)
+        return dict(haversize=haversine_km, manhattan=manhattan_km)
 
     result = pd.DataFrame(distances_vectorized(X, *lonlat_features))
 
     return result
+
 
 def compute_geohash(X: pd.DataFrame, precision: int = 5) -> np.ndarray:
     """
@@ -64,10 +74,14 @@ def compute_geohash(X: pd.DataFrame, precision: int = 5) -> np.ndarray:
     """
     assert isinstance(X, pd.DataFrame)
 
-    X["geohash_pickup"] = X.apply(lambda x: gh.encode(
-        x.pickup_latitude, x.pickup_longitude, precision=precision),
-                                    axis=1)
-    X["geohash_dropoff"] = X.apply(lambda x: gh.encode(
-        x.dropoff_latitude, x.dropoff_longitude, precision=precision),
-                                    axis=1)
+    X["geohash_pickup"] = X.apply(
+        lambda x: gh.encode(x.pickup_latitude, x.pickup_longitude, precision=precision),
+        axis=1,
+    )
+    X["geohash_dropoff"] = X.apply(
+        lambda x: gh.encode(
+            x.dropoff_latitude, x.dropoff_longitude, precision=precision
+        ),
+        axis=1,
+    )
     return X[["geohash_pickup", "geohash_dropoff"]]

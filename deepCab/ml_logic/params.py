@@ -23,7 +23,7 @@ DTYPES_RAW_OPTIMIZED = {
     "pickup_latitude": "float32",
     "dropoff_longitude": "float32",
     "dropoff_latitude": "float32",
-    "passenger_count": "int8"
+    "passenger_count": "int8",
 }
 
 COLUMN_NAMES_RAW = DTYPES_RAW_OPTIMIZED.keys()
@@ -37,11 +37,10 @@ DTYPES_RAW_OPTIMIZED_HEADLESS = {
     4: "float32",
     5: "float32",
     6: "float32",
-    7: "int8"
+    7: "int8",
 }
 
 DTYPES_PROCESSED_OPTIMIZED = np.float32
-
 
 
 ################## VALIDATIONS #################
@@ -54,10 +53,13 @@ env_valid_options = dict(
     PREFECT_BACKEND=["development", "production"],
 )
 
+
 def validate_env_value(env, valid_options):
     env_value = os.environ[env]
     if env_value not in valid_options:
-        raise NameError(f"Invalid value for {env} in `.env` file: {env_value} must be in {valid_options}")
+        raise NameError(
+            f"Invalid value for {env} in `.env` file: {env_value} must be in {valid_options}"
+        )
 
 
 for env, valid_options in env_valid_options.items():

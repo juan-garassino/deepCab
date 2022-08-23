@@ -1,4 +1,3 @@
-
 from deepCab.interface.main import preprocess, train, evaluate
 
 from prefect import task, Flow, Parameter
@@ -6,13 +5,15 @@ from prefect import task, Flow, Parameter
 import os
 import requests
 
+
 @task
 def preprocess_new_data(experiment):
     """
     Run the preprocessing of the new data
     """
     preprocess()
-    preprocess(source_type='val')
+    preprocess(source_type="val")
+
 
 @task
 def evaluate_production_model(status):
@@ -23,6 +24,7 @@ def evaluate_production_model(status):
     eval_mae = evaluate()
     return eval_mae
 
+
 @task
 def re_train(status):
     """
@@ -32,17 +34,20 @@ def re_train(status):
     train_mae = train()
     return train_mae
 
+
 @task
 def notify(eval_mae, train_mae):
-    base_url = 'https://wagon-chat.herokuapp.com'
-    channel = 'johnini'
+    base_url = "https://wagon-chat.herokuapp.com"
+    channel = "johnini"
     url = f"{base_url}/{channel}/messages"
-    author = 'johnini'
+    author = "johnini"
     content = "Evaluation MAE: {} - New training MAE: {}".format(
-        round(eval_mae, 2), round(train_mae, 2))
+        round(eval_mae, 2), round(train_mae, 2)
+    )
     data = dict(author=author, content=content)
     response = requests.post(url, data=data)
     response.raise_for_status()
+
 
 def build_flow():
     """

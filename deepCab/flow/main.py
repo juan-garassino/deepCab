@@ -5,9 +5,11 @@ from prefect.run_configs import LocalRun
 from prefect.schedules import IntervalSchedule
 
 from deepCab.flow.flow import build_flow
+
 flow = build_flow()
 
 from deepCab.flow.parallelized_flow import build_parallel_flow
+
 flow = build_parallel_flow()
 
 mlflow_experiment = os.environ.get("MLFLOW_EXPERIMENT")
@@ -26,6 +28,7 @@ elif prefect_backend == "production":
 
     # dotenv is needed here to force sending the env values of your `.env` file to Prefect at each registry. Otherwise, Prefect caches the env variables and never updates them.
     from dotenv import dotenv_values
+
     env_dict = dotenv_values(".env")
     flow.run_config = LocalRun(env=env_dict)
 

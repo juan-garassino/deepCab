@@ -1,4 +1,3 @@
-
 # $WIPE_BEGIN
 from datetime import datetime
 import pytz
@@ -29,12 +28,14 @@ app.add_middleware(
 
 # $IMPLODE_BEGIN
 @app.get("/predict")
-def predict(pickup_datetime: datetime,  # 2013-07-06 17:18:00
-            pickup_longitude: float,    # -73.950655
-            pickup_latitude: float,     # 40.783282
-            dropoff_longitude: float,   # -73.984365
-            dropoff_latitude: float,    # 40.769802
-            passenger_count: int):      # 1
+def predict(
+    pickup_datetime: datetime,  # 2013-07-06 17:18:00
+    pickup_longitude: float,  # -73.950655
+    pickup_latitude: float,  # 40.783282
+    dropoff_longitude: float,  # -73.984365
+    dropoff_latitude: float,  # 40.769802
+    passenger_count: int,
+):  # 1
     """
     we use type hinting to indicate the data types expected
     for the parameters of the function
@@ -66,14 +67,17 @@ def predict(pickup_datetime: datetime,  # 2013-07-06 17:18:00
     key = "2013-07-06 17:18:00.000000119"
 
     # build X ⚠️ beware to the order of the parameters ⚠️
-    X_pred = pd.DataFrame(dict(
-        key=[key],  # useless but the pipeline requires it
-        pickup_datetime=[formatted_pickup_datetime],
-        pickup_longitude=[pickup_longitude],
-        pickup_latitude=[pickup_latitude],
-        dropoff_longitude=[dropoff_longitude],
-        dropoff_latitude=[dropoff_latitude],
-        passenger_count=[passenger_count]))
+    X_pred = pd.DataFrame(
+        dict(
+            key=[key],  # useless but the pipeline requires it
+            pickup_datetime=[formatted_pickup_datetime],
+            pickup_longitude=[pickup_longitude],
+            pickup_latitude=[pickup_latitude],
+            dropoff_longitude=[dropoff_longitude],
+            dropoff_latitude=[dropoff_latitude],
+            passenger_count=[passenger_count],
+        )
+    )
 
     # ⚠️ print output appears in the terminal running the `uvicorn` command
 
@@ -90,7 +94,9 @@ def predict(pickup_datetime: datetime,  # 2013-07-06 17:18:00
     # ⚠️ fastapi only accepts simple python data types as a return value
     # among which dict, list, str, int, float, bool
     # in order to be able to convert the api response to json
-    return dict(fare=float(y_pred[0,0]))
+    return dict(fare=float(y_pred[0, 0]))
+
+
 # $IMPLODE_END
 
 

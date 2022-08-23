@@ -11,12 +11,14 @@ def preprocess_new_train(experiment):
     """
     preprocess()
 
+
 @task
 def preprocess_new_val(experiment):
     """
     Run the preprocessing of the val_new data
     """
-    preprocess(source_type='val')
+    preprocess(source_type="val")
+
 
 @task
 def evaluate_production_model(preproc_train_status, preproc_val_status):
@@ -36,6 +38,7 @@ def re_train(preproc_train_status, preproc_val_status):
     """
     train_mae = train()
     return train_mae
+
 
 def build_parallel_flow():
     """

@@ -1,6 +1,7 @@
 import os
 import pickle
 
+
 def save_local_model(params, metrics, model, timestamp):
 
     print(Fore.BLUE + "\nSave model to local disk..." + Style.RESET_ALL)
@@ -14,7 +15,9 @@ def save_local_model(params, metrics, model, timestamp):
 
     # save metrics
     if metrics is not None:
-        metrics_path = os.path.join(LOCAL_REGISTRY_PATH, "metrics", timestamp + ".pickle")
+        metrics_path = os.path.join(
+            LOCAL_REGISTRY_PATH, "metrics", timestamp + ".pickle"
+        )
         print(f"- metrics path: {metrics_path}")
         with open(metrics_path, "wb") as file:
             pickle.dump(metrics, file)
@@ -28,6 +31,7 @@ def save_local_model(params, metrics, model, timestamp):
     print("\n✅ data saved locally")
 
     return None
+
 
 # def save_local_model(model, timestamp):
 

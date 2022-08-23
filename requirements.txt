@@ -19,6 +19,7 @@ pyarrow
 
 mlflow
 docker-compose
+black
 
 #prefect==1.*
 prefect<2

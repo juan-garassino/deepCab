@@ -3,6 +3,7 @@ import tracemalloc
 
 from deepCab.ml_logic.params import DATASET_SIZE
 
+
 def get_dataset_timestamp(df=None):
     """
     Retrieve the date of the latest available datapoint, at monthly granularity
@@ -14,10 +15,9 @@ def get_dataset_timestamp(df=None):
     if df is None:
         # Trick specific to this taxifare challenge:
         # Query simply one row from the TRAIN_DATASET, it's enough to deduce the latest datapoint available
-        df = get_chunk(source_name=f"train_{DATASET_SIZE}",
-                       index=0,
-                       chunk_size=1,
-                       verbose=False)
+        df = get_chunk(
+            source_name=f"train_{DATASET_SIZE}", index=0, chunk_size=1, verbose=False
+        )
 
     # retrieve first row timestamp
     ts = pd.to_datetime(df.pickup_datetime[:1])[0]

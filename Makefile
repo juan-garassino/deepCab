@@ -4,6 +4,17 @@ reinstall_package:
 	@pip uninstall -y taxifare || :
 	@pip install -e .
 
+clean:
+	@rm -f */version.txt
+	@rm -f .coverage
+	@rm -fr */__pycache__ */*.pyc __pycache__
+	@rm -fr build dist
+	@rm -fr deepSculpt-*.dist-info
+	@rm -fr deepSculpt.egg-info
+
+black:
+	@black deepCab/*/*.py
+
 run_model:
 	python -m deepCab.interface.main
 

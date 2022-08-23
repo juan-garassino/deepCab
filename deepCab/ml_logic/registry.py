@@ -17,16 +17,14 @@ from colorama import Fore, Style
 from tensorflow.keras import Model, models
 
 
-def save_model(model: Model = None,
-               params: dict = None,
-               metrics: dict = None) -> None:
+def save_model(model: Model = None, params: dict = None, metrics: dict = None) -> None:
     """
     persist trained model, params and metrics
     """
 
     timestamp = time.strftime("%Y%m%d-%H%M%S")
 
-    if os.environ['MODEL_TARGET'] == "local":
+    if os.environ["MODEL_TARGET"] == "local":
 
         save_local_model(model, timestamp)
 
@@ -58,10 +56,12 @@ def save_model(model: Model = None,
             # STEP 3: push model to mlflow
             if model is not None:
 
-                mlflow.keras.log_model(keras_model=model,
-                                       artifact_path="model",
-                                       keras_module="tensorflow.keras",
-                                       registered_model_name=mlflow_model_name)
+                mlflow.keras.log_model(
+                    keras_model=model,
+                    artifact_path="model",
+                    keras_module="tensorflow.keras",
+                    registered_model_name=mlflow_model_name,
+                )
 
         print("\n✅ data saved in mlflow")
 
@@ -79,7 +79,9 @@ def load_model() -> Model:
     if os.environ.get("MODEL_TARGET") == "mlflow":
         stage = "Production"
 
-        print(Fore.BLUE + f"\nLoad model {stage} stage from mlflow..." + Style.RESET_ALL)
+        print(
+            Fore.BLUE + f"\nLoad model {stage} stage from mlflow..." + Style.RESET_ALL
+        )
 
         # load model from mlflow
         mlflow.set_tracking_uri(os.environ.get("MLFLOW_TRACKING_URI"))

@@ -4,3 +4,6 @@ pip uninstall -y taxifare || :
 pip install -e .
 make: Leaving directory '/home/juan-garassino/code/juan-garassino/leWagon/projects-le-wagon/deepCab'
  
+Makefile:85: warning: overriding recipe for target 'set_project'
+Makefile:82: warning: ignoring old recipe for target 'set_project'
+

@@ -53,7 +53,17 @@ test_api_root:
 test_api_predict:
 	TEST_ENV=development pytest tests/api -k 'test_predict' --asyncio-mode=strict -W "ignore"
 
-## MINE GCP ##
+##################### PYPI #####################
+build:
+	@python setup.py sdist bdist_wheel
+
+pypi_test:
+	@twine upload -r testpypi dist/* -u lologibus2
+
+pypi:
+	@twine upload dist/* -u lologibus2
+
+##################### GCP #####################
 
 GCP_PROJECT_ID=mlops-taxifare
 
@@ -63,7 +73,7 @@ GCR_MULTI_REGION=eu.gcr.io
 
 GCR_REGION=europe-west1
 
-SERVICE_ACCOUNT_EMAIL=manager@mlops-deepCab.iam.gserviceaccount.com
+SERVICE_ACCOUNT_EMAIL=manager@deepCab.iam.gserviceaccount.com
 
 gcp_login:
 	@gcloud auth login --cred-file=${GOOGLE_APPLICATION_CREDENTIALS}
@@ -71,13 +81,52 @@ gcp_login:
 set_project:
 	@gcloud config set project ${GCP_PROJECT_ID}
 
+# bucket
+BUCKET_NAME=deepCab
+
+# training folder
+BUCKET_TRAINING_FOLDER=data
+
+create_bucket:
+	@gsutil mb -l ${REGION} -p ${PROJECT_ID} gs://${BUCKET_NAME}
+
 set_credentials:
 	@gcloud projects get-iam-policy ${GCP_PROJECT_ID} \
 --flatten="bindings[].members" \
 --format='table(bindings.role)' \
 --filter="bindings.members:${SERVICE_ACCOUNT_EMAIL}"
 
-## MINE Docker ##
+# training params
+REGION=europe-west1
+
+# app environment
+PYTHON_VERSION=3.7
+
+FRAMEWORK=scikit-learn
+
+RUNTIME_VERSION=2.2
+
+# package params
+PACKAGE_NAME=deepCab
+
+FILENAME=main
+
+# Job
+
+JOB_NAME=mintrainer_$(shell date +'%Y%m%d_%H%M%S')
+
+gcp_submit_training:
+	gcloud ai-platform jobs submit training ${JOB_NAME} \
+		--job-dir gs://${BUCKET_NAME}/${BUCKET_TRAINING_FOLDER} \
+		--package-path ${PACKAGE_NAME} \
+		--module-name ${PACKAGE_NAME}.${FILENAME} \
+		--python-version=${PYTHON_VERSION} \
+		--runtime-version=${RUNTIME_VERSION} \
+		--region ${REGION} \
+		--stream-logs
+
+
+##################### DOCKER #####################
 
 build_docker:
 	sudo docker build -t ${GCR_MULTI_REGION}/${GCP_PROJECT_ID}/${DOCKER_IMAGE_NAME} .
@@ -90,6 +139,7 @@ push_docker:
 
 deploy_docker_gcp:
 	gcloud run deploy --image ${GCR_MULTI_REGION}/${GCP_PROJECT_ID}/${DOCKER_IMAGE_NAME} --platform managed --region ${GCR_REGION}
+
 
 ################### DATA SOURCES ACTIONS ################
 

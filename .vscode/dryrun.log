@@ -1,9 +1,6 @@
 make --dry-run --always-make --keep-going --print-directory
-make: Entering directory '/home/juan-garassino/code/juan-garassino/leWagon/projects-le-wagon/deepCab'
+make: Entering directory '/home/juan-garassino/code/juan-garassino/deepCab'
 pip uninstall -y taxifare || :
 pip install -e .
-make: Leaving directory '/home/juan-garassino/code/juan-garassino/leWagon/projects-le-wagon/deepCab'
+make: Leaving directory '/home/juan-garassino/code/juan-garassino/deepCab'
  
-Makefile:85: warning: overriding recipe for target 'set_project'
-Makefile:82: warning: ignoring old recipe for target 'set_project'
-

@@ -13,7 +13,7 @@ clean:
 	@rm -fr deepSculpt.egg-info
 
 black:
-	@black deepCab/*/*.py
+	@black taxifare/*/*.py
 
 run_model:
 	python -m deepCab.interface.main
@@ -53,17 +53,7 @@ test_api_root:
 test_api_predict:
 	TEST_ENV=development pytest tests/api -k 'test_predict' --asyncio-mode=strict -W "ignore"
 
-##################### PYPI #####################
-build:
-	@python setup.py sdist bdist_wheel
-
-pypi_test:
-	@twine upload -r testpypi dist/* -u lologibus2
-
-pypi:
-	@twine upload dist/* -u lologibus2
-
-##################### GCP #####################
+## MINE GCP ##
 
 GCP_PROJECT_ID=mlops-taxifare
 
@@ -73,7 +63,7 @@ GCR_MULTI_REGION=eu.gcr.io
 
 GCR_REGION=europe-west1
 
-SERVICE_ACCOUNT_EMAIL=manager@deepCab.iam.gserviceaccount.com
+SERVICE_ACCOUNT_EMAIL=manager@mlops-deepCab.iam.gserviceaccount.com
 
 gcp_login:
 	@gcloud auth login --cred-file=${GOOGLE_APPLICATION_CREDENTIALS}
@@ -81,71 +71,45 @@ gcp_login:
 set_project:
 	@gcloud config set project ${GCP_PROJECT_ID}
 
-# bucket
-BUCKET_NAME=deepCab
-
-# training folder
-BUCKET_TRAINING_FOLDER=data
-
-create_bucket:
-	@gsutil mb -l ${REGION} -p ${PROJECT_ID} gs://${BUCKET_NAME}
-
 set_credentials:
 	@gcloud projects get-iam-policy ${GCP_PROJECT_ID} \
 --flatten="bindings[].members" \
 --format='table(bindings.role)' \
 --filter="bindings.members:${SERVICE_ACCOUNT_EMAIL}"
 
-# training params
-REGION=europe-west1
+set_gcp: gcp_login set_project set_credentials
 
-# app environment
-PYTHON_VERSION=3.7
-
-FRAMEWORK=scikit-learn
-
-RUNTIME_VERSION=2.2
-
-# package params
-PACKAGE_NAME=deepCab
-
-FILENAME=main
-
-# Job
-
-JOB_NAME=mintrainer_$(shell date +'%Y%m%d_%H%M%S')
-
-gcp_submit_training:
-	gcloud ai-platform jobs submit training ${JOB_NAME} \
-		--job-dir gs://${BUCKET_NAME}/${BUCKET_TRAINING_FOLDER} \
-		--package-path ${PACKAGE_NAME} \
-		--module-name ${PACKAGE_NAME}.${FILENAME} \
-		--python-version=${PYTHON_VERSION} \
-		--runtime-version=${RUNTIME_VERSION} \
-		--region ${REGION} \
-		--stream-logs
-
-
-##################### DOCKER #####################
+################### DOCKER ################
 
 build_docker:
 	sudo docker build -t ${GCR_MULTI_REGION}/${GCP_PROJECT_ID}/${DOCKER_IMAGE_NAME} .
 
-run_docker:
-	sudo docker run -e PORT=8000 -p 8080:8000 ${GCR_MULTI_REGION}/${GCP_PROJECT_ID}/${DOCKER_IMAGE_NAME}
+delete_docker_images:
+	docker rmi -f $(docker images -aq)
 
-push_docker:
+run_docker_shell:
+	docker run -it --env-file .env ${GCR_MULTI_REGION}/${GCP_PROJECT_ID}/${DOCKER_IMAGE_NAME} sh
+
+run_docker:
+	sudo docker run -e PORT=8000 -p 8080:8000 --env-file .env ${GCR_MULTI_REGION}/${GCP_PROJECT_ID}/${DOCKER_IMAGE_NAME}
+
+push_docker_registry:
 	docker push ${GCR_MULTI_REGION}/${GCP_PROJECT_ID}/${DOCKER_IMAGE_NAME}
 
 deploy_docker_gcp:
 	gcloud run deploy --image ${GCR_MULTI_REGION}/${GCP_PROJECT_ID}/${DOCKER_IMAGE_NAME} --platform managed --region ${GCR_REGION}
 
+GCP_cloud_config:
+	gcloud run services describe ${DOCKER_IMAGE_NAME} --format export > service.yaml
+
+GCP_update_config:
+	gcloud run services replace service.yaml
 
 ################### DATA SOURCES ACTIONS ################
 
 # Data sources: targets for monthly data imports
-ML_DIR=$HOME/code/juan-garassino/leWagon/projects-le-wagon/deepCab/deepCab
-HTTPS_DIR=https://storage.googleapis.com/datascience-mlops/deepCab/
+ML_DIR=~/.lewagon/mlops
+HTTPS_DIR=https://storage.googleapis.com/datascience-mlops/taxi-fare-ny/
 GS_DIR=gs://datascience-mlops/taxi-fare-ny
 
 delete_new_source:

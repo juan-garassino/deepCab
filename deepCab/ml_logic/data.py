@@ -64,14 +64,14 @@ def get_chunk(
         dtypes = DTYPES_PROCESSED_OPTIMIZED
     else:
         columns = COLUMN_NAMES_RAW
-        if os.environ.get("DATA_SOURCE") == "big query":
+        if os.environ.get("DATA_SOURCE") == "query":
             dtypes = DTYPES_RAW_OPTIMIZED
         else:
             dtypes = DTYPES_RAW_OPTIMIZED_HEADLESS
 
     ######################################################################################
 
-    if os.environ.get("DATA_SOURCE") == "big query":
+    if os.environ.get("DATA_SOURCE") == "query":
 
         chunk_df = get_bq_chunk(
             table=source_name,
@@ -111,7 +111,7 @@ def save_chunk(destination_name: str, is_first: bool, data: pd.DataFrame) -> Non
     save chunk
     """
 
-    if os.environ.get("DATA_SOURCE") == "big query":
+    if os.environ.get("DATA_SOURCE") == "query":
 
         save_bq_chunk(table=destination_name, data=data, is_first=is_first)
 

@@ -48,7 +48,7 @@ DTYPES_PROCESSED_OPTIMIZED = np.float32
 env_valid_options = dict(
     DATASET_SIZE=["1k", "10k", "100k", "500k", "50M", "new"],
     VALIDATION_DATASET_SIZE=["1k", "10k", "100k", "500k", "500k", "new"],
-    DATA_SOURCE=["local", "big query"],
+    DATA_SOURCE=["local", "query"],
     MODEL_TARGET=["local", "gcs", "mlflow"],
     PREFECT_BACKEND=["development", "production"],
 )

@@ -4,8 +4,8 @@ import pytz
 
 import pandas as pd
 
-# from deepCab.ml_logic.registry import load_model
-# from deepCab.ml_logic.preprocessor import preprocess_features
+from deepCab.ml_logic.registry import load_model
+from deepCab.ml_logic.preprocessor import preprocess_features
 from deepCab.interface.main import pred
 
 # $WIPE_END
@@ -23,8 +23,7 @@ app.add_middleware(
     allow_headers=["*"],  # Allows all headers
 )
 
-# http://127.0.0.1:8000/predict?pickup_datetime=2012-10-06 12:10:20&pickup_longitude=40.7614327&pickup_latitude=-73.9798156&dropoff_longitude=40.6513111&dropoff_latitude=-73.8803331&passenger_count=2
-
+app.state.model = load_model()
 
 # $IMPLODE_BEGIN
 @app.get("/predict")
@@ -53,6 +52,7 @@ def predict(
 
     # localize the user provided datetime with the NYC timezone
     eastern = pytz.timezone("US/Eastern")
+
     localized_pickup_datetime = eastern.localize(pickup_datetime, is_dst=None)
 
     # convert the user datetime to UTC
@@ -71,11 +71,11 @@ def predict(
         dict(
             key=[key],  # useless but the pipeline requires it
             pickup_datetime=[formatted_pickup_datetime],
-            pickup_longitude=[pickup_longitude],
-            pickup_latitude=[pickup_latitude],
-            dropoff_longitude=[dropoff_longitude],
-            dropoff_latitude=[dropoff_latitude],
-            passenger_count=[passenger_count],
+            pickup_longitude=[float(pickup_longitude)],
+            pickup_latitude=[float(pickup_latitude)],
+            dropoff_longitude=[float(dropoff_longitude)],
+            dropoff_latitude=[float(dropoff_latitude)],
+            passenger_count=[float(passenger_count)],
         )
     )
 
@@ -85,20 +85,29 @@ def predict(
     # print(X_pred)
     # print(X_pred.columns)
     # print(X_pred.dtypes)
+
     # TODO(krokrob): cache the model
+
     # model = load_model()
+
     # X_processed = preprocess_features(X_pred)
+
     # y_pred = model.predict(X_processed)
-    y_pred = pred(X_pred)
+
+    # y_pred = pred(X_pred)
+
+    model = app.state.model
+
+    X_processed = preprocess_features(X_pred)
+
+    y_pred = model.predict(X_processed)
 
     # ⚠️ fastapi only accepts simple python data types as a return value
     # among which dict, list, str, int, float, bool
     # in order to be able to convert the api response to json
     return dict(fare=float(y_pred[0, 0]))
 
-
 # $IMPLODE_END
-
 
 @app.get("/")
 def root():

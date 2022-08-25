@@ -94,8 +94,8 @@ deploy_docker_gcp:
 ################### DATA SOURCES ACTIONS ################
 
 # Data sources: targets for monthly data imports
-ML_DIR=~/.lewagon/mlops
-HTTPS_DIR=https://storage.googleapis.com/datascience-mlops/taxi-fare-ny/
+ML_DIR=$HOME/code/juan-garassino/leWagon/projects-le-wagon/deepCab/deepCab
+HTTPS_DIR=https://storage.googleapis.com/datascience-mlops/deepCab/
 GS_DIR=gs://datascience-mlops/taxi-fare-ny
 
 delete_new_source:

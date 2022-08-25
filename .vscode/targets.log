@@ -1,0 +1,733 @@
+make all --print-data-base --no-builtin-variables --no-builtin-rules --question
+# GNU Make 4.3
+# Built for x86_64-pc-linux-gnu
+# Copyright (C) 1988-2020 Free Software Foundation, Inc.
+# License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+# This is free software: you are free to change and redistribute it.
+# There is NO WARRANTY, to the extent permitted by law.
+
+# Make data base, printed on Thu Aug 25 09:43:53 2022
+
+# Variables
+
+# environment
+GDK_BACKEND = x11
+# environment
+LC_ALL = C
+# environment
+GNOME_SHELL_SESSION_MODE = ubuntu
+# environment
+SSH_AGENT_LAUNCHER = gnome-keyring
+# environment
+VIRTUAL_ENV = /home/juan-garassino/.pyenv/versions/3.8.12/envs/taxi-fare
+# makefile (from 'Makefile', line 98)
+HTTPS_DIR = https://storage.googleapis.com/datascience-mlops/taxi-fare-ny/
+# environment
+VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-216b54ab-c078-474b-9fa8-79e77a357e8d.sock
+# environment
+LC_NAME = de_DE.UTF-8
+# environment
+LC_NUMERIC = de_DE.UTF-8
+# environment
+VSCODE_CWD = /home/juan-garassino/code/juan-garassino/leWagon/projects-le-wagon/deepCab
+# makefile (from 'Makefile', line 64)
+GCR_REGION = europe-west1
+# environment
+CHUNK_SIZE = 2000
+# environment
+DIRENV_WATCHES = eJyc0LFuwyAUheF3YbaDMRiM16pjpW4dqg6XyyV2RCACklSq-u6VOrpSpXY9y_frvH6wZ2grWxhf85n46QqpP0KBWreUOWb_Y4v0Asec-KXkE2GrfaT-_r14ossDOH6gdCvIOvaUfdvOxBahtRisFJPo2OP7VltlSytX-ux-9w8xI0ReVyjE_VYo3TjEmO_cmIAAMA-WvLbBKmEkumAEICDIECAEIT166xQYN2ow2s1KKSsFzcbs68bJ6OGPdf9_Z68rMU562ulvXwEAAP__OSiKWw==
+# environment
+NVM_DIR = /home/juan-garassino/.nvm
+# environment
+LC_ADDRESS = de_DE.UTF-8
+# default
+MAKE_COMMAND := make
+# environment
+PREFECT_FLOW_NAME = prefect-flow-garassino
+# environment
+QT_ACCESSIBILITY = 1
+# automatic
+@D = $(patsubst %/,%,$(dir $@))
+# environment
+PYENV_SHELL = zsh
+# environment
+VSCODE_HANDLES_UNCAUGHT_ERRORS = true
+# default
+.VARIABLES := 
+# environment
+PWD = /home/juan-garassino/code/juan-garassino/leWagon/projects-le-wagon/deepCab
+# automatic
+%D = $(patsubst %/,%,$(dir $%))
+# environment
+LSCOLORS = Gxfxcxdxbxegedabagacad
+# environment
+XDG_DATA_DIRS = /usr/local/share/:/usr/share/:/var/lib/snapd/desktop
+# environment
+OLDPWD = /home/juan-garassino
+# automatic
+^D = $(patsubst %/,%,$(dir $^))
+# environment
+VSCODE_LOG_STACK = false
+# automatic
+%F = $(notdir $%)
+# environment
+VSCODE_CODE_CACHE_PATH = /home/juan-garassino/.config/Code/CachedData/30d9c6cd9483b2cc586687151bcbcd635f373630
+# environment
+LANG = C
+# environment
+XAUTHORITY = /run/user/1000/.mutter-Xwaylandauth.SIN9Q1
+# default
+.LOADED := 
+# environment
+PYENV_VIRTUAL_ENV = /home/juan-garassino/.pyenv/versions/3.8.12/envs/taxi-fare
+# default
+.INCLUDE_DIRS = /usr/local/include /usr/include /usr/include
+# environment
+GNOME_TERMINAL_SERVICE = :1.121
+# makefile
+MAKEFLAGS = pqrR
+# environment
+PROJECT = mlops-taxifare
+# environment
+API_KEY = pcu_Hsg4VzeL8SHW9jnCwkVFqUhG5ySddW4vFMVj
+# makefile
+CURDIR := /home/juan-garassino/code/juan-garassino/leWagon/projects-le-wagon/deepCab
+# makefile (from 'Makefile', line 211)
+fbold = $(shell echo "\033[1m")
+# environment
+VSCODE_PIPE_LOGGING = true
+# environment
+APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = true
+# environment
+PYENV_VIRTUALENV_DISABLE_PROMPT = 1
+# automatic
+*D = $(patsubst %/,%,$(dir $*))
+# environment
+MFLAGS = -pqrR
+# environment
+SSH_AUTH_SOCK = /tmp/ssh-XXXXXXOKJCcZ/agent.4393
+# default
+.SHELLFLAGS := -c
+# environment
+WAYLAND_DISPLAY = wayland-0
+# automatic
++D = $(patsubst %/,%,$(dir $+))
+# environment
+MODEL_TARGET = mlflow
+# environment
+XDG_SESSION_DESKTOP = ubuntu
+# makefile (from 'Makefile', line 1)
+MAKEFILE_LIST := Makefile
+# automatic
+@F = $(notdir $@)
+# environment
+VSCODE_VERBOSE_LOGGING = true
+# environment
+VSCODE_PID = 4725
+# environment
+XDG_SESSION_TYPE = wayland
+# environment
+SOURCE_TYPE = train
+# automatic
+?D = $(patsubst %/,%,$(dir $?))
+# environment
+DATASET = taxifate_dataset
+# environment
+SESSION_MANAGER = local/celcius:@/tmp/.ICE-unix/1974,unix/celcius:/tmp/.ICE-unix/1974
+# automatic
+*F = $(notdir $*)
+# environment
+CHROME_DESKTOP = code-url-handler.desktop
+# environment
+DBUS_SESSION_BUS_ADDRESS = unix:path=/run/user/1000/bus
+# automatic
+<D = $(patsubst %/,%,$(dir $<))
+# environment
+VSCODE_NLS_CONFIG = {"locale":"en-us","availableLanguages":{},"_languagePackSupport":true}
+# default
+MAKE_HOST := x86_64-pc-linux-gnu
+# environment
+GNOME_DESKTOP_SESSION_ID = this-is-deprecated
+# makefile
+SHELL = /bin/sh
+# default
+MAKECMDGOALS := all
+# environment
+XMODIFIERS = @im=ibus
+# environment
+SHLVL = 1
+# environment
+GNOME_TERMINAL_SCREEN = /org/gnome/Terminal/screen/3697514c_495d_4e68_92ab_5ac7a332acfa
+# environment
+MAKELEVEL := 0
+# default
+MAKE = $(MAKE_COMMAND)
+# environment
+PATH = ./bin:./node_modules/.bin:/home/juan-garassino/.pyenv/plugins/pyenv-virtualenv/shims:/home/juan-garassino/.pyenv/shims:/home/juan-garassino/.rbenv/bin:/home/juan-garassino/.pyenv/plugins/pyenv-virtualenv/shims:/home/juan-garassino/.pyenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin:/usr/local/sbin
+# default
+MAKEFILES := 
+# environment
+LC_MONETARY = de_DE.UTF-8
+# automatic
+^F = $(notdir $^)
+# environment
+HOMEBREW_NO_ANALYTICS = 1
+# environment
+LC_TIME = de_DE.UTF-8
+# environment
+PYENV_VIRTUALENV_INIT = 1
+# environment
+VALIDATION_DATASET_SIZE = 10k
+# makefile (from 'Makefile', line 99)
+GS_DIR = gs://datascience-mlops/taxi-fare-ny
+# environment
+MLFLOW_TRACKING_URI = https://mlflow.lewagon.ai
+# makefile (from 'Makefile', line 212)
+fnormal = $(shell echo "\033[0m")
+# environment
+VSCODE_LOG_NATIVE = false
+# environment
+USERNAME = juan-garassino
+# environment
+GNOME_SETUP_DISPLAY = :1
+# environment
+LC_TELEPHONE = de_DE.UTF-8
+# makefile (from 'Makefile', line 97)
+ML_DIR = ~/.lewagon/mlops
+# automatic
+?F = $(notdir $?)
+# environment
+XDG_CURRENT_DESKTOP = Unity
+# makefile (from 'Makefile', line 215)
+ccreset = $(shell echo "\033[0;39m")
+# environment
+LS_COLORS = rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:
+# automatic
++F = $(notdir $+)
+# environment
+PREFECT_BACKEND = development
+# environment
+LESS = -R
+# environment
+DESKTOP_SESSION = ubuntu
+# environment
+ORIGINAL_XDG_CURRENT_DESKTOP = ubuntu:GNOME
+# makefile (from 'Makefile', line 58)
+GCP_PROJECT_ID = mlops-taxifare
+# environment
+PYENV_ROOT = /home/juan-garassino/.pyenv
+# environment
+DATASET_SIZE = 10k
+# 'override' directive
+GNUMAKEFLAGS := 
+# environment
+LOGNAME = juan-garassino
+# environment
+INSTANCE = taxifate-instance
+# environment
+BUNDLER_EDITOR = code
+# makefile
+.DEFAULT_GOAL := reinstall_package
+# environment
+SYSTEMD_EXEC_PID = 1996
+# environment
+TABLE = train_10k
+# environment
+DISPLAY = :0
+# environment
+USER = juan-garassino
+# environment
+GTK_MODULES = gail:atk-bridge
+# makefile (from 'Makefile', line 62)
+GCR_MULTI_REGION = eu.gcr.io
+# default
+MAKE_VERSION := 4.3
+# makefile (from 'Makefile', line 60)
+DOCKER_IMAGE_NAME = api-garassino
+# makefile (from 'Makefile', line 213)
+ccgreen = $(shell echo "\033[0;32m")
+# environment
+DIRENV_DIR = -/home/juan-garassino/code/juan-garassino/leWagon/projects-le-wagon/deepCab
+# environment
+LC_MEASUREMENT = de_DE.UTF-8
+# environment
+SSH_AGENT_PID = 4395
+# environment
+PAGER = less
+# environment
+_ = /usr/bin/code
+# environment
+LC_PAPER = de_DE.UTF-8
+# environment
+XDG_RUNTIME_DIR = /run/user/1000
+# environment
+ 
+make: *** No rule to make target 'all'.  Stop.
+
+BUCKET_NAME = taxi-fare
+# environment
+LOCAL_DATA_PATH = /home/juan-garassino/code/juan-garassino/leWagon/projects-le-wagon/deepCab/taxifare/data
+# environment
+COLORTERM = truecolor
+# makefile (from 'Makefile', line 214)
+ccblue = $(shell echo "\033[0;34m")
+# environment
+MLFLOW_EXPERIMENT = MLops-Berlin-Garassino
+# environment
+GOOGLE_APPLICATION_CREDENTIALS = /home/juan-garassino/code/juan-garassino/gcp-credentials/mlops-taxifare-4b775e7ef6ea.json
+# environment
+DIRENV_DIFF = eJy0U1tzqkgQ_itb_QzHyzGsoeo8jDgqcj1cNS9TCIOiCMhwkaTy37fQJKZq93HPI939XYbu7w0KEN_eOchAfANkykTBWxChCGuyYvuJ90rVqb3yn4-Z1J68xcU9LJ86O4r8SbPQvCNwMHMlBTtERxoGEargmvBxUFLgQFq5ukJs-aVvjIfDIXAwRw6ysfMxGQcVJVFQBYxWj-YnZDQ8fRSJbbiW1Nd2yf6vS03Lru_IFtY9MpctEIEfHPIzHRzrIOP3QRkwlmT5IMyjf9VS6gf7PBsUZX6kYcX4lPLtrRJRWkjB7kHtI0daYRtEoOsuHKqLuu2Qe6CLn9tdMNesRBsJxbHwJ9FlL2y6zhtbEpJOqX3ha8EzysIuNtvnjsRlsxLal_G-9K-HePqUTYTfl8IcKjO_pK7h78h20gwRoyGvbE54vCzjwOFJOZrkjM2NlbCPpEY2msCNo8a4zoJDZSVssTbzsWH-7aVVanfVhq-v_HM7vcpDi3rdERNvm_90jvhskPAsI6Qh3m_U3Uw541N9RliW5jKWEJadkSBcf2_1cd6O2UhRbLZ4DXdMmO7WgrE0o_iZvAjTUnOfhHGdNpsWI2QSYtiJ4re_fgEHsm47SJfwt73yScaqIAv7S1ANCanktkkTOSsQ4f_b1uAuWNJBf0hfYhZeyrZjbf-kYElZnVYMONDUhWr4BG9MbMka1vsD19S8YPyMlmmS8ctP_sewZsyx-pUbmrG8jNO85c95RNOHoQfAsZCkyPqSuJYMIhyqqmDiYHBOe9iPlN5c_giSHnHjdpC1vGXtPgIcmBZeYMkhMyQpWJ-DCBFtaJoXZ5pV3_o3vQ9rRUljGlb8zdx3W6ZlrLF05--f-vlfgIN7XomzNW-PK4MkAw4cNFO_vsk93h5S5TlyZEMn_xH_9_d_AgAA__8axIQq
+# environment
+LOCAL_REGISTRY_PATH = /home/juan-garassino/code/juan-garassino/leWagon/projects-le-wagon/deepCab/taxifare/results
+# environment
+XDG_SESSION_CLASS = user
+# environment
+VSCODE_AMD_ENTRYPOINT = vs/workbench/api/node/extensionHostProcess
+# environment
+HOME = /home/juan-garassino
+# environment
+QT_IM_MODULE = ibus
+# makefile (from 'Makefile', line 66)
+SERVICE_ACCOUNT_EMAIL = manager@mlops-deepCab.iam.gserviceaccount.com
+# environment
+ELECTRON_RUN_AS_NODE = 1
+# environment
+VSCODE_IPC_HOOK = /run/user/1000/vscode-514f2524-1.68.1-main.sock
+# environment
+TERM = xterm-256color
+# default
+.RECIPEPREFIX := 
+# automatic
+<F = $(notdir $<)
+# default
+SUFFIXES := 
+# environment
+VSCODE_CLI = 1
+# environment
+ELECTRON_NO_ATTACH_CONSOLE = 1
+# environment
+VTE_VERSION = 6800
+# environment
+DATA_SOURCE = big query
+# environment
+MLFLOW_MODEL_NAME = tensorflow-model-garassino
+# default
+.FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell nocomment grouped-target extra-prereqs archives jobserver output-sync check-symlink load
+# environment
+XDG_MENU_PREFIX = gnome-
+# environment
+GDMSESSION = ubuntu
+# environment
+LC_IDENTIFICATION = de_DE.UTF-8
+# variable set hash-table stats:
+# Load=153/1024=15%, Rehash=0, Collisions=21/183=11%
+
+# Pattern-specific Variable Values
+
+# No pattern-specific variable values.
+
+# Directories
+
+# . (device 2053, inode 3952097): 21 files, no impossibilities.
+
+# 21 files, no impossibilities in 1 directories.
+
+# Implicit Rules
+
+# No implicit rules.
+
+# Files
+
+show_env:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 218):
+	@echo "\nEnvironment variables used by the \`taxifare\` package loaded by \`direnv\` from your \`.env\` located at:"
+	@echo ${DIRENV_DIR}
+	@echo "\n$(ccgreen)local storage:$(ccreset)"
+	@env | grep -E "LOCAL_DATA_PATH|LOCAL_REGISTRY_PATH" || :
+	@echo "\n$(ccgreen)dataset:$(ccreset)"
+	@env | grep -E "DATASET_SIZE|VALIDATION_DATASET_SIZE|CHUNK_SIZE" || :
+	@echo "\n$(ccgreen)package behavior:$(ccreset)"
+	@env | grep -E "DATA_SOURCE|MODEL_TARGET" || :
+	@echo "\n$(ccgreen)GCP:$(ccreset)"
+	@env | grep -E "PROJECT|REGION" || :
+	@echo "\n$(ccgreen)Big Query:$(ccreset)"
+	@env | grep -E "DATASET" | grep -Ev "DATASET_SIZE|VALIDATION_DATASET_SIZE" || :\
+
+	@echo "\n$(ccgreen)Compute Engine:$(ccreset)"
+	@env | grep -E "INSTANCE" || :
+	@echo "\n$(ccgreen)MLflow:$(ccreset)"
+	@env | grep -E "MLFLOW_EXPERIMENT|MLFLOW_MODEL_NAME" || :
+	@env | grep -E "MLFLOW_TRACKING_URI|MLFLOW_TRACKING_DB" || :
+	@echo "\n$(ccgreen)Prefect:$(ccreset)"
+	@env | grep -E "PREFECT_BACKEND|PREFECT_FLOW_NAME|PREFECT_LOG_LEVEL" || :
+
+show_sources_all:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 183):
+	-ls -laR ~/.lewagon/mlops/data
+	-bq ls ${DATASET}
+	-bq show ${DATASET}.train_1k
+	-bq show ${DATASET}.train_10k
+	-bq show ${DATASET}.train_100k
+	-bq show ${DATASET}.train_500k
+	-bq show ${DATASET}.val_1k
+	-bq show ${DATASET}.val_10k
+	-bq show ${DATASET}.val_100k
+	-bq show ${DATASET}.val_500k
+	-bq show ${DATASET}.train_processed_1k
+	-bq show ${DATASET}.train_processed_10k
+	-bq show ${DATASET}.train_processed_100k
+	-bq show ${DATASET}.train_processed_500k
+	-bq show ${DATASET}.val_processed_1k
+	-bq show ${DATASET}.val_processed_10k
+	-bq show ${DATASET}.val_processed_100k
+	-bq show ${DATASET}.val_processed_500k
+
+test_api_predict:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 54):
+	TEST_ENV=development pytest tests/api -k 'test_predict' --asyncio-mode=strict -W "ignore"
+
+run_evaluate:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 34):
+	python -c 'from deepCab.interface.main import evaluate; evaluate()'
+
+run_model:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 19):
+	python -m deepCab.interface.main
+
+delete_new_source:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 102):
+	-bq rm -f ${DATASET}.train_new.csv
+	-bq rm -f ${DATASET}.val_new.csv
+	-rm ~/.lewagon/mlops/data/raw/train_new.csv
+	-rm ~/.lewagon/mlops/data/raw/val_new.csv
+
+gcp_login:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 69):
+	@gcloud auth login --cred-file=${GOOGLE_APPLICATION_CREDENTIALS}
+
+run_train:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 28):
+	python -c 'from deepCab.interface.main import train; train()'
+
+default:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 46):
+	@echo 'tests are only executed locally for this challenge'
+
+reset_sources_all:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 108):
+	mkdir -p ${ML_DIR}/data/raw ${ML_DIR}/data/processed
+	mkdir -p ${ML_DIR}/training_outputs/params ${ML_DIR}/training_outputs/metrics ${ML_DIR}/training_outputs/model
+	# Big Query
+	-bq mk --sync --location=${MULTI_REGION} ${DATASET}
+	# 1k
+	-curl ${HTTPS_DIR}train_1k.csv > ${ML_DIR}/data/raw/train_1k.csv
+	-curl ${HTTPS_DIR}val_1k.csv > ${ML_DIR}/data/raw/val_1k.csv
+	-curl ${HTTPS_DIR}processed/train_processed_1k.csv > ${ML_DIR}/data/processed/train_processed_1k.csv
+	-curl ${HTTPS_DIR}processed/val_processed_1k.csv > ${ML_DIR}/data/processed/val_processed_1k.csv
+	-bq mk --sync --location=${MULTI_REGION} ${DATASET}.train_1k
+	-bq mk --sync --location=${MULTI_REGION} ${DATASET}.val_1k
+	-bq mk --sync --location=${MULTI_REGION} ${DATASET}.train_processed_1k
+	-bq mk --sync --location=${MULTI_REGION} ${DATASET}.val_processed_1k
+	-bq load --sync --autodetect --skip_leading_rows 1 --replace ${DATASET}.train_1k ${GS_DIR}/train_1k.csv
+	-bq load --sync --autodetect --skip_leading_rows 1 --replace ${DATASET}.val_1k ${GS_DIR}/val_1k.csv
+	-bq load --sync --autodetect --skip_leading_rows 1 --replace ${DATASET}.train_processed_1k ${GS_DIR}/processed/train_processed_1k.csv
+	-bq load --sync --autodetect --skip_leading_rows 1 --replace ${DATASET}.val_processed_1k ${GS_DIR}/processed/val_processed_1k.csv
+	# 10k
+	-curl ${HTTPS_DIR}train_10k.csv > ${ML_DIR}/data/raw/train_10k.csv
+	-curl ${HTTPS_DIR}val_10k.csv > ${ML_DIR}/data/raw/val_10k.csv
+	-curl ${HTTPS_DIR}processed/train_processed_10k.csv > ${ML_DIR}/data/processed/train_processed_10k.csv
+	-curl ${HTTPS_DIR}processed/val_processed_10k.csv > ${ML_DIR}/data/processed/val_processed_10k.csv
+	-bq mk --sync --location=${MULTI_REGION} ${DATASET}.train_10k
+	-bq mk --sync --location=${MULTI_REGION} ${DATASET}.val_10k
+	-bq mk --sync --location=${MULTI_REGION} ${DATASET}.train_processed_10k
+	-bq mk --sync --location=${MULTI_REGION} ${DATASET}.val_processed_10k
+	-bq load --sync --autodetect --skip_leading_rows 1 --replace ${DATASET}.train_10k ${GS_DIR}/train_10k.csv
+	-bq load --sync --autodetect --skip_leading_rows 1 --replace ${DATASET}.val_10k ${GS_DIR}/val_10k.csv
+	-bq load --sync --autodetect --skip_leading_rows 1 --replace ${DATASET}.train_processed_10k ${GS_DIR}/processed/train_processed_10k.csv
+	-bq load --sync --autodetect --skip_leading_rows 1 --replace ${DATASET}.val_processed_10k ${GS_DIR}/processed/val_processed_10k.csv
+	# 100k
+	-curl ${HTTPS_DIR}train_100k.csv > ${ML_DIR}/data/raw/train_100k.csv
+	-curl ${HTTPS_DIR}val_100k.csv > ${ML_DIR}/data/raw/val_100k.csv
+	-curl ${HTTPS_DIR}processed/train_processed_100k.csv > ${ML_DIR}/data/processed/train_processed_100k.csv
+	-curl ${HTTPS_DIR}processed/val_processed_100k.csv > ${ML_DIR}/data/processed/val_processed_100k.csv
+	-bq mk --sync --location=${MULTI_REGION} ${DATASET}.train_100k
+	-bq mk --sync --location=${MULTI_REGION} ${DATASET}.val_100k
+	-bq mk --sync --location=${MULTI_REGION} ${DATASET}.train_processed_100k
+	-bq mk --sync --location=${MULTI_REGION} ${DATASET}.val_processed_100k
+	-bq load --sync --autodetect --skip_leading_rows 1 --replace ${DATASET}.train_100k ${GS_DIR}/train_100k.csv
+	-bq load --sync --autodetect --skip_leading_rows 1 --replace ${DATASET}.val_100k ${GS_DIR}/val_100k.csv
+	-bq load --sync --autodetect --skip_leading_rows 1 --replace ${DATASET}.train_processed_100k ${GS_DIR}/processed/train_processed_100k.csv
+	-bq load --sync --autodetect --skip_leading_rows 1 --replace ${DATASET}.val_processed_100k ${GS_DIR}/processed/val_processed_100k.csv
+	# 500k
+	-curl ${HTTPS_DIR}train_500k.csv > ${ML_DIR}/data/raw/train_500k.csv
+	-curl ${HTTPS_DIR}val_500k.csv > ${ML_DIR}/data/raw/val_500k.csv
+	-curl ${HTTPS_DIR}processed/train_processed_500k.csv > ${ML_DIR}/data/processed/train_processed_500k.csv
+	-curl ${HTTPS_DIR}processed/val_processed_500k.csv > ${ML_DIR}/data/processed/val_processed_500k.csv
+	-bq mk --sync --location=${MULTI_REGION} ${DATASET}.train_500k
+	-bq mk --sync --location=${MULTI_REGION} ${DATASET}.val_500k
+	-bq mk --sync --location=${MULTI_REGION} ${DATASET}.train_processed_500k
+	-bq mk --sync --location=${MULTI_REGION} ${DATASET}.val_processed_500k
+	-bq load --sync --autodetect --skip_leading_rows 1 --replace ${DATASET}.train_500k ${GS_DIR}/train_500k.csv
+	-bq load --sync --autodetect --skip_leading_rows 1 --replace ${DATASET}.val_500k ${GS_DIR}/val_500k.csv
+	-bq load --sync --autodetect --skip_leading_rows 1 --replace ${DATASET}.train_processed_500k ${GS_DIR}/processed/train_processed_500k.csv
+	-bq load --sync --autodetect --skip_leading_rows 1 --replace ${DATASET}.val_processed_500k ${GS_DIR}/processed/val_processed_500k.csv
+
+run_workflow:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 39):
+	PREFECT__LOGGING__LEVEL=${PREFECT_LOG_LEVEL} python -m deepCab.flow.main
+
+# Not a target:
+Makefile:
+#  Implicit rule search has been done.
+#  Last modified 2022-08-25 09:26:26.595530391
+#  File has been updated.
+#  Successfully updated.
+
+set_credentials:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 75):
+	@gcloud projects get-iam-policy ${GCP_PROJECT_ID} \
+--flatten="bindings[].members" \
+--format='table(bindings.role)' \
+--filter="bindings.members:${SERVICE_ACCOUNT_EMAIL}"
+
+clean:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 8):
+	@rm -f */version.txt
+	@rm -f .coverage
+	@rm -fr */__pycache__ */*.pyc __pycache__
+	@rm -fr build dist
+	@rm -fr deepSculpt-*.dist-info
+	@rm -fr deepSculpt.egg-info
+
+run_docker:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 86):
+ 
+	sudo docker run -e PORT=8000 -p 8080:8000 ${GCR_MULTI_REGION}/${GCP_PROJECT_ID}/${DOCKER_IMAGE_NAME}
+
+show_sources_env:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 203):
+	-ls -laR ~/.lewagon/mlops/data | grep ${DATASET_SIZE}
+	-bq ls ${DATASET}
+	-bq show ${DATASET}.train_${DATASET_SIZE}
+	-bq show ${DATASET}.val_${DATASET_SIZE}
+	-bq show ${DATASET}.train_processed_${DATASET_SIZE}
+	-bq show ${DATASET}.val_processed_${DATASET_SIZE}
+
+reinstall_package:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 4):
+	@pip uninstall -y taxifare || :
+	@pip install -e .
+
+test_api: test_api_root test_api_predict
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+deploy_docker_gcp:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 92):
+	gcloud run deploy --image ${GCR_MULTI_REGION}/${GCP_PROJECT_ID}/${DOCKER_IMAGE_NAME} --platform managed --region ${GCR_REGION}
+
+# Not a target:
+.DEFAULT:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+reset_sources_env:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 166):
+	mkdir -p ${ML_DIR}/data/raw ${ML_DIR}/data/processed
+	mkdir -p ${ML_DIR}/training_outputs/params ${ML_DIR}/training_outputs/metrics ${ML_DIR}/training_outputs/model
+	-curl ${HTTPS_DIR}train_${DATASET_SIZE}.csv > ${ML_DIR}/data/raw/train_${DATASET_SIZE}.csv
+	-curl ${HTTPS_DIR}val_${DATASET_SIZE}.csv > ${ML_DIR}/data/raw/val_${DATASET_SIZE}.csv
+	-curl ${HTTPS_DIR}processed/train_processed_${DATASET_SIZE}.csv > ${ML_DIR}/data/processed/train_processed_${DATASET_SIZE}.csv
+	-curl ${HTTPS_DIR}processed/val_processed_${DATASET_SIZE}.csv > ${ML_DIR}/data/processed/val_processed_${DATASET_SIZE}.csv
+	-bq mk --sync --location=${MULTI_REGION} ${DATASET}
+	-bq mk --sync --location=${MULTI_REGION} ${DATASET}.train_${DATASET_SIZE}
+	-bq mk --sync --location=${MULTI_REGION} ${DATASET}.val_${DATASET_SIZE}
+	-bq mk --sync --location=${MULTI_REGION} ${DATASET}.train_processed_${DATASET_SIZE}
+	-bq mk --sync --location=${MULTI_REGION} ${DATASET}.val_processed_${DATASET_SIZE}
+	-bq load --sync --autodetect --skip_leading_rows 1 --replace ${DATASET}.train_${DATASET_SIZE} ${GS_DIR}/train_${DATASET_SIZE}.csv
+	-bq load --sync --autodetect --skip_leading_rows 1 --replace ${DATASET}.val_${DATASET_SIZE} ${GS_DIR}/val_${DATASET_SIZE}.csv
+	-bq load --sync --autodetect --skip_leading_rows 1 --replace ${DATASET}.train_processed_${DATASET_SIZE} ${GS_DIR}/processed/train_processed_${DATASET_SIZE}.csv
+	-bq load --sync --autodetect --skip_leading_rows 1 --replace ${DATASET}.val_processed_${DATASET_SIZE} ${GS_DIR}/processed/val_processed_${DATASET_SIZE}.csv
+
+run_pred:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 31):
+	python -c 'from deepCab.interface.main import pred; pred()'
+
+test_api_root:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 51):
+	TEST_ENV=development pytest tests/api -k 'test_root' --asyncio-mode=strict -W "ignore"
+
+# Not a target:
+all:
+#  Command line target.
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has not been updated.
+
+run_all: run_preprocess run_train run_pred run_evaluate
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+set_project:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 72):
+	@gcloud config set project ${GCP_PROJECT_ID}
+
+run_flow:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 22):
+	python -m deepCab.flow.main
+
+build_docker:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 83):
+	sudo docker build -t ${GCR_MULTI_REGION}/${GCP_PROJECT_ID}/${DOCKER_IMAGE_NAME} .
+
+list:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 245):
+	@echo "\nHelp for the \`taxifare\` package \`Makefile\`"
+	@echo "\n$(ccgreen)$(fbold)PACKAGE$(ccreset)"
+	@echo "\n    $(ccgreen)$(fbold)environment rules:$(ccreset)"
+	@echo "\n        $(fbold)show_env$(ccreset)"
+	@echo "            Show the environment variables used by the package by category."
+	@echo "\n    $(ccgreen)$(fbold)run rules:$(ccreset)"
+	@echo "\n        $(fbold)run_all$(ccreset)"
+	@echo "            Run the package (\`deepCab.interface.main\` module)."
+	@echo "\n        $(fbold)run_workflow$(ccreset)"
+	@echo "            Start a prefect workflow locally (run the \`deepCab.flow.main\` module)."
+	@echo "\n$(ccgreen)$(fbold)WORKFLOW$(ccreset)"
+	@echo "\n    $(ccgreen)$(fbold)data operation rules:$(ccreset)"
+	@echo "\n        $(fbold)show_sources_all$(ccreset)"
+	@echo "            Show all data sources."
+	@echo "\n        $(fbold)show_sources_env$(ccreset)"
+	@echo "            Show ${DATASET_SIZE} data sources."
+	@echo "\n        $(fbold)reset_sources_all$(ccreset)"
+	@echo "            Reset all data sources."
+	@echo "\n        $(fbold)reset_sources_env$(ccreset)"
+	@echo "            Reset ${DATASET_SIZE} data sources."
+	@echo "\n        $(fbold)delete_new_source$(ccreset)"
+	@echo "            Delete monthly data source."
+	@echo "\n$(ccgreen)$(fbold)TESTS$(ccreset)"
+	@echo "\n    $(ccgreen)$(fbold)student rules:$(ccreset)"
+	@echo "\n        $(fbold)reinstall_package$(ccreset)"
+	@echo "            Install the version of the package corresponding to the challenge."
+	@echo "\n        $(fbold)test_cloud_training$(ccreset)"
+	@echo "            Run the tests."
+
+run_api:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 42):
+	uvicorn deepCab.api.fast:app --reload
+
+push_docker:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 89):
+	docker push ${GCR_MULTI_REGION}/${GCP_PROJECT_ID}/${DOCKER_IMAGE_NAME}
+
+black:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 16):
+	@black deepCab/*/*.py
+
+run_preprocess:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 25):
+	python -c 'from deepCab.interface.main import preprocess; preprocess(); preprocess(source_type="val")'
+
+# files hash-table stats:
+# Load=34/1024=3%, Rehash=0, Collisions=0/52=0%
+# VPATH Search Paths
+
+# No 'vpath' search paths.
+
+# No general ('VPATH' variable) search path.
+
+# strcache buffers: 1 (0) / strings = 56 / storage = 648 B / avg = 11 B
+# current buf: size = 8162 B / used = 648 B / count = 56 / avg = 11 B
+
+# strcache performance: lookups = 96 / hit rate = 41%
+# hash-table stats:
+# Load=56/8192=1%, Rehash=0, Collisions=0/96=0%
+# Finished Make data base on Thu Aug 25 09:43:53 2022
+
+ 

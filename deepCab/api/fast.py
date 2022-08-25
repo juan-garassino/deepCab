@@ -107,7 +107,9 @@ def predict(
     # in order to be able to convert the api response to json
     return dict(fare=float(y_pred[0, 0]))
 
+
 # $IMPLODE_END
+
 
 @app.get("/")
 def root():

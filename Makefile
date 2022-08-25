@@ -13,7 +13,7 @@ clean:
 	@rm -fr deepSculpt.egg-info
 
 black:
-	@black taxifare/*/*.py
+	@black deepCab/*/*.py
 
 run_model:
 	python -m deepCab.interface.main

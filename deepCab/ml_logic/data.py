@@ -81,8 +81,6 @@ def get_chunk(
             verbose=verbose,
         )
 
-        return chunk_df
-
     if os.environ.get("DATA_SOURCE") == "local":
 
         chunk_df = get_pandas_chunk(
@@ -93,8 +91,6 @@ def get_chunk(
             columns=columns,
             verbose=verbose,
         )
-
-        return chunk_df
 
     if os.environ.get("DATA_SOURCE") == "cloud":
 
@@ -107,7 +103,7 @@ def get_chunk(
             verbose=verbose,
         )
 
-        return chunk_df
+    return chunk_df
 
 
 def save_chunk(destination_name: str, is_first: bool, data: pd.DataFrame) -> None:

@@ -21,8 +21,10 @@ def preprocess(source_type="train"):
     chunk_id = 0
     row_count = 0
     cleaned_row_count = 0
-    source_name = f"{source_type}_{os.environ['DATASET_SIZE']}"
-    destination_name = f"{source_type}_processed_{os.environ['DATASET_SIZE']}"
+    source_name = f"{os.environ['SOURCE_TYPE']}_{os.environ['DATASET_SIZE']}"
+    destination_name = (
+        f"{os.environ['SOURCE_TYPE']}_processed_{os.environ['DATASET_SIZE']}"
+    )
 
     while True:
 
@@ -112,7 +114,7 @@ def train():
     y_val = data_val_processed[:, -1]
 
     model = None
-    model = load_model()  # production model
+    model = load_model()  # production model #### WHAT IF ITS FIRST RUN?!
 
     # model params
     learning_rate = 0.001
@@ -293,8 +295,13 @@ def pred(X_pred: pd.DataFrame = None) -> np.ndarray:
 
 
 if __name__ == "__main__":
-    # preprocess(source_type="val")
-    preprocess()
-    train()
-    pred()
-    evaluate()
+    if os.environ["SOURCE_TYPE"] == "val":
+        preprocess(source_type=os.environ["SOURCE_TYPE"])
+        pred()
+        evaluate()
+
+    if os.environ["SOURCE_TYPE"] == "train":
+        preprocess(source_type=os.environ["SOURCE_TYPE"])
+        train()
+        pred()
+        evaluate()

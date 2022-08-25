@@ -12,6 +12,8 @@ sklearn
 yapf
 tensorflow
 
+black
+
 # prevent bq 3+ db-dtypes package error when running training from bq
 google-cloud-bigquery<3.0.0
 google-cloud-storage
@@ -19,7 +21,6 @@ pyarrow
 
 mlflow
 docker-compose
-black
 
 #prefect==1.*
 prefect<2

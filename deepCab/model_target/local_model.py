@@ -1,5 +1,8 @@
 import os
 import pickle
+from glob import glob
+from tensorflow.keras import models
+from colorama import Fore, Style
 
 
 def save_local_model(params, metrics, model, timestamp):
@@ -8,7 +11,9 @@ def save_local_model(params, metrics, model, timestamp):
 
     # save params
     if params is not None:
-        params_path = os.path.join(LOCAL_REGISTRY_PATH, "params", timestamp + ".pickle")
+        params_path = os.path.join(
+            os.environ["LOCAL_REGISTRY_PATH"], "params", timestamp + ".pickle"
+        )
         print(f"- params path: {params_path}")
         with open(params_path, "wb") as file:
             pickle.dump(params, file)
@@ -16,7 +21,7 @@ def save_local_model(params, metrics, model, timestamp):
     # save metrics
     if metrics is not None:
         metrics_path = os.path.join(
-            LOCAL_REGISTRY_PATH, "metrics", timestamp + ".pickle"
+            os.environ["LOCAL_REGISTRY_PATH"], "metrics", timestamp + ".pickle"
         )
         print(f"- metrics path: {metrics_path}")
         with open(metrics_path, "wb") as file:
@@ -24,7 +29,9 @@ def save_local_model(params, metrics, model, timestamp):
 
     # save model
     if model is not None:
-        model_path = os.path.join(LOCAL_REGISTRY_PATH, "models", timestamp)
+        model_path = os.path.join(
+            os.environ["LOCAL_REGISTRY_PATH"], "models", timestamp
+        )
         print(f"- model path: {model_path}")
         model.save(model_path)
 
@@ -33,13 +40,19 @@ def save_local_model(params, metrics, model, timestamp):
     return None
 
 
-# def save_local_model(model, timestamp):
+def load_local_model():
 
-#     if model:
+    print(Fore.BLUE + "\nLoad model from local disk..." + Style.RESET_ALL)
 
-#         model_path = os.path.join(os.environ.get("LOCAL_REGISTRY_PATH"), "models",
-#                                   timestamp + ".pickle")
+    # get latest model version
+    model_directory = os.path.join(os.environ["LOCAL_REGISTRY_PATH"], "models")
 
-#         print(f"- model path: {model_path}")
+    results = glob.glob(f"{model_directory}/*")
+    if not results:
+        return None
 
-#         model.save(model_path)
+    model_path = sorted(results)[-1]
+    print(f"- path: {model_path}")
+
+    model = models.load_model(model_path)
+    print("\n✅ model loaded from disk")

@@ -92,7 +92,7 @@ create_bucket:
 
 # instances
 
-GCE_INSTANCE_NAME="instance-data"
+GCE_INSTANCE_NAME="deepcab"
 
 GCE_ZONE="europe-west1-b"
 

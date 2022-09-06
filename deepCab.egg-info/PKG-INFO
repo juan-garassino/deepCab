@@ -1,10 +1,10 @@
 Metadata-Version: 1.0
-Name: taxifare
+Name: deepCab
 Version: 0.0.9
-Summary: TaxiFare Model (api_pred)
-Home-page: https://github.com/lewagon/taxi-fare
-Author: Le Wagon
-Author-email: contact@lewagon.org
+Summary: deepCab
+Home-page: https://github.com/juan-garassino/deepCab
+Author: Juan Garassino
+Author-email: juan.garassino@gmail.com
 License: MIT
 Description: UNKNOWN
 Platform: UNKNOWN

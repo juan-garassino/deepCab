@@ -1,4 +1,6 @@
 make all --print-data-base --no-builtin-variables --no-builtin-rules --question
+make: *** No rule to make target 'all'.  Stop.
+
 # GNU Make 4.3
 # Built for x86_64-pc-linux-gnu
 # Copyright (C) 1988-2020 Free Software Foundation, Inc.
@@ -6,7 +8,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Thu Aug 25 16:33:23 2022
+# Make data base, printed on Tue Sep  6 15:36:46 2022
 
 # Variables
 
@@ -14,8 +16,6 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 GDK_BACKEND = x11
 # environment
 LC_ALL = C
-# environment
-NO_AT_BRIDGE = 1
 # environment
 GNOME_SHELL_SESSION_MODE = ubuntu
 # environment
@@ -25,7 +25,7 @@ VIRTUAL_ENV = /home/juan-garassino/.pyenv/versions/3.8.12/envs/taxi-fare
 # makefile (from 'Makefile', line 112)
 HTTPS_DIR = https://storage.googleapis.com/datascience-mlops/taxi-fare-ny/
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-f8af8bf6-d315-417a-8c9b-1eba4cdead93.sock
+VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-98290400-957b-46d7-b7ff-111bdcf63223.sock
 # environment
 LC_NAME = de_DE.UTF-8
 # environment
@@ -37,7 +37,7 @@ GCR_REGION = europe-west1
 # environment
 CHUNK_SIZE = 2000
 # environment
-DIRENV_WATCHES = eJyU0LFOxDAMxvF3yVwudZwmaVfEiMSOGFzbpUW9BiW9Awnx7uxXCcT6Lb-_vucv80T7bAZj53xW-3ah7e6VCtW6bNlylsMmqu_3NNqTbtfCpjGPWfblrGaAEKDtETpozMPnUvdqhr1c9Lv5XTmtmWm1daaiVpai29XSuuYPS9S1DmOIGkSdHyeShAl9IgFMvmPpHUPs3Dixk14FIIqGiQXH1PJ0W-cx9sn_r-6vDw4GYHLhxnj5CQAA__-J7nZC
+DIRENV_WATCHES = eJyU0LtOxDAQheF3cR3WscfxJS2iRKJHFJOZCQnKxsj2LkiId6ffSCDa03y_zvOXesK2qFHpJZ9Fv11wv3vFgrWue9aU-bCxyPs9Tvok-7WQ6tRj5raeRY3Ge9MnMIPp1MPnWltVYysX-e5-V05bJtx0XbCI5rXIftW4bflDIw69heCDeBbrphk5QgQXkQ1ENxAnSyYMdprJchI2JrD4mRim2NN8W-cgpOj-V_fXB0cjgks3xstPAAAA__-KdHZJ
 # environment
 NVM_DIR = /home/juan-garassino/.nvm
 # environment
@@ -55,7 +55,7 @@ PYENV_SHELL = zsh
 # environment
 VSCODE_HANDLES_UNCAUGHT_ERRORS = true
 # default
-.VARIABLES :=
+.VARIABLES := 
 # environment
 PWD = /home/juan-garassino/code/juan-garassino/deepCab
 # automatic
@@ -65,7 +65,7 @@ LSCOLORS = Gxfxcxdxbxegedabagacad
 # environment
 XDG_DATA_DIRS = /usr/local/share/:/usr/share/:/var/lib/snapd/desktop
 # environment
-OLDPWD = /home/juan-garassino/code/juan-garassino
+OLDPWD = /home/juan-garassino
 # automatic
 ^D = $(patsubst %/,%,$(dir $^))
 # environment
@@ -77,15 +77,15 @@ VSCODE_CODE_CACHE_PATH = /home/juan-garassino/.config/Code/CachedData/30d9c6cd94
 # environment
 LANG = C
 # environment
-XAUTHORITY = /run/user/1000/.mutter-Xwaylandauth.E8AJR1
+XAUTHORITY = /run/user/1000/.mutter-Xwaylandauth.RPRDS1
 # default
-.LOADED :=
+.LOADED := 
 # environment
 PYENV_VIRTUAL_ENV = /home/juan-garassino/.pyenv/versions/3.8.12/envs/taxi-fare
 # default
 .INCLUDE_DIRS = /usr/local/include /usr/include /usr/include
 # environment
-GNOME_TERMINAL_SERVICE = :1.101
+GNOME_TERMINAL_SERVICE = :1.195
 # makefile
 MAKEFLAGS = pqrR
 # environment
@@ -107,7 +107,7 @@ PYENV_VIRTUALENV_DISABLE_PROMPT = 1
 # environment
 MFLAGS = -pqrR
 # environment
-SSH_AUTH_SOCK = /tmp/ssh-XXXXXX3kXL3G/agent.3318
+SSH_AUTH_SOCK = /tmp/ssh-XXXXXXgsUxfG/agent.4394
 # default
 .SHELLFLAGS := -c
 # environment
@@ -125,17 +125,17 @@ MAKEFILE_LIST := Makefile
 # environment
 VSCODE_VERBOSE_LOGGING = true
 # environment
-VSCODE_PID = 36191
+VSCODE_PID = 8707
 # environment
 XDG_SESSION_TYPE = wayland
 # environment
-SOURCE_TYPE = train
+SOURCE_TYPE = val
 # automatic
 ?D = $(patsubst %/,%,$(dir $?))
 # environment
-DATASET = deepCab_dataset
+DATASET = taxifate_dataset
 # environment
-SESSION_MANAGER = local/celcius:@/tmp/.ICE-unix/1994,unix/celcius:/tmp/.ICE-unix/1994
+SESSION_MANAGER = local/celcius:@/tmp/.ICE-unix/2062,unix/celcius:/tmp/.ICE-unix/2062
 # automatic
 *F = $(notdir $*)
 # environment
@@ -159,7 +159,7 @@ XMODIFIERS = @im=ibus
 # environment
 SHLVL = 1
 # environment
-GNOME_TERMINAL_SCREEN = /org/gnome/Terminal/screen/f2f8401d_2022_4283_8291_d0008d13a71f
+GNOME_TERMINAL_SCREEN = /org/gnome/Terminal/screen/1ec75d86_21cf_4fee_a40b_ed73646c6952
 # environment
 MAKELEVEL := 0
 # default
@@ -167,7 +167,7 @@ MAKE = $(MAKE_COMMAND)
 # environment
 PATH = ./bin:./node_modules/.bin:/home/juan-garassino/.pyenv/plugins/pyenv-virtualenv/shims:/home/juan-garassino/.pyenv/shims:/home/juan-garassino/.rbenv/bin:/home/juan-garassino/.pyenv/plugins/pyenv-virtualenv/shims:/home/juan-garassino/.pyenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin:/usr/local/sbin
 # default
-MAKEFILES :=
+MAKEFILES := 
 # environment
 LC_MONETARY = de_DE.UTF-8
 # automatic
@@ -215,13 +215,13 @@ DESKTOP_SESSION = ubuntu
 # environment
 ORIGINAL_XDG_CURRENT_DESKTOP = ubuntu:GNOME
 # makefile (from 'Makefile', line 58)
-GCP_PROJECT_ID = mlops-taxifare
+GCP_PROJECT_ID = deepcab
 # environment
 PYENV_ROOT = /home/juan-garassino/.pyenv
 # environment
 DATASET_SIZE = 10k
 # 'override' directive
-GNUMAKEFLAGS :=
+GNUMAKEFLAGS := 
 # environment
 LOGNAME = juan-garassino
 # environment
@@ -231,7 +231,7 @@ BUNDLER_EDITOR = code
 # makefile
 .DEFAULT_GOAL := reinstall_package
 # environment
-SYSTEMD_EXEC_PID = 2016
+SYSTEMD_EXEC_PID = 2085
 # environment
 TABLE = train_10k
 # environment
@@ -253,7 +253,7 @@ DIRENV_DIR = -/home/juan-garassino/code/juan-garassino/deepCab
 # environment
 LC_MEASUREMENT = de_DE.UTF-8
 # environment
-SSH_AGENT_PID = 3320
+SSH_AGENT_PID = 4396
 # environment
 PAGER = less
 # environment
@@ -265,7 +265,7 @@ XDG_RUNTIME_DIR = /run/user/1000
 # environment
 BUCKET_NAME = taxi-fare
 # environment
-LOCAL_DATA_PATH = /home/juan-garassino/code/juan-garassino/leWagon/projects-le-wagon/deepCab/deepCab/data
+LOCAL_DATA_PATH = /home/juan-garassino/code/juan-garassino/deepCab/deepCab/data
 # environment
 COLORTERM = truecolor
 # makefile (from 'Makefile', line 228)
@@ -273,11 +273,11 @@ ccblue = $(shell echo "\033[0;34m")
 # environment
 MLFLOW_EXPERIMENT = MLops-Berlin-Garassino
 # environment
-GOOGLE_APPLICATION_CREDENTIALS = /home/juan-garassino/code/juan-garassino/gcp-credentials/mlops-taxifare-4b775e7ef6ea.json
+GOOGLE_APPLICATION_CREDENTIALS = /home/juan-garassino/code/juan-garassino/gcp-credentials/deepcab-189f2c4657af.json
 # environment
-DIRENV_DIFF = eJy0U8mSqkgU_ZWOu5anPmt4skshGUqmBwlobTJSSBWLSSaxKurfO0SrfBHdi970iuDevOeczHPPB5QgfnyOIAfxA5Cj0yVegwhl1FKt3j0E79z45Wnh_JBLp7dAOfp79fHsxXH40ClmcIARLHxpiQm1kIlBhIb1ibBlFYcRSJpvLamnv14aPyeTCYxARgR5mIAIMeelxDY0Zg2reXPvfU1MJ2-3IvVs35UutU2y--vY8up86egutgIq6y6IIIz3RcbHh5blwo5VrK6TvBhHRfyP2o33DhAiImnYAxH4y9mfGIrdy8jsO2V2Dk5t_HrKWLDFienZqvK-Kf1wvkjCOTrl_XPbr6SIPBkbgXZt1P2akOcNej08zvpQmLH9M38KpCZ82ljpOa3N7NjSmWUdyabZSuVBdcLtJq1UhvBSbjApi3fTyf0uPu6raTQ3uscVyZoszKYxY0lQsuTnfOW17drx5t5UzmxdffNi7cy9PUrn-k4xu8wpNd-pZ3LSv00fFF0_qsnvlTZ1XiahEPXzOqeV8NTJpwd1rRn7Pj88Sr8RolR4ec5fJRiBbnkEWdKXlVvWcCHJ64bl0cVSw5aQQQdPHEQ0EOE_v3vKQ7Yr8nFZFQceNbWQcuE0VG6O3L-sYd9cLlZ1j7jr_5Gv4nWbNjWMwDQUww4pXjnY1U1sXfbUNIqyFha8SpNcUL_g74dNW8bG9_rzvC6qbVqchKyIeXrXcx8gLpKWuqVS39VBhH3TlLU4HmfpZexHygeRP1hymRiwCXLVITLXIzACx8UKlghdIGmJLXlIU8fTosx43vzRH_hu0sqKb3nUCIO4P2U5rv2CpSv-5apX34cEX3NHydoZLlexJIcRELQwvv_pNaYBMnQZEd226L_E-PPz7wAAAP__d-JwUA==
+DIRENV_DIFF = eJykU02TqjgU_S9ZyxO17XmyiyFo-BZQtDepCEFRBJpExdfV_30K7ffsqpnN1KyoOveek3s593yAGmgfnz1QAu0DQJ9QC2-ABurkTOdi97L6xe2f4TyeHEp0Pa6M9-V-Nr6FaRq_XAxndQA9MF0iC0fUhQ4GGpCszZWMNRz0AJovXYuG5K0rDFVVBT2gwwiGOPrqzJjkNGWSCS6fxd-UgXr8AmnoLQPUYe9n3tw6lATYXVGdBEADSn9fnXj_cGalsmMNEyIvq35Spf_AUs5rxLZPgRhGaI5DoAFu3paqLb1Wh4s9N0ZJMIpFkrVmOMwDy5wbpveGFqXVisPQPuYkfc2yEOlMHd3or4u35sIavhvz2nybGJfB4HoZXYxdE5_5hC2VLWpvvphEl-qo_BUvXmVwGDeMB5vRjE-c0iF-PXD8Mi7kanMTa4WPlZU63pqyVddbRMbNmmQyftlmhU6ur5M9Rzqfbpt6fxwvdov1cTHAbgvL8LZx0roxkz0Zmo3-cgry09B1f8ZKsqu9g7Ki2XqqJofdUYxaIX0IIaRUsdL5mwl6gLhhBF2Ev7mj5KWQrEw6P20PQZve_fBhNAca-K___fllkv1RDPCMhFGw-d-qDRfnQgrQA45t2F5M8drHAXGw2x2cY1e1UKa8KfJSmf0WeTY7no7tP3fMS1E1WVFdlVOV8uL56pMQBRBZxJ3RZUCABvZS1kLr909FR_tR8CvbVeUPlneMu3YEg9n99h8toAf8ABsYRXQKkYVdHWgg5RdeVPWJl_Jb_f7e12h1wzOeSOU-3Pex_MAzMXrod6s-PLxH8ZEfGm38TuHCCtADEZza91Ublpf0EbYVtIkOI-K59F_C-Pn5dwAAAP__JUZZzg==
 # environment
-LOCAL_REGISTRY_PATH = /home/juan-garassino/code/juan-garassino/leWagon/projects-le-wagon/deepCab/deepCab/results
+LOCAL_REGISTRY_PATH = /home/juan-garassino/code/juan-garassino/deepCab/deepCab/results
 # environment
 XDG_SESSION_CLASS = user
 # environment
@@ -286,23 +286,21 @@ VSCODE_AMD_ENTRYPOINT = vs/workbench/api/node/extensionHostProcess
 HOME = /home/juan-garassino
 # environment
 QT_IM_MODULE = ibus
+ 
 # makefile (from 'Makefile', line 66)
-SERVICE_ACCOUNT_EMAIL = manager@mlops-deepCab.iam.gserviceaccount.com
+SERVICE_ACCOUNT_EMAIL = manager@deepcab.iam.gserviceaccount.com
 # environment
 ELECTRON_RUN_AS_NODE = 1
 # environment
 VSCODE_IPC_HOOK = /run/user/1000/vscode-514f2524-1.68.1-main.sock
 # environment
-
-make: *** No rule to make target 'all'.  Stop.
-
 TERM = xterm-256color
 # default
-.RECIPEPREFIX :=
+.RECIPEPREFIX := 
 # automatic
 <F = $(notdir $<)
 # default
-SUFFIXES :=
+SUFFIXES := 
 # environment
 VSCODE_CLI = 1
 # environment
@@ -310,7 +308,7 @@ ELECTRON_NO_ATTACH_CONSOLE = 1
 # environment
 VTE_VERSION = 6800
 # environment
-DATA_SOURCE = big query
+DATA_SOURCE = query
 # environment
 MLFLOW_MODEL_NAME = tensorflow-model-garassino
 # default
@@ -322,7 +320,7 @@ GDMSESSION = ubuntu
 # environment
 LC_IDENTIFICATION = de_DE.UTF-8
 # variable set hash-table stats:
-# Load=154/1024=15%, Rehash=0, Collisions=21/184=11%
+# Load=153/1024=15%, Rehash=0, Collisions=21/183=11%
 
 # Pattern-specific Variable Values
 
@@ -521,7 +519,7 @@ run_docker_shell:
 # Not a target:
 Makefile:
 #  Implicit rule search has been done.
-#  Last modified 2022-08-25 16:28:35.876838
+#  Last modified 2022-09-06 15:33:43.746941386
 #  File has been updated.
 #  Successfully updated.
 
@@ -574,6 +572,7 @@ show_sources_env:
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 217):
 	-ls -laR ~/.lewagon/mlops/data | grep ${DATASET_SIZE}
+ 
 	-bq ls ${DATASET}
 	-bq show ${DATASET}.train_${DATASET_SIZE}
 	-bq show ${DATASET}.val_${DATASET_SIZE}
@@ -611,7 +610,6 @@ deploy_docker_gcp:
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 100):
 	gcloud run deploy --image ${GCR_MULTI_REGION}/${GCP_PROJECT_ID}/${DOCKER_IMAGE_NAME} --platform managed --region ${GCR_REGION}
-
 
 # Not a target:
 .DEFAULT:
@@ -740,7 +738,7 @@ black:
 #  Modification time never checked.
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 16):
-	@black taxifare/*/*.py
+	@black deepCab/*/*.py
 
 run_preprocess:
 #  Implicit rule search has not been done.
@@ -752,6 +750,7 @@ run_preprocess:
 # files hash-table stats:
 # Load=39/1024=4%, Rehash=0, Collisions=0/60=0%
 # VPATH Search Paths
+ 
 
 # No 'vpath' search paths.
 
@@ -763,4 +762,6 @@ run_preprocess:
 # strcache performance: lookups = 109 / hit rate = 44%
 # hash-table stats:
 # Load=61/8192=1%, Rehash=0, Collisions=0/109=0%
-# Finished Make data base on Thu Aug 25 16:33:23 2022
+# Finished Make data base on Tue Sep  6 15:36:46 2022
+
+ 

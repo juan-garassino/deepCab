@@ -113,8 +113,11 @@ def train():
     X_val_processed = data_val_processed[:, :-1]
     y_val = data_val_processed[:, -1]
 
-    model = None
-    model = load_model()  # production model #### WHAT IF ITS FIRST RUN?!
+    try:
+        model = load_model()
+    except ValueError:
+        model = None
+    # production model #### WHAT IF ITS FIRST RUN?!
 
     # model params
     learning_rate = 0.001

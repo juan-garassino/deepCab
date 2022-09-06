@@ -55,15 +55,19 @@ test_api_predict:
 
 ## MINE GCP ##
 
-GCP_PROJECT_ID=mlops-taxifare
-
-DOCKER_IMAGE_NAME=api-garassino
+GCP_PROJECT_ID=deepcab
 
 GCR_MULTI_REGION=eu.gcr.io
 
 GCR_REGION=europe-west1
 
-SERVICE_ACCOUNT_EMAIL=manager@mlops-deepCab.iam.gserviceaccount.com
+SERVICE_ACCOUNT_EMAIL=manager@deepcab.iam.gserviceaccount.com
+
+BUCKET_NAME=deepcab
+
+REGION=europe-west1
+
+# login
 
 gcp_login:
 	@gcloud auth login --cred-file=${GOOGLE_APPLICATION_CREDENTIALS}
@@ -77,15 +81,42 @@ set_credentials:
 --format='table(bindings.role)' \
 --filter="bindings.members:${SERVICE_ACCOUNT_EMAIL}"
 
+# full login
+
 set_gcp: gcp_login set_project set_credentials
 
+# create bucket
+
+create_bucket:
+	@gsutil mb -l ${REGION} -p ${GCP_PROJECT_ID} gs://${BUCKET_NAME}
+
+# instances
+
+GCE_INSTANCE_NAME="instance-data"
+
+GCE_ZONE="europe-west1-b"
+
+start_instance:
+	gcloud compute instances start ${GCE_INSTANCE_NAME} --project ${GCP_PROJECT_ID} --zone ${GCE_ZONE}
+
+stop_instance:
+	gcloud compute instances stop ${GCE_INSTANCE_NAME} --project ${GCP_PROJECT_ID} --zone ${GCE_ZONE}
+
+connect_instance:
+	gcloud beta compute ssh ${GCE_INSTANCE_NAME} --project ${GCP_PROJECT_ID} --zone ${GCE_ZONE}
+
+
 ################### DOCKER ################
+
+DOCKER_IMAGE_NAME=deepcab-api
 
 build_docker:
 	sudo docker build -t ${GCR_MULTI_REGION}/${GCP_PROJECT_ID}/${DOCKER_IMAGE_NAME} .
 
-delete_docker_images:
-	docker rmi -f $(docker images -aq)
+#IMAGES = $(docker images -aq)
+#delete_docker_images: docker rmi -f ${IMAGES}
+
+# run locally
 
 run_docker_shell:
 	docker run -it --env-file .env ${GCR_MULTI_REGION}/${GCP_PROJECT_ID}/${DOCKER_IMAGE_NAME} sh
@@ -93,17 +124,22 @@ run_docker_shell:
 run_docker:
 	sudo docker run -e PORT=8000 -p 8080:8000 --env-file .env ${GCR_MULTI_REGION}/${GCP_PROJECT_ID}/${DOCKER_IMAGE_NAME}
 
+# to container registry and deploy
+
 push_docker_registry:
 	docker push ${GCR_MULTI_REGION}/${GCP_PROJECT_ID}/${DOCKER_IMAGE_NAME}
 
 deploy_docker_gcp:
 	gcloud run deploy --image ${GCR_MULTI_REGION}/${GCP_PROJECT_ID}/${DOCKER_IMAGE_NAME} --platform managed --region ${GCR_REGION}
 
+# bonus
+
 GCP_cloud_config:
 	gcloud run services describe ${DOCKER_IMAGE_NAME} --format export > service.yaml
 
 GCP_update_config:
 	gcloud run services replace service.yaml
+
 
 ################### DATA SOURCES ACTIONS ################
 

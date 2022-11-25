@@ -10,7 +10,10 @@ def transform_time_features(X: pd.DataFrame) -> np.ndarray:
 
     assert isinstance(X, pd.DataFrame)
     pickup_dt = pd.to_datetime(
-        X["pickup_datetime"], format="%Y-%m-%d %H:%M:%S UTC", utc=True
+        X["pickup_datetime"],
+        # format="%Y-%m-%d %H:%M:%S UTC",
+        infer_datetime_format=True,
+        utc=True
     )
     pickup_dt = pickup_dt.dt.tz_convert("America/New_York").dt
     dow = pickup_dt.weekday

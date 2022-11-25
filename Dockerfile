@@ -7,9 +7,11 @@ COPY deepCab deepCab
 COPY requirements.txt requirements.txt
 COPY setup.py setup.py
 
-CMD /usr/bin/python3 -m pip install --upgrade pip
+# CMD /usr/bin/python3 -m pip install --upgrade pip
 
 RUN pip install .
+RUN pip install --upgrade pip
+RUN export $(grep -v '^#' .env | xargs)
 
 # CUALQUES NECESITO Y CUALES NO!!!
 
@@ -42,6 +44,6 @@ ENV API_KEY=pcu_Hsg4VzeL8SHW9jnCwkVFqUhG5ySddW4vFMVj
 ENV PREFECT_FLOW_NAME=prefect-flow-garassino
 ENV PREFECT_BACKEND=development
 
-CMD uvicorn deepCab.api.fast:app --host 0.0.0.0 --port $PORT
+CMD uvicorn deepCab.api.fast:app --host 0.0.0.0 --port $PORT --reload
 
 # $DEL_END

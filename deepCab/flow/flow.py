@@ -49,6 +49,77 @@ def notify(eval_mae, train_mae):
     response.raise_for_status()
 
 
+"""@task
+def eval_perf(next_row):
+
+    # evaluate latest production model on new data
+    past_perf = evaluate()
+
+    print(Fore.GREEN + "\n🔥 Ran task: EVAL PERF:" + Style.RESET_ALL +
+          f"\n- Past model performance: {past_perf}")
+
+    return past_perf
+
+
+@task
+def train_model(next_row):
+
+    # preprocess data chunk by chunk
+    preprocess()
+    preprocess(source_type="val")
+
+    # train model chunk by chunk
+    new_perf = train()
+
+    print(Fore.GREEN + "\n🔥 Ran task: TRAIN MODEL:" + Style.RESET_ALL +
+          f"\n- New model performance: {new_perf}")
+
+    return new_perf
+
+
+@task
+def notify(past_perf, new_perf):
+
+    print(Fore.GREEN + f"\n🔥 Run task: NOTIF" + Style.RESET_ALL +
+          f"\n- Past performance: {past_perf}" +
+          f"\n- New performance: {new_perf}")
+
+def build_flow(schedule):
+
+    with Flow(name="garassino workflow", schedule=schedule) as flow:
+
+        next_row = 0
+
+        # evaluate the performance of the past model
+        past_perf = eval_perf(next_row)
+
+        # retrain the model with new lines
+        new_perf = train_model(next_row)
+
+        # print results
+        notify(past_perf, new_perf)
+
+    return flow
+
+
+if __name__ == "__main__":
+
+    # schedule = None
+    schedule = IntervalSchedule(interval=datetime.timedelta(minutes=2),
+                                end_date=datetime.datetime(2022, 11, 25))
+
+    flow = build_flow(schedule)
+
+    # flow.visualize()
+
+    # flow.run()
+
+    flow.executor = LocalDaskExecutor()
+
+    flow.register("garassinojuan project")
+"""
+
+
 def build_flow():
     """
     build the prefect workflow for the `taxifare` package

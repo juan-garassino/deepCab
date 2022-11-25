@@ -8,7 +8,7 @@ make: *** No rule to make target 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Fri Nov 25 11:19:18 2022
+# Make data base, printed on Fri Nov 25 11:20:39 2022
 
 # Variables
 
@@ -27,7 +27,7 @@ VIRTUAL_ENV = /home/juan-garassino/.pyenv/versions/3.8.12/envs/deepCab
 # makefile (from 'Makefile', line 148)
 HTTPS_DIR = https://storage.googleapis.com/datascience-mlops/taxi-fare-ny/
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-7b80814a-343a-41e6-a292-178aab9f4765.sock
+VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-398f32c5-4ecf-4879-acb2-05af96acd375.sock
 # makefile (from 'Makefile', line 97)
 GCE_ZONE = "europe-west1-b"
 # environment
@@ -41,7 +41,7 @@ GCR_REGION = europe-west1
 # environment
 CHUNK_SIZE = 2000
 # environment
-DIRENV_WATCHES = eJyU0LtOxDAQheF3cR3Wl3F8SYsokegRxWRmQoKyMbKzCxLi3emDBNr2NN-v8_ylnnCf1aD0XM6i3y643b1ixdaWrWgq_Gtjkfd7HPVJtmsl1anHwvtyFjXYEKzJYHvbqYfPpe1NDXu9yHf3t3JaC-Gq24xVNC9VtqvGdS0fGrE3DmKIElicHyfkBAl8QraQfE-cHdnYu3Eix1nY2sgSJmIYk6HpWOch5uRvq_vvg4ORwXgfzMF4-QkAAP__iiV2Qw==
+DIRENV_WATCHES = eJyU0LtOxDAQheF3cR3WGY-vaRElEj2imHgmJCgbIzu7ICHenT5IoG1P8_06z1_qifZZDUrP5Sz67ULb3StVam3Zis6Ff20s8n5Poz7Jdq1Zdeqx8L6cRQ3gPfQJwUGnHj6Xtjc17PUi393fymktmVbdZqqieamyXTWta_nQRK43GHwQz2LsOBFHjGgjMWC0LnMyGYIz45QNJ2GAwOKnzDjGPk_HOoshRXtb3X8fHIyEAVzCg_HyEwAA__-K-HZO
 # environment
 NVM_DIR = /home/juan-garassino/.nvm
 # environment
@@ -165,7 +165,7 @@ XMODIFIERS = @im=ibus
 # environment
 SHLVL = 1
 # environment
-GNOME_TERMINAL_SCREEN = /org/gnome/Terminal/screen/b9720573_b7ec_46f5_9882_5b140a260e71
+GNOME_TERMINAL_SCREEN = /org/gnome/Terminal/screen/ec0908cd_6dcc_479d_9724_e492467250ab
 # environment
 MAKELEVEL := 0
 # default
@@ -277,14 +277,13 @@ LOCAL_DATA_PATH = /home/juan-garassino/code/juan-garassino/deepCab/deepCab/data
 # environment
 COLORTERM = truecolor
 # makefile (from 'Makefile', line 264)
- 
 ccblue = $(shell echo "\033[0;34m")
 # environment
 MLFLOW_EXPERIMENT = [BERLIN][GARASSINO][DEEPCAB]
 # environment
 GOOGLE_APPLICATION_CREDENTIALS = /home/juan-garassino/code/juan-garassino/gcp-credentials/myplayground-garassino-71b360e6950c.json
 # environment
-DIRENV_DIFF = eJykU11vo0gQ_C_zbNYfeHMJ0j6MhzFgPj1gMBdFowkMNjYGDBibRPnvJ0h2vdLdw53uCU11ddHq6noHJZDeP0YgB9I7gI5GdRwCCZTRhar1bu6_cePRVYOnQ46uR3953uyV750bx8G8XZr-AYzAYoN07FELmhhIoGG3VEhYxcEIIHVj6dTV_uwLs8lkAkZAhh50sffF7Ik0Zg2reXMv_myZTo5fIHXtDUE9dr7wqutRjWDLp7JGgASE8b448fHhwnJhxypW12lejKMi_hsWc14i9noXCKCHVOwCCfBVt5kYjX2T4XrPl2JExCATl49uWBdHviO3gJzWhd6Zr_obuhmpyE_ywqpmliW0j7TL8hwlUyZPtuZDKnYPc_F1mt5iFlTB7kyV5nBM4j9Ux181pzqbsly9tk23PGxDrL-tQrV9PYeJU_KpJW8vT52aiI24YkhQzrP5zbfQk9-cWyV2J4lSYVE-6RrO0kjtkuMCZo_riq0TLERqnIcXEae3aR7O6p27Omnh8UEtAzvaf7-Q9kzbdje3yXW7S97M5VxYHyF0KE1Tf7a-_vgBRkCzXA9aCP_mkJDmdcPyqPfUsBE06OCJAz0VSOC_7v7-ZQ37pUiworkeCf-3asXrS9bUYARMbNqkP-aZkvZPY2nYAcVbBxPNxFZ_g88LTAzNenlWIIGuq1n2y7OMsYPg4uXeYtoyNn4e-L9r8QhEumYpdEM0IIF905S1NB6fsiQrrt8yfmW7Iv_GhrkGdQ8SZYjFJwWMgEPwEiOPLiDSsSUDCcS85VlRnnje_FYf_vc1XFnxhEeN0EvcdzSQ7RVG3iDCy2hIwGemqBc6g9kVS3MwAh5cGL_e9DOCPjQ0GXqabdF_iOjHx18BAAD__xatXHA=
+DIRENV_DIFF = eJykU12TqjgU_C_nWa8fjI6XtxgiRBEwgF9TU6koUUEBFRwHpua_b8HMvd6q3Yfd2icqffo0qXT3B5xB_fhsQALqByCH8glZgQrn7Y0b2f5pXkpz4BqLn1GC78f56OIf9F7hBsHi6W00nUfQgKGPJ8TjFpoSUCEX72FzJ64SGoAN35pwl66rQbfdbkMDNOQhl3jfzIrIA5GLTOaP4a-VTvv4DXLX9hmusMtNXosKpYxYc65RBio0W4c0lq3oJpLmXlxFloVJ2tqmwd-wQMozFpuHwAJ52CAuqCDHhd82c_tdQ7ODHClbpiz0VfNNMHIiUTeMjX08xvsNLW_PFBsy8Xo01TvOgLf7ZYdfwt16rflXp-eW_Wff3ChuPhexsg6z_mjXbWeDpOek5fM4uHTWgby8D8z-ls2UvbObje--nhhRf5lH286z44fKT2VXxMc8nm-C9eUSShEXS2-RC57M2ORJ0Y37rOyamT0cGZG-j6YL3DaTaaGvaPnUm1njro7u9iQptUh3jtyw0-zAlvlGWQ52Bi0Impd4z42C3BHivDlpGmsbGkAt10MWJn-40wyTLBfJtvLTtDEyee2HgzwDVPiv7_74ilz8VmREp67HVv9b9Sqz2ynPoAFTMrVZFeSuHlZHc2TaC06WDmF0Sqwqfy9Dwkxqvb7oiCHXpZb9-qIR4mA0fH2sTG2NmL_C_e9WPIbwhFo69xkFFQ55fs7UVis-7U7p_cdJ3sU-TX6I-l61uoeYXlfiiwINcBgZEezxIcITYmmgQiDf5Ck9xzLJ_5jX__u-3Pkqd3KbNyuJxxvVZHtMsFeLyPO2Tv9Xn7i3cmqzryJMoAEeGpq_z_yrfnNkUg151Lb4P9Tz8_OvAAAA__-NQFj5
 # environment
 LOCAL_REGISTRY_PATH = /home/juan-garassino/code/juan-garassino/deepCab/deepCab/results
 # environment
@@ -302,6 +301,7 @@ ELECTRON_RUN_AS_NODE = 1
 # environment
 VSCODE_IPC_HOOK = /run/user/1000/vscode-514f2524-1.68.1-main.sock
 # environment
+ 
 TERM = xterm-256color
 # default
 .RECIPEPREFIX := 
@@ -484,6 +484,7 @@ reset_sources_all:
 	-curl ${HTTPS_DIR}val_10k.csv > ${ML_DIR}/data/raw/val_10k.csv
 	-curl ${HTTPS_DIR}processed/train_processed_10k.csv > ${ML_DIR}/data/processed/train_processed_10k.csv
 	-curl ${HTTPS_DIR}processed/val_processed_10k.csv > ${ML_DIR}/data/processed/val_processed_10k.csv
+ 
 	-bq mk --sync --location=${MULTI_REGION} ${DATASET}.train_10k
 	-bq mk --sync --location=${MULTI_REGION} ${DATASET}.val_10k
 	-bq mk --sync --location=${MULTI_REGION} ${DATASET}.train_processed_10k
@@ -531,7 +532,6 @@ run_docker_shell:
 #  Modification time never checked.
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 122):
- 
 	docker run -it --env-file .env ${GCR_MULTI_REGION}/${GCP_PROJECT_ID}/${DOCKER_IMAGE_NAME} sh
 
 # Not a target:
@@ -645,6 +645,7 @@ reset_sources_env:
 	-bq mk --sync --location=${MULTI_REGION} ${DATASET}.val_processed_${DATASET_SIZE}
 	-bq load --sync --autodetect --skip_leading_rows 1 --replace ${DATASET}.train_${DATASET_SIZE} ${GS_DIR}/train_${DATASET_SIZE}.csv
 	-bq load --sync --autodetect --skip_leading_rows 1 --replace ${DATASET}.val_${DATASET_SIZE} ${GS_DIR}/val_${DATASET_SIZE}.csv
+ 
 	-bq load --sync --autodetect --skip_leading_rows 1 --replace ${DATASET}.train_processed_${DATASET_SIZE} ${GS_DIR}/processed/train_processed_${DATASET_SIZE}.csv
 	-bq load --sync --autodetect --skip_leading_rows 1 --replace ${DATASET}.val_processed_${DATASET_SIZE} ${GS_DIR}/processed/val_processed_${DATASET_SIZE}.csv
 
@@ -791,7 +792,8 @@ run_preprocess:
 
 # strcache performance: lookups = 116 / hit rate = 43%
 # hash-table stats:
+ 
 # Load=65/8192=1%, Rehash=0, Collisions=0/116=0%
-# Finished Make data base on Fri Nov 25 11:19:18 2022
+# Finished Make data base on Fri Nov 25 11:20:39 2022
 
  

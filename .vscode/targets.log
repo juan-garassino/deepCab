@@ -8,7 +8,7 @@ make: *** No rule to make target 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Fri Nov 25 10:49:26 2022
+# Make data base, printed on Fri Nov 25 11:19:18 2022
 
 # Variables
 
@@ -27,7 +27,7 @@ VIRTUAL_ENV = /home/juan-garassino/.pyenv/versions/3.8.12/envs/deepCab
 # makefile (from 'Makefile', line 148)
 HTTPS_DIR = https://storage.googleapis.com/datascience-mlops/taxi-fare-ny/
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-31d4baac-a6ed-46be-858e-b8316069a4bb.sock
+VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-7b80814a-343a-41e6-a292-178aab9f4765.sock
 # makefile (from 'Makefile', line 97)
 GCE_ZONE = "europe-west1-b"
 # environment
@@ -165,7 +165,7 @@ XMODIFIERS = @im=ibus
 # environment
 SHLVL = 1
 # environment
-GNOME_TERMINAL_SCREEN = /org/gnome/Terminal/screen/8e1f1544_0fbf_42c2_a1ba_9a28e222440d
+GNOME_TERMINAL_SCREEN = /org/gnome/Terminal/screen/b9720573_b7ec_46f5_9882_5b140a260e71
 # environment
 MAKELEVEL := 0
 # default
@@ -277,6 +277,7 @@ LOCAL_DATA_PATH = /home/juan-garassino/code/juan-garassino/deepCab/deepCab/data
 # environment
 COLORTERM = truecolor
 # makefile (from 'Makefile', line 264)
+ 
 ccblue = $(shell echo "\033[0;34m")
 # environment
 MLFLOW_EXPERIMENT = [BERLIN][GARASSINO][DEEPCAB]
@@ -294,7 +295,6 @@ VSCODE_AMD_ENTRYPOINT = vs/workbench/api/node/extensionHostProcess
 HOME = /home/juan-garassino
 # environment
 QT_IM_MODULE = ibus
- 
 # makefile (from 'Makefile', line 64)
 SERVICE_ACCOUNT_EMAIL = manager@deepcab.iam.gserviceaccount.com
 # environment
@@ -338,9 +338,9 @@ LC_IDENTIFICATION = de_DE.UTF-8
 
 # Directories
 
-# . (device 2053, inode 3952097): 21 files, no impossibilities.
+# . (device 2053, inode 3952097): 22 files, no impossibilities.
 
-# 21 files, no impossibilities in 1 directories.
+# 22 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -526,12 +526,12 @@ run_workflow:
 #  recipe to execute (from 'Makefile', line 39):
 	PREFECT__LOGGING__LEVEL=${PREFECT_LOG_LEVEL} python -m deepCab.flow.main
 
- 
 run_docker_shell:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 122):
+ 
 	docker run -it --env-file .env ${GCR_MULTI_REGION}/${GCP_PROJECT_ID}/${DOCKER_IMAGE_NAME} sh
 
 # Not a target:
@@ -720,7 +720,6 @@ list:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
- 
 #  recipe to execute (from 'Makefile', line 295):
 	@echo "\nHelp for the \`taxifare\` package \`Makefile\`"
 	@echo "\n$(ccgreen)$(fbold)PACKAGE$(ccreset)"
@@ -787,12 +786,12 @@ run_preprocess:
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 64 / storage = 777 B / avg = 12 B
-# current buf: size = 8162 B / used = 777 B / count = 64 / avg = 12 B
+# strcache buffers: 1 (0) / strings = 65 / storage = 787 B / avg = 12 B
+# current buf: size = 8162 B / used = 787 B / count = 65 / avg = 12 B
 
-# strcache performance: lookups = 115 / hit rate = 44%
+# strcache performance: lookups = 116 / hit rate = 43%
 # hash-table stats:
-# Load=64/8192=1%, Rehash=0, Collisions=0/115=0%
-# Finished Make data base on Fri Nov 25 10:49:26 2022
+# Load=65/8192=1%, Rehash=0, Collisions=0/116=0%
+# Finished Make data base on Fri Nov 25 11:19:18 2022
 
  

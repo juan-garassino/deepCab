@@ -6,6 +6,8 @@ raw_data/
 *.csv
 **/__pycache__/
 .env
+.env.yaml
+.envrc
 
 *.svg
 *.png

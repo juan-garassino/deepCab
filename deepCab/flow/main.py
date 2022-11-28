@@ -10,7 +10,7 @@ from deepCab.flow.flow import build_flow
 schedule = IntervalSchedule(interval=datetime.timedelta(minutes=2),
                             end_date=datetime.datetime(2022, 12, 1))
 
-flow = build_flow()
+flow = build_flow(schedule)
 
 from deepCab.flow.parallelized_flow import build_parallel_flow
 

@@ -4,7 +4,11 @@ from prefect.executors import LocalDaskExecutor
 from prefect.run_configs import LocalRun
 from prefect.schedules import IntervalSchedule
 
+import datetime
 from deepCab.flow.flow import build_flow
+
+schedule = IntervalSchedule(interval=datetime.timedelta(minutes=2),
+                            end_date=datetime.datetime(2022, 12, 1))
 
 flow = build_flow()
 
@@ -21,7 +25,9 @@ flow.executor = LocalDaskExecutor()
 
 # In dev mode, `make run_workflow` will run all tasks directly on your terminal
 if prefect_backend == "development":
+
     flow.visualize()
+
     flow.run(parameters=dict(experiment=mlflow_experiment))
 
 # In prod mode, `make run_workflow` only send a "snapshot" of your python code to Prefect (but does not executes it)

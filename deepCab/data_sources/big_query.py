@@ -15,7 +15,7 @@ def get_bq_chunk(
     if verbose:
         print(
             Fore.MAGENTA
-            + f"Source data from big query {table}: {chunk_size if chunk_size is not None else 'all'} rows (from row {index})"
+            + f"\nSource data from big query {table}: {chunk_size if chunk_size is not None else 'all'} rows (from row {index})"
             + Style.RESET_ALL
         )
 

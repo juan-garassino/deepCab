@@ -1,59 +1,6 @@
-#################### PACKAGE ACTIONS ###################
+# VARIABLES
 
-reinstall_package:
-	@pip uninstall -y taxifare || :
-	@pip install -e .
-
-clean:
-	@rm -f */version.txt
-	@rm -f .coverage
-	@rm -fr */__pycache__ */*.pyc __pycache__
-	@rm -fr build dist
-	@rm -fr deepSculpt-*.dist-info
-	@rm -fr deepSculpt.egg-info
-
-black:
-	@black deepCab/*/*.py
-
-run_model:
-	python -m deepCab.interface.main
-
-run_flow:
-	python -m deepCab.flow.main
-
-run_preprocess:
-	python -c 'from deepCab.interface.main import preprocess; preprocess(); preprocess(source_type="val")'
-
-run_train:
-	python -c 'from deepCab.interface.main import train; train()'
-
-run_pred:
-	python -c 'from deepCab.interface.main import pred; pred()'
-
-run_evaluate:
-	python -c 'from deepCab.interface.main import evaluate; evaluate()'
-
-run_all: run_preprocess run_train run_pred run_evaluate
-
-run_workflow:
-	PREFECT__LOGGING__LEVEL=${PREFECT_LOG_LEVEL} python -m deepCab.flow.main
-
-run_api:
-	uvicorn deepCab.api.fast:app --reload
-
-##################### TESTS #####################
-default:
-	@echo 'tests are only executed locally for this challenge'
-
-test_api: test_api_root test_api_predict
-
-test_api_root:
-	TEST_ENV=development pytest tests/api -k 'test_root' --asyncio-mode=strict -W "ignore"
-
-test_api_predict:
-	TEST_ENV=development pytest tests/api -k 'test_predict' --asyncio-mode=strict -W "ignore"
-
-## MINE GCP ##
+GCE_ZONE="europe-west1-b"
 
 GCP_PROJECT_ID=deepcab
 
@@ -65,71 +12,162 @@ SERVICE_ACCOUNT_EMAIL=manager@deepcab.iam.gserviceaccount.com
 
 BUCKET_NAME=deepcab
 
-REGION=europe-west1
+GCR_REGION=europe-west1
 
-# login
+ML_DIR=~/.lewagon/mlops
 
-gcp_login:
+HTTPS_DIR=https://storage.googleapis.com/datascience-mlops/taxi-fare-ny/
+
+GS_DIR=gs://datascience-mlops/taxi-fare-ny
+
+DOCKER_IMAGE_NAME=deepcab-api
+
+INSTANCE=deepcab-instance
+
+IMAGE_PROJECT=ubuntu-os-cloud
+
+IMAGE_FAMILY=ubuntu-2204-lts
+
+
+
+# PACKAGE ACTIONS
+actions_reinstall:
+	@pip uninstall -y taxifare || :
+	@pip install -e .
+
+# PACKAGE ACTIONS
+actions_clean:
+	@rm -f */version.txt
+	@rm -f .coverage
+	@rm -fr */__pycache__ */*.pyc __pycache__
+	@rm -fr build dist
+	@rm -fr deepSculpt-*.dist-info
+	@rm -fr deepSculpt.egg-info
+
+# PACKAGE ACTIONS
+actions_black:
+	@black deepCab/*/*.py
+
+# PACKAGE RUNS
+run_model:
+	python -m deepCab.interface.main
+
+# PACKAGE RUNS
+run_flow:
+	python -m deepCab.flow.main
+
+# PACKAGE RUNS
+run_preprocess:
+	python -c 'from deepCab.interface.main import preprocess; preprocess(); preprocess(source_type="val")'
+
+# PACKAGE RUNS
+run_train:
+	python -c 'from deepCab.interface.main import train; train()'
+
+# PACKAGE RUNS
+run_pred:
+	python -c 'from deepCab.interface.main import pred; pred()'
+
+# PACKAGE RUNS
+run_evaluate:
+	python -c 'from deepCab.interface.main import evaluate; evaluate()'
+
+# PACKAGE RUNS
+run_all:
+	run_preprocess run_train run_pred run_evaluate
+
+# PACKAGE RUNS
+run_workflow:
+	PREFECT__LOGGING__LEVEL=${PREFECT_LOG_LEVEL} python -m deepCab.flow.main
+
+# PACKAGE RUNS
+run_api:
+	uvicorn deepCab.api.fast:app --reload
+
+# TESTS
+default:
+	@echo 'tests are only executed locally for this challenge'
+# TESTS
+test_api:
+	test_api_root test_api_predict
+# TESTS
+test_api_root:
+	TEST_ENV=development pytest tests/api -k 'test_root' --asyncio-mode=strict -W "ignore"
+# TESTS
+test_api_predict:
+	TEST_ENV=development pytest tests/api -k 'test_predict' --asyncio-mode=strict -W "ignore"
+# GOOGLE SETUP
+gcpsetup_00_login:
 	@gcloud auth login --cred-file=${GOOGLE_APPLICATION_CREDENTIALS}
 
-set_project:
+# GOOGLE SETUP
+gcpsetup_01_setproject:
 	@gcloud config set project ${GCP_PROJECT_ID}
 
-set_credentials:
+# GOOGLE SETUP
+gcpsetup_02_setcredentials:
 	@gcloud projects get-iam-policy ${GCP_PROJECT_ID} \
 --flatten="bindings[].members" \
 --format='table(bindings.role)' \
 --filter="bindings.members:${SERVICE_ACCOUNT_EMAIL}"
+# GOOGLE SETUP
+gcpsetup_03_fullsetup:
+	gcp_login set_credentials set_project
 
-# full login
+# GOOGLE BUCKET
+gcpbucket_00_create:
+	@gsutil mb -l ${GCR_REGION} -p ${GCP_PROJECT_ID} gs://${BUCKET_NAME}
 
-set_gcp: gcp_login set_project set_credentials
+# GOOGLE INSTANCE
+gcpinstance_00_create:
+	gcloud compute instances create ${INSTANCE} --image-project=${IMAGE_PROJECT} --image-family=${IMAGE_FAMILY}
 
-# create bucket
+# GOOGLE INSTANCE
+gcpinstance_01_start:
+	gcloud compute instances start ${INSTANCE} --project ${GCP_PROJECT_ID} --zone ${GCE_ZONE}
 
-create_bucket:
-	@gsutil mb -l ${REGION} -p ${GCP_PROJECT_ID} gs://${BUCKET_NAME}
+# GOOGLE INSTANCE
+gcpinstance_02_connect:
+	gcloud beta compute ssh ${INSTANCE} --project ${GCP_PROJECT_ID} --zone ${GCE_ZONE}
 
-# instances
+# GOOGLE INSTANCE
+gcpinstance_03_stop:
+	gcloud compute instances stop ${INSTANCE} --project ${GCP_PROJECT_ID} --zone ${GCE_ZONE}
 
-GCE_INSTANCE_NAME="deepcab"
+# GOOGLE INSTANCE GITHUB
+gcpinstance_04_copyssh:
+	gcloud compute scp ~/.ssh/id_ed25519 ${INSTANCE}:~/.ssh/
 
-GCE_ZONE="europe-west1-b"
-
-start_instance:
-	gcloud compute instances start ${GCE_INSTANCE_NAME} --project ${GCP_PROJECT_ID} --zone ${GCE_ZONE}
-
-stop_instance:
-	gcloud compute instances stop ${GCE_INSTANCE_NAME} --project ${GCP_PROJECT_ID} --zone ${GCE_ZONE}
-
-connect_instance:
-	gcloud beta compute ssh ${GCE_INSTANCE_NAME} --project ${GCP_PROJECT_ID} --zone ${GCE_ZONE}
-
-
-################### DOCKER ################
-
-DOCKER_IMAGE_NAME=deepcab-api
-
-build_docker:
+# GOOGLE INSTANCE GOOGLE CREDENTIALS
+gcpinstance_05_copyjson:
+	gcloud compute scp ${GOOGLE_APPLICATION_CREDENTIALS} ${INSTANCE}:~/.ssh/
+	gcloud compute ssh ${INSTANCE} --command "echo 'export GOOGLE_APPLICATION_CREDENTIALS=~/.ssh/$(basename ${GOOGLE_APPLICATION_CREDENTIALS})' >> ~/.zshrc"
+# DOCKER
+docker_00_buildimage:
 	sudo docker build -t ${GCR_MULTI_REGION}/${GCP_PROJECT_ID}/${DOCKER_IMAGE_NAME} .
 
-#IMAGES = $(docker images -aq)
-#delete_docker_images: docker rmi -f ${IMAGES}
+# DOCKER
+docker_01_imagelist:
+	export IMAGES=$(docker images -aq)
 
-# run locally
+# DOCKER
+docker_02_deleteimages:
+	docker rmi -f ${IMAGES}
 
-run_docker_shell:
+# DOCKER RUN INTERACTIVE
+docker_01_runshell:
 	docker run -it --env-file .env ${GCR_MULTI_REGION}/${GCP_PROJECT_ID}/${DOCKER_IMAGE_NAME} sh
 
-run_docker:
+# DOCKER RUN LOCALLY
+docker_02_runimage:
 	sudo docker run -e PORT=8000 -p 8080:8000 --env-file .env ${GCR_MULTI_REGION}/${GCP_PROJECT_ID}/${DOCKER_IMAGE_NAME}
 
-# to container registry and deploy
-
-push_docker_registry:
+# DOCKER
+docker_03_pushtoregistry:
 	docker push ${GCR_MULTI_REGION}/${GCP_PROJECT_ID}/${DOCKER_IMAGE_NAME}
 
-deploy_docker_gcp:
+# DOCKER
+docker_04_deploycontainer:
 	gcloud run deploy --image ${GCR_MULTI_REGION}/${GCP_PROJECT_ID}/${DOCKER_IMAGE_NAME} --platform managed --region ${GCR_REGION}
 
 # bonus
@@ -140,20 +178,25 @@ GCP_cloud_config:
 GCP_update_config:
 	gcloud run services replace service.yaml
 
+prefect_server_start:
+	prefect server start --postgres-port 5433 --ui-port 8088
+
+prefect_agent_start:
+	prefect agent local start
+
+prefect_project_create:
+	prefect create project ${PREFECT_FLOW_NAME}
 
 ################### DATA SOURCES ACTIONS ################
 
-# Data sources: targets for monthly data imports
-ML_DIR=~/.lewagon/mlops
-HTTPS_DIR=https://storage.googleapis.com/datascience-mlops/taxi-fare-ny/
-GS_DIR=gs://datascience-mlops/taxi-fare-ny
-
+# BIG QUERY ERASE
 delete_new_source:
 	-bq rm -f ${DATASET}.train_new.csv
 	-bq rm -f ${DATASET}.val_new.csv
 	-rm ~/.lewagon/mlops/data/raw/train_new.csv
 	-rm ~/.lewagon/mlops/data/raw/val_new.csv
 
+# BIG QUERY RESET RESOURCES
 reset_sources_all:
 	mkdir -p ${ML_DIR}/data/raw ${ML_DIR}/data/processed
 	mkdir -p ${ML_DIR}/training_outputs/params ${ML_DIR}/training_outputs/metrics ${ML_DIR}/training_outputs/model
@@ -212,6 +255,7 @@ reset_sources_all:
 	-bq load --sync --autodetect --skip_leading_rows 1 --replace ${DATASET}.train_processed_500k ${GS_DIR}/processed/train_processed_500k.csv
 	-bq load --sync --autodetect --skip_leading_rows 1 --replace ${DATASET}.val_processed_500k ${GS_DIR}/processed/val_processed_500k.csv
 
+# BIG QUERY RESET RESOURCES
 reset_sources_env:
 	mkdir -p ${ML_DIR}/data/raw ${ML_DIR}/data/processed
 	mkdir -p ${ML_DIR}/training_outputs/params ${ML_DIR}/training_outputs/metrics ${ML_DIR}/training_outputs/model
@@ -229,6 +273,7 @@ reset_sources_env:
 	-bq load --sync --autodetect --skip_leading_rows 1 --replace ${DATASET}.train_processed_${DATASET_SIZE} ${GS_DIR}/processed/train_processed_${DATASET_SIZE}.csv
 	-bq load --sync --autodetect --skip_leading_rows 1 --replace ${DATASET}.val_processed_${DATASET_SIZE} ${GS_DIR}/processed/val_processed_${DATASET_SIZE}.csv
 
+# BIG QUERY SHOW RESOURCES
 show_sources_all:
 	-ls -laR ~/.lewagon/mlops/data
 	-bq ls ${DATASET}
@@ -249,6 +294,7 @@ show_sources_all:
 	-bq show ${DATASET}.val_processed_100k
 	-bq show ${DATASET}.val_processed_500k
 
+# BIG QUERY SHOW RESOURCES
 show_sources_env:
 	-ls -laR ~/.lewagon/mlops/data | grep ${DATASET_SIZE}
 	-bq ls ${DATASET}
@@ -276,7 +322,7 @@ show_env:
 	@env | grep -E "DATA_SOURCE|MODEL_TARGET" || :
 
 	@echo "\n$(ccgreen)GCP:$(ccreset)"
-	@env | grep -E "PROJECT|REGION" || :
+	@env | grep -E "GCP_PROJECT_ID|GCR_REGION" || :
 
 	@echo "\n$(ccgreen)Big Query:$(ccreset)"
 	@env | grep -E "DATASET" | grep -Ev "DATASET_SIZE|VALIDATION_DATASET_SIZE" || :\

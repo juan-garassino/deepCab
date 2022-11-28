@@ -13,6 +13,7 @@ from deepCab.flow.parallelized_flow import build_parallel_flow
 flow = build_parallel_flow()
 
 mlflow_experiment = os.environ.get("MLFLOW_EXPERIMENT")
+
 prefect_backend = os.environ.get("PREFECT_BACKEND")
 
 # OPTIONAL: Configure parallel task executor
@@ -25,11 +26,11 @@ if prefect_backend == "development":
 
 # In prod mode, `make run_workflow` only send a "snapshot" of your python code to Prefect (but does not executes it)
 elif prefect_backend == "production":
-
     # dotenv is needed here to force sending the env values of your `.env` file to Prefect at each registry. Otherwise, Prefect caches the env variables and never updates them.
     from dotenv import dotenv_values
 
     env_dict = dotenv_values(".env")
+
     flow.run_config = LocalRun(env=env_dict)
 
     flow.register("taxifare_project")

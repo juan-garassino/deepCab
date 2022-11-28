@@ -19,7 +19,7 @@ def get_bq_chunk(
             + Style.RESET_ALL
         )
 
-    table = f"{os.environ['PROJECT']}.{os.environ['DATASET']}.{table}"
+    table = f"{os.environ['GCP_PROJECT_ID']}.{os.environ['DATASET']}.{table}"
 
     client = bigquery.Client()
 
@@ -55,7 +55,7 @@ def save_bq_chunk(table: str, data: pd.DataFrame, is_first: bool):
 
     print(Fore.BLUE + f"\nSave data to big query {table}:" + Style.RESET_ALL)
 
-    table = f"{os.environ['PROJECT']}.{os.environ['DATASET']}.{table}"
+    table = f"{os.environ['GCP_PROJECT_ID']}.{os.environ['DATASET']}.{table}"
 
     # bq requires str columns starting with a letter or underscore
     data.columns = [

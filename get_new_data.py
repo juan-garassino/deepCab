@@ -24,7 +24,7 @@ def get_new_data(month):
     base_source_uri = "gs://datascience-mlops/taxi-fare-ny"
 
     client = bigquery.Client()
-    project = os.environ.get('PROJECT')
+    project = os.environ.get('GCP_PROJECT_ID')
     dataset = os.environ.get('DATASET')
 
     job_config = bigquery.LoadJobConfig(

@@ -33,7 +33,7 @@ ENV INSTANCE=deepCab-instance
 
 ENV TABLE=train_10k
 ENV DATASET=deepCab_dataset
-ENV PROJECT=deepcab
+ENV GCP_PROJECT_ID=deepcab
 
 ENV MLFLOW_TRACKING_URI=https://mlflow.lewagon.ai
 ENV MLFLOW_EXPERIMENT=[BERLIN][GARASSINO][DEEPCAB]

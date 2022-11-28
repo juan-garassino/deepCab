@@ -104,6 +104,7 @@ def train():
         source_name=f"val_processed_{os.environ['VALIDATION_DATASET_SIZE']}",
         index=0,  # retrieve from first row
         chunk_size=None,
+        verbose=True,
     ).to_numpy()  # retrieve all further data
 
     if data_val_processed is None:
@@ -141,6 +142,7 @@ def train():
             source_name=f"train_processed_{os.environ['DATASET_SIZE']}",
             index=chunk_id * int(os.environ["CHUNK_SIZE"]),
             chunk_size=int(os.environ["CHUNK_SIZE"]),
+            verbose=True,
         )
 
         # check whether data source contain more data
@@ -230,6 +232,7 @@ def evaluate():
         source_name=f"val_processed_{os.environ['DATASET_SIZE']}",
         index=0,
         chunk_size=None,
+        verbose=True,
     )  # retrieve all further data
 
     if new_data is None:

@@ -8,7 +8,7 @@ make: *** No rule to make target 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Fri Nov 25 11:20:39 2022
+# Make data base, printed on Mon Nov 28 12:57:46 2022
 
 # Variables
 
@@ -17,18 +17,16 @@ GDK_BACKEND = x11
 # environment
 LC_ALL = C
 # environment
-NO_AT_BRIDGE = 1
-# environment
 GNOME_SHELL_SESSION_MODE = ubuntu
 # environment
 SSH_AGENT_LAUNCHER = gnome-keyring
 # environment
 VIRTUAL_ENV = /home/juan-garassino/.pyenv/versions/3.8.12/envs/deepCab
-# makefile (from 'Makefile', line 148)
+# makefile (from 'Makefile', line 21)
 HTTPS_DIR = https://storage.googleapis.com/datascience-mlops/taxi-fare-ny/
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-398f32c5-4ecf-4879-acb2-05af96acd375.sock
-# makefile (from 'Makefile', line 97)
+VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-c0b68a26-7927-41b4-a26d-11c3eb98d7ec.sock
+# makefile (from 'Makefile', line 5)
 GCE_ZONE = "europe-west1-b"
 # environment
 LC_NAME = de_DE.UTF-8
@@ -36,12 +34,12 @@ LC_NAME = de_DE.UTF-8
 LC_NUMERIC = de_DE.UTF-8
 # environment
 VSCODE_CWD = /home/juan-garassino/code/juan-garassino/deepCab
-# makefile (from 'Makefile', line 62)
+# makefile (from 'Makefile', line 11)
 GCR_REGION = europe-west1
 # environment
 CHUNK_SIZE = 2000
 # environment
-DIRENV_WATCHES = eJyU0LtOxDAQheF3cR3WGY-vaRElEj2imHgmJCgbIzu7ICHenT5IoG1P8_06z1_qifZZDUrP5Sz67ULb3StVam3Zis6Ff20s8n5Poz7Jdq1Zdeqx8L6cRQ3gPfQJwUGnHj6Xtjc17PUi393fymktmVbdZqqieamyXTWta_nQRK43GHwQz2LsOBFHjGgjMWC0LnMyGYIz45QNJ2GAwOKnzDjGPk_HOoshRXtb3X8fHIyEAVzCg_HyEwAA__-K-HZO
+DIRENV_WATCHES = eJyUkLFOxDAMQP8lc7k0cZq4XREjEjticG2XFvUalPQOJMS_sxcEYn3Le3qPH-aB9tkMxs75rPblQtvNMxWqddmy5SzfmKi-3tJoT7pdC5vG3GfZl7OawcXYR3ApYGPu3pe6VzPs5aKfze-W05qZVltnKmplKbpdLa1rfrNEXeshxaRR1IdxIkFACEjiAEPH0nt2qfPjxF56FeeSaJxYYMSWp0OdC5B6DP-r--vBDwewhYPj6SsAAP__ng52WQ==
 # environment
 NVM_DIR = /home/juan-garassino/.nvm
 # environment
@@ -59,7 +57,7 @@ PYENV_SHELL = zsh
 # environment
 VSCODE_HANDLES_UNCAUGHT_ERRORS = true
 # default
-.VARIABLES := 
+.VARIABLES :=
 # environment
 PWD = /home/juan-garassino/code/juan-garassino/deepCab
 # automatic
@@ -69,7 +67,7 @@ LSCOLORS = Gxfxcxdxbxegedabagacad
 # environment
 XDG_DATA_DIRS = /usr/local/share/:/usr/share/:/var/lib/snapd/desktop
 # environment
-OLDPWD = /home/juan-garassino/code
+OLDPWD = /home/juan-garassino
 # automatic
 ^D = $(patsubst %/,%,$(dir $^))
 # environment
@@ -81,24 +79,24 @@ VSCODE_CODE_CACHE_PATH = /home/juan-garassino/.config/Code/CachedData/30d9c6cd94
 # environment
 LANG = C
 # environment
-XAUTHORITY = /run/user/1000/.mutter-Xwaylandauth.C3OAW1
+XAUTHORITY = /run/user/1000/.mutter-Xwaylandauth.AAVQW1
 # default
-.LOADED := 
+.LOADED :=
 # environment
 PYENV_VIRTUAL_ENV = /home/juan-garassino/.pyenv/versions/3.8.12/envs/deepCab
 # default
 .INCLUDE_DIRS = /usr/local/include /usr/include /usr/include
 # environment
-GNOME_TERMINAL_SERVICE = :1.124
+GNOME_TERMINAL_SERVICE = :1.151
 # makefile
 MAKEFLAGS = pqrR
 # environment
-PROJECT = deepcab
+GCP_PROJECT_ID = deepcab
 # environment
 API_KEY = pcu_Hsg4VzeL8SHW9jnCwkVFqUhG5ySddW4vFMVj
 # makefile
 CURDIR := /home/juan-garassino/code/juan-garassino/deepCab
-# makefile (from 'Makefile', line 261)
+# makefile (from 'Makefile', line 276)
 fbold = $(shell echo "\033[1m")
 # environment
 VSCODE_PIPE_LOGGING = true
@@ -111,7 +109,7 @@ PYENV_VIRTUALENV_DISABLE_PROMPT = 1
 # environment
 MFLAGS = -pqrR
 # environment
-SSH_AUTH_SOCK = /tmp/ssh-XXXXXXI03xMM/agent.6075
+SSH_AUTH_SOCK = /tmp/ssh-XXXXXX6xQptd/agent.4923
 # default
 .SHELLFLAGS := -c
 # environment
@@ -129,7 +127,7 @@ MAKEFILE_LIST := Makefile
 # environment
 VSCODE_VERBOSE_LOGGING = true
 # environment
-VSCODE_PID = 8691
+VSCODE_PID = 8291
 # environment
 XDG_SESSION_TYPE = wayland
 # environment
@@ -139,7 +137,7 @@ SOURCE_TYPE = train
 # environment
 DATASET = taxifare_dataset
 # environment
-SESSION_MANAGER = local/celcius:@/tmp/.ICE-unix/2061,unix/celcius:/tmp/.ICE-unix/2061
+SESSION_MANAGER = local/celcius:@/tmp/.ICE-unix/2049,unix/celcius:/tmp/.ICE-unix/2049
 # automatic
 *F = $(notdir $*)
 # environment
@@ -165,17 +163,17 @@ XMODIFIERS = @im=ibus
 # environment
 SHLVL = 1
 # environment
-GNOME_TERMINAL_SCREEN = /org/gnome/Terminal/screen/ec0908cd_6dcc_479d_9724_e492467250ab
+GNOME_TERMINAL_SCREEN = /org/gnome/Terminal/screen/5d82d3d3_ed7a_4088_85a2_f544ad1467cc
 # environment
 MAKELEVEL := 0
+# makefile (from 'Makefile', line 17)
+GCR_REGION = europe-west1
 # default
 MAKE = $(MAKE_COMMAND)
-# makefile (from 'Makefile', line 68)
-REGION = europe-west1
 # environment
 PATH = ./bin:./node_modules/.bin:/home/juan-garassino/.pyenv/plugins/pyenv-virtualenv/shims:/home/juan-garassino/.pyenv/shims:/home/juan-garassino/.rbenv/bin:/home/juan-garassino/.pyenv/plugins/pyenv-virtualenv/shims:/home/juan-garassino/.pyenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin:/usr/local/sbin
 # default
-MAKEFILES := 
+MAKEFILES :=
 # environment
 LC_MONETARY = de_DE.UTF-8
 # automatic
@@ -188,11 +186,11 @@ LC_TIME = de_DE.UTF-8
 PYENV_VIRTUALENV_INIT = 1
 # environment
 VALIDATION_DATASET_SIZE = 10k
-# makefile (from 'Makefile', line 149)
+# makefile (from 'Makefile', line 23)
 GS_DIR = gs://datascience-mlops/taxi-fare-ny
 # environment
 MLFLOW_TRACKING_URI = https://mlflow.lewagon.ai
-# makefile (from 'Makefile', line 262)
+# makefile (from 'Makefile', line 277)
 fnormal = $(shell echo "\033[0m")
 # environment
 VSCODE_LOG_NATIVE = false
@@ -202,13 +200,13 @@ USERNAME = juan-garassino
 GNOME_SETUP_DISPLAY = :1
 # environment
 LC_TELEPHONE = de_DE.UTF-8
-# makefile (from 'Makefile', line 147)
+# makefile (from 'Makefile', line 19)
 ML_DIR = ~/.lewagon/mlops
 # automatic
 ?F = $(notdir $?)
 # environment
 XDG_CURRENT_DESKTOP = Unity
-# makefile (from 'Makefile', line 265)
+# makefile (from 'Makefile', line 280)
 ccreset = $(shell echo "\033[0;39m")
 # environment
 LS_COLORS = rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:
@@ -222,14 +220,14 @@ LESS = -R
 DESKTOP_SESSION = ubuntu
 # environment
 ORIGINAL_XDG_CURRENT_DESKTOP = ubuntu:GNOME
-# makefile (from 'Makefile', line 58)
+# makefile (from 'Makefile', line 7)
 GCP_PROJECT_ID = deepcab
 # environment
 PYENV_ROOT = /home/juan-garassino/.pyenv
 # environment
 DATASET_SIZE = 10k
 # 'override' directive
-GNUMAKEFLAGS := 
+GNUMAKEFLAGS :=
 # environment
 LOGNAME = juan-garassino
 # environment
@@ -237,31 +235,31 @@ INSTANCE = taxifare-instance
 # environment
 BUNDLER_EDITOR = code
 # makefile
-.DEFAULT_GOAL := reinstall_package
+.DEFAULT_GOAL := actions_reinstall
 # environment
-SYSTEMD_EXEC_PID = 5905
+SYSTEMD_EXEC_PID = 2071
 # environment
 TABLE = train_10k
-# environment
-DISPLAY = :0
+# makefile (from 'Makefile', line 9)
+GCR_MULTI_REGION = eu.gcr.io
 # environment
 USER = juan-garassino
 # environment
 GTK_MODULES = gail:atk-bridge
-# makefile (from 'Makefile', line 60)
-GCR_MULTI_REGION = eu.gcr.io
+# environment
+DISPLAY = :0
 # default
 MAKE_VERSION := 4.3
-# makefile (from 'Makefile', line 111)
+# makefile (from 'Makefile', line 25)
 DOCKER_IMAGE_NAME = deepcab-api
-# makefile (from 'Makefile', line 263)
+# makefile (from 'Makefile', line 278)
 ccgreen = $(shell echo "\033[0;32m")
 # environment
 DIRENV_DIR = -/home/juan-garassino/code/juan-garassino/deepCab
 # environment
 LC_MEASUREMENT = de_DE.UTF-8
 # environment
-SSH_AGENT_PID = 6077
+SSH_AGENT_PID = 4925
 # environment
 PAGER = less
 # environment
@@ -270,20 +268,20 @@ _ = /usr/bin/code
 LC_PAPER = de_DE.UTF-8
 # environment
 XDG_RUNTIME_DIR = /run/user/1000
-# makefile (from 'Makefile', line 66)
+# makefile (from 'Makefile', line 15)
 BUCKET_NAME = deepcab
 # environment
 LOCAL_DATA_PATH = /home/juan-garassino/code/juan-garassino/deepCab/deepCab/data
 # environment
 COLORTERM = truecolor
-# makefile (from 'Makefile', line 264)
+# makefile (from 'Makefile', line 279)
 ccblue = $(shell echo "\033[0;34m")
 # environment
 MLFLOW_EXPERIMENT = [BERLIN][GARASSINO][DEEPCAB]
 # environment
 GOOGLE_APPLICATION_CREDENTIALS = /home/juan-garassino/code/juan-garassino/gcp-credentials/myplayground-garassino-71b360e6950c.json
 # environment
-DIRENV_DIFF = eJykU12TqjgU_C_nWa8fjI6XtxgiRBEwgF9TU6koUUEBFRwHpua_b8HMvd6q3Yfd2icqffo0qXT3B5xB_fhsQALqByCH8glZgQrn7Y0b2f5pXkpz4BqLn1GC78f56OIf9F7hBsHi6W00nUfQgKGPJ8TjFpoSUCEX72FzJ64SGoAN35pwl66rQbfdbkMDNOQhl3jfzIrIA5GLTOaP4a-VTvv4DXLX9hmusMtNXosKpYxYc65RBio0W4c0lq3oJpLmXlxFloVJ2tqmwd-wQMozFpuHwAJ52CAuqCDHhd82c_tdQ7ODHClbpiz0VfNNMHIiUTeMjX08xvsNLW_PFBsy8Xo01TvOgLf7ZYdfwt16rflXp-eW_Wff3ChuPhexsg6z_mjXbWeDpOek5fM4uHTWgby8D8z-ls2UvbObje--nhhRf5lH286z44fKT2VXxMc8nm-C9eUSShEXS2-RC57M2ORJ0Y37rOyamT0cGZG-j6YL3DaTaaGvaPnUm1njro7u9iQptUh3jtyw0-zAlvlGWQ52Bi0Impd4z42C3BHivDlpGmsbGkAt10MWJn-40wyTLBfJtvLTtDEyee2HgzwDVPiv7_74ilz8VmREp67HVv9b9Sqz2ynPoAFTMrVZFeSuHlZHc2TaC06WDmF0Sqwqfy9Dwkxqvb7oiCHXpZb9-qIR4mA0fH2sTG2NmL_C_e9WPIbwhFo69xkFFQ55fs7UVis-7U7p_cdJ3sU-TX6I-l61uoeYXlfiiwINcBgZEezxIcITYmmgQiDf5Ck9xzLJ_5jX__u-3Pkqd3KbNyuJxxvVZHtMsFeLyPO2Tv9Xn7i3cmqzryJMoAEeGpq_z_yrfnNkUg151Lb4P9Tz8_OvAAAA__-NQFj5
+DIRENV_DIFF = eJykVGtv6jgQ_S_-TIBC6QPpSmuMCS55uE6A0qqy3MSkgZCExDzaqvvbVw5w6XZ3tXe1nxBzck4mM-fMB8hB9-OzBlLQ_QCQEj7CM9AFebDhwzK6nLxL68YbTm8XKdotJ4P1-NXsvHlhOL3cDuzJAtRAb4xG2OcOtDHoglDKPBAvoAbQcOyMuEcedbnVbDZBDfShDz3sgy5QYh_PRSF5KJQopTqDJ8pFc3kscs8dM6Rr640s3nSVMOxMeJ8w0AVG4zVbycZiI1IjEoUoyzjNGkEW_qWmm0NVc0eBKfTREHugC-Td23hpDdx9H9r39CYJrpfN4HF9-cDwAi9UHJith8F2LBJ6797ZHi_3AZ6lbUu213RoiN6tWtr78rpT0JfkXm0dez9dh-HqreO9z1ej2Giru8y_zkPU2Zptc_6YXLtiFzzMWBvmM5Nu2rm8mrzTsiNG83dpTJud9eMkUelolSejlzy0xEUxLxz8IMvXvWDsgoR7shxAhBcxxHTYTFVrPaeL_aBzNZDSE3f72cz2pnnTDVGnd9WnRmEY215_J3evM7q48koIKedp1GlN73_80DNx0QgzTmxo4m_rNEQegxowEebE8XzooO9PHNFH19FFuSmyXBo7WaoL44BRTpl7h5HPSf8bjXF7bPmEM2wS16no9Sgo6nF2hL8AZ12Nua5pYQ4ptQiCPnEdjhjuY8cn0NJb_WVnREFuBIUMZapikZSN03df3NzOW8HlVedazOuLMkv1W72j8aKy22hU_g1imQbSWCVZXja0tQ3tbSPVXh36Pj0xXpXKNalUWSEiWY-yLEqkyOOyHmSrf9FqgBo4Tf9Lgow4LZVIAwlqwHIRtHiVGQr94X-ZwDEb51-hxE9FvQDPZ7P_rVrIcpOoEtSAjW2X6VPTMrW1bGtguVOOHyhmxMaOvhFPPcws4jw_mZBBzyOO-_zUx5gi2Hs-U2y3j62TG3-N4jOIRsQx-ZiRL1tZJfMk29UTuRNRltbFoa_j6n5vnIBGtRqNVW_2ITOrk3aggxqgDA-00XsQjbBzcPtWJlm-kqn6gle9HBvPCzmXgTK0xHl-1cNVav4UmX_Kg4fZhCDMIULu2PE5tiGxdGciFZEsfjsq1GOxqkelLLZxIEUQZJtUaf9pherScn9GK4sVItaO92HP-vmfHw7zBFqkf8jc3xzuz88_AgAA___PtAeJ
 # environment
 LOCAL_REGISTRY_PATH = /home/juan-garassino/code/juan-garassino/deepCab/deepCab/results
 # environment
@@ -291,25 +289,25 @@ XDG_SESSION_CLASS = user
 # environment
 VSCODE_AMD_ENTRYPOINT = vs/workbench/api/node/extensionHostProcess
 # environment
+
 HOME = /home/juan-garassino
 # environment
 QT_IM_MODULE = ibus
-# makefile (from 'Makefile', line 64)
+# makefile (from 'Makefile', line 13)
 SERVICE_ACCOUNT_EMAIL = manager@deepcab.iam.gserviceaccount.com
 # environment
 ELECTRON_RUN_AS_NODE = 1
 # environment
 VSCODE_IPC_HOOK = /run/user/1000/vscode-514f2524-1.68.1-main.sock
 # environment
- 
 TERM = xterm-256color
 # default
-.RECIPEPREFIX := 
+.RECIPEPREFIX :=
 # automatic
 <F = $(notdir $<)
 # default
-SUFFIXES := 
-# makefile (from 'Makefile', line 95)
+SUFFIXES :=
+# makefile (from 'Makefile', line 3)
 GCE_INSTANCE_NAME = "deepcab"
 # environment
 VSCODE_CLI = 1
@@ -330,7 +328,7 @@ GDMSESSION = ubuntu
 # environment
 LC_IDENTIFICATION = de_DE.UTF-8
 # variable set hash-table stats:
-# Load=158/1024=15%, Rehash=0, Collisions=22/189=12%
+# Load=157/1024=15%, Rehash=0, Collisions=22/199=11%
 
 # Pattern-specific Variable Values
 
@@ -352,7 +350,7 @@ show_env:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 268):
+#  recipe to execute (from 'Makefile', line 283):
 	@echo "\nEnvironment variables used by the \`taxifare\` package loaded by \`direnv\` from your \`.env\` located at:"
 	@echo ${DIRENV_DIR}
 	@echo "\n$(ccgreen)local storage:$(ccreset)"
@@ -362,7 +360,7 @@ show_env:
 	@echo "\n$(ccgreen)package behavior:$(ccreset)"
 	@env | grep -E "DATA_SOURCE|MODEL_TARGET" || :
 	@echo "\n$(ccgreen)GCP:$(ccreset)"
-	@env | grep -E "PROJECT|REGION" || :
+	@env | grep -E "GCP_PROJECT_ID|GCR_REGION" || :
 	@echo "\n$(ccgreen)Big Query:$(ccreset)"
 	@env | grep -E "DATASET" | grep -Ev "DATASET_SIZE|VALIDATION_DATASET_SIZE" || :\
 
@@ -378,7 +376,7 @@ show_sources_all:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 233):
+#  recipe to execute (from 'Makefile', line 248):
 	-ls -laR ~/.lewagon/mlops/data
 	-bq ls ${DATASET}
 	-bq show ${DATASET}.train_1k
@@ -402,66 +400,59 @@ test_api_predict:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 54):
+#  recipe to execute (from 'Makefile', line 92):
 	TEST_ENV=development pytest tests/api -k 'test_predict' --asyncio-mode=strict -W "ignore"
 
 run_evaluate:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 34):
+#  recipe to execute (from 'Makefile', line 67):
 	python -c 'from deepCab.interface.main import evaluate; evaluate()'
 
 run_model:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 19):
+#  recipe to execute (from 'Makefile', line 47):
 	python -m deepCab.interface.main
+
+docker_02_deleteimages:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 135):
+	docker rmi -f ${IMAGES}
 
 delete_new_source:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 152):
+#  recipe to execute (from 'Makefile', line 167):
 	-bq rm -f ${DATASET}.train_new.csv
 	-bq rm -f ${DATASET}.val_new.csv
 	-rm ~/.lewagon/mlops/data/raw/train_new.csv
 	-rm ~/.lewagon/mlops/data/raw/val_new.csv
 
-gcp_login:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
-#  recipe to execute (from 'Makefile', line 73):
-	@gcloud auth login --cred-file=${GOOGLE_APPLICATION_CREDENTIALS}
-
-start_instance:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
-#  recipe to execute (from 'Makefile', line 100):
-	gcloud compute instances start ${GCE_INSTANCE_NAME} --project ${GCP_PROJECT_ID} --zone ${GCE_ZONE}
-
 run_train:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 28):
+#  recipe to execute (from 'Makefile', line 59):
 	python -c 'from deepCab.interface.main import train; train()'
 
 default:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 46):
+#  recipe to execute (from 'Makefile', line 83):
 	@echo 'tests are only executed locally for this challenge'
 
 reset_sources_all:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 158):
+#  recipe to execute (from 'Makefile', line 173):
 	mkdir -p ${ML_DIR}/data/raw ${ML_DIR}/data/processed
 	mkdir -p ${ML_DIR}/training_outputs/params ${ML_DIR}/training_outputs/metrics ${ML_DIR}/training_outputs/model
 	# Big Query
@@ -484,7 +475,6 @@ reset_sources_all:
 	-curl ${HTTPS_DIR}val_10k.csv > ${ML_DIR}/data/raw/val_10k.csv
 	-curl ${HTTPS_DIR}processed/train_processed_10k.csv > ${ML_DIR}/data/processed/train_processed_10k.csv
 	-curl ${HTTPS_DIR}processed/val_processed_10k.csv > ${ML_DIR}/data/processed/val_processed_10k.csv
- 
 	-bq mk --sync --location=${MULTI_REGION} ${DATASET}.train_10k
 	-bq mk --sync --location=${MULTI_REGION} ${DATASET}.val_10k
 	-bq mk --sync --location=${MULTI_REGION} ${DATASET}.train_processed_10k
@@ -520,49 +510,11 @@ reset_sources_all:
 	-bq load --sync --autodetect --skip_leading_rows 1 --replace ${DATASET}.train_processed_500k ${GS_DIR}/processed/train_processed_500k.csv
 	-bq load --sync --autodetect --skip_leading_rows 1 --replace ${DATASET}.val_processed_500k ${GS_DIR}/processed/val_processed_500k.csv
 
-run_workflow:
+actions_clean:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 39):
-	PREFECT__LOGGING__LEVEL=${PREFECT_LOG_LEVEL} python -m deepCab.flow.main
-
-run_docker_shell:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
-#  recipe to execute (from 'Makefile', line 122):
-	docker run -it --env-file .env ${GCR_MULTI_REGION}/${GCP_PROJECT_ID}/${DOCKER_IMAGE_NAME} sh
-
-# Not a target:
-Makefile:
-#  Implicit rule search has been done.
-#  Last modified 2022-09-06 18:42:01.97440577
-#  File has been updated.
-#  Successfully updated.
-
-set_credentials:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
-#  recipe to execute (from 'Makefile', line 79):
-	@gcloud projects get-iam-policy ${GCP_PROJECT_ID} \
---flatten="bindings[].members" \
---format='table(bindings.role)' \
---filter="bindings.members:${SERVICE_ACCOUNT_EMAIL}"
-
-GCP_update_config:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
-#  recipe to execute (from 'Makefile', line 141):
-	gcloud run services replace service.yaml
-
-clean:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
-#  recipe to execute (from 'Makefile', line 8):
+#  recipe to execute (from 'Makefile', line 34):
 	@rm -f */version.txt
 	@rm -f .coverage
 	@rm -fr */__pycache__ */*.pyc __pycache__
@@ -570,18 +522,54 @@ clean:
 	@rm -fr deepSculpt-*.dist-info
 	@rm -fr deepSculpt.egg-info
 
-run_docker:
+run_workflow:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 125):
-	sudo docker run -e PORT=8000 -p 8080:8000 --env-file .env ${GCR_MULTI_REGION}/${GCP_PROJECT_ID}/${DOCKER_IMAGE_NAME}
+#  recipe to execute (from 'Makefile', line 75):
+	PREFECT__LOGGING__LEVEL=${PREFECT_LOG_LEVEL} python -m deepCab.flow.main
+
+# Not a target:
+Makefile:
+#  Implicit rule search has been done.
+#  Last modified 2022-11-28 11:33:49.868376904
+#  File has been updated.
+#  Successfully updated.
+
+actions_reinstall:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 29):
+	@pip uninstall -y taxifare || :
+	@pip install -e .
+
+GCP_update_config:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 159):
+	gcloud run services replace service.yaml
+
+gcpbucket_00_create:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 113):
+	@gsutil mb -l ${GCR_REGION} -p ${GCP_PROJECT_ID} gs://${BUCKET_NAME}
+
+gcpinstance_00_start:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 117):
+	gcloud compute instances start ${GCE_INSTANCE_NAME} --project ${GCP_PROJECT_ID} --zone ${GCE_ZONE}
 
 show_sources_env:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 253):
+#  recipe to execute (from 'Makefile', line 268):
 	-ls -laR ~/.lewagon/mlops/data | grep ${DATASET_SIZE}
 	-bq ls ${DATASET}
 	-bq show ${DATASET}.train_${DATASET_SIZE}
@@ -589,37 +577,19 @@ show_sources_env:
 	-bq show ${DATASET}.train_processed_${DATASET_SIZE}
 	-bq show ${DATASET}.val_processed_${DATASET_SIZE}
 
-set_gcp: gcp_login set_project set_credentials
+test_api:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
+#  recipe to execute (from 'Makefile', line 86):
+	test_api_root test_api_predict
 
-reinstall_package:
+gcpsetup_01_setproject:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 4):
-	@pip uninstall -y taxifare || :
-	@pip install -e .
-
-push_docker_registry:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
-#  recipe to execute (from 'Makefile', line 130):
-	docker push ${GCR_MULTI_REGION}/${GCP_PROJECT_ID}/${DOCKER_IMAGE_NAME}
-
-test_api: test_api_root test_api_predict
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
-
-deploy_docker_gcp:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
-#  recipe to execute (from 'Makefile', line 133):
-	gcloud run deploy --image ${GCR_MULTI_REGION}/${GCP_PROJECT_ID}/${DOCKER_IMAGE_NAME} --platform managed --region ${GCR_REGION}
+#  recipe to execute (from 'Makefile', line 99):
+	@gcloud config set project ${GCP_PROJECT_ID}
 
 # Not a target:
 .DEFAULT:
@@ -631,7 +601,7 @@ reset_sources_env:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 216):
+#  recipe to execute (from 'Makefile', line 231):
 	mkdir -p ${ML_DIR}/data/raw ${ML_DIR}/data/processed
 	mkdir -p ${ML_DIR}/training_outputs/params ${ML_DIR}/training_outputs/metrics ${ML_DIR}/training_outputs/model
 	-curl ${HTTPS_DIR}train_${DATASET_SIZE}.csv > ${ML_DIR}/data/raw/train_${DATASET_SIZE}.csv
@@ -645,7 +615,7 @@ reset_sources_env:
 	-bq mk --sync --location=${MULTI_REGION} ${DATASET}.val_processed_${DATASET_SIZE}
 	-bq load --sync --autodetect --skip_leading_rows 1 --replace ${DATASET}.train_${DATASET_SIZE} ${GS_DIR}/train_${DATASET_SIZE}.csv
 	-bq load --sync --autodetect --skip_leading_rows 1 --replace ${DATASET}.val_${DATASET_SIZE} ${GS_DIR}/val_${DATASET_SIZE}.csv
- 
+
 	-bq load --sync --autodetect --skip_leading_rows 1 --replace ${DATASET}.train_processed_${DATASET_SIZE} ${GS_DIR}/processed/train_processed_${DATASET_SIZE}.csv
 	-bq load --sync --autodetect --skip_leading_rows 1 --replace ${DATASET}.val_processed_${DATASET_SIZE} ${GS_DIR}/processed/val_processed_${DATASET_SIZE}.csv
 
@@ -653,14 +623,14 @@ run_pred:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 31):
+#  recipe to execute (from 'Makefile', line 63):
 	python -c 'from deepCab.interface.main import pred; pred()'
 
 test_api_root:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 51):
+#  recipe to execute (from 'Makefile', line 89):
 	TEST_ENV=development pytest tests/api -k 'test_root' --asyncio-mode=strict -W "ignore"
 
 # Not a target:
@@ -670,58 +640,88 @@ all:
 #  File does not exist.
 #  File has not been updated.
 
-run_all: run_preprocess run_train run_pred run_evaluate
+run_all:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
+#  recipe to execute (from 'Makefile', line 71):
+	run_preprocess run_train run_pred run_evaluate
 
-create_bucket:
+gcpsetup_03_fullsetup:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 91):
-	@gsutil mb -l ${REGION} -p ${GCP_PROJECT_ID} gs://${BUCKET_NAME}
+#  recipe to execute (from 'Makefile', line 109):
+	gcp_login set_project set_credentials
 
-set_project:
+gcpinstance_02_stop:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 76):
-	@gcloud config set project ${GCP_PROJECT_ID}
+#  recipe to execute (from 'Makefile', line 125):
+	gcloud compute instances stop ${GCE_INSTANCE_NAME} --project ${GCP_PROJECT_ID} --zone ${GCE_ZONE}
 
 run_flow:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 22):
+#  recipe to execute (from 'Makefile', line 51):
 	python -m deepCab.flow.main
 
-build_docker:
+docker_02_runimage:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 114):
+#  recipe to execute (from 'Makefile', line 143):
+	sudo docker run -e PORT=8000 -p 8080:8000 --env-file .env ${GCR_MULTI_REGION}/${GCP_PROJECT_ID}/${DOCKER_IMAGE_NAME}
+
+docker_01_imagelist:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 133):
+	export IMAGES=$(docker images -aq)
+
+docker_00_buildimage:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 130):
 	sudo docker build -t ${GCR_MULTI_REGION}/${GCP_PROJECT_ID}/${DOCKER_IMAGE_NAME} .
 
-connect_instance:
+docker_01_runshell:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 106):
-	gcloud beta compute ssh ${GCE_INSTANCE_NAME} --project ${GCP_PROJECT_ID} --zone ${GCE_ZONE}
+#  recipe to execute (from 'Makefile', line 140):
+	docker run -it --env-file .env ${GCR_MULTI_REGION}/${GCP_PROJECT_ID}/${DOCKER_IMAGE_NAME} sh
 
 GCP_cloud_config:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 138):
+#  recipe to execute (from 'Makefile', line 156):
 	gcloud run services describe ${DOCKER_IMAGE_NAME} --format export > service.yaml
+
+gcpsetup_00_login:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 95):
+	@gcloud auth login --cred-file=${GOOGLE_APPLICATION_CREDENTIALS}
+
+gcpinstance_01_connect:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 121):
+	gcloud beta compute ssh ${GCE_INSTANCE_NAME} --project ${GCP_PROJECT_ID} --zone ${GCE_ZONE}
 
 list:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 295):
+#  recipe to execute (from 'Makefile', line 310):
 	@echo "\nHelp for the \`taxifare\` package \`Makefile\`"
 	@echo "\n$(ccgreen)$(fbold)PACKAGE$(ccreset)"
 	@echo "\n    $(ccgreen)$(fbold)environment rules:$(ccreset)"
@@ -751,49 +751,63 @@ list:
 	@echo "\n        $(fbold)test_cloud_training$(ccreset)"
 	@echo "            Run the tests."
 
+actions_black:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 43):
+	@black deepCab/*/*.py
+
+docker_04_deploycontainer:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 151):
+	gcloud run deploy --image ${GCR_MULTI_REGION}/${GCP_PROJECT_ID}/${DOCKER_IMAGE_NAME} --platform managed --region ${GCR_REGION}
+
 run_api:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 42):
+#  recipe to execute (from 'Makefile', line 79):
 	uvicorn deepCab.api.fast:app --reload
 
-stop_instance:
+docker_03_pushtoregistry:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 103):
-	gcloud compute instances stop ${GCE_INSTANCE_NAME} --project ${GCP_PROJECT_ID} --zone ${GCE_ZONE}
-
-black:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
-#  recipe to execute (from 'Makefile', line 16):
-	@black deepCab/*/*.py
+#  recipe to execute (from 'Makefile', line 148):
+	docker push ${GCR_MULTI_REGION}/${GCP_PROJECT_ID}/${DOCKER_IMAGE_NAME}
 
 run_preprocess:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 25):
+#  recipe to execute (from 'Makefile', line 55):
 	python -c 'from deepCab.interface.main import preprocess; preprocess(); preprocess(source_type="val")'
 
+gcpsetup_02_setcredentials:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 103):
+	@gcloud projects get-iam-policy ${GCP_PROJECT_ID} \
+--flatten="bindings[].members" \
+--format='table(bindings.role)' \
+--filter="bindings.members:${SERVICE_ACCOUNT_EMAIL}"
+
 # files hash-table stats:
-# Load=42/1024=4%, Rehash=0, Collisions=1/63=2%
+# Load=44/1024=4%, Rehash=0, Collisions=0/54=0%
 # VPATH Search Paths
 
 # No 'vpath' search paths.
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 65 / storage = 787 B / avg = 12 B
-# current buf: size = 8162 B / used = 787 B / count = 65 / avg = 12 B
+# strcache buffers: 1 (0) / strings = 67 / storage = 944 B / avg = 14 B
+# current buf: size = 8162 B / used = 944 B / count = 67 / avg = 14 B
 
-# strcache performance: lookups = 116 / hit rate = 43%
+# strcache performance: lookups = 111 / hit rate = 39%
 # hash-table stats:
- 
-# Load=65/8192=1%, Rehash=0, Collisions=0/116=0%
-# Finished Make data base on Fri Nov 25 11:20:39 2022
-
- 
+# Load=67/8192=1%, Rehash=0, Collisions=0/111=0%
+# Finished Make data base on Mon Nov 28 12:57:46 2022

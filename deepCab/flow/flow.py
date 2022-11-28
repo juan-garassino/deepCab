@@ -1,9 +1,11 @@
 from deepCab.interface.main import preprocess, train, evaluate
-
+from colorama import Fore, Style
 from prefect import task, Flow, Parameter
-
+from prefect.schedules import IntervalSchedule
 import os
 import requests
+import datetime
+from prefect.executors import LocalDaskExecutor
 
 
 @task
@@ -22,6 +24,10 @@ def evaluate_production_model(status):
     Returns `eval_mae`
     """
     eval_mae = evaluate()
+
+    print(Fore.GREEN + "\n🔥 Ran task: EVAL PERF:" + Style.RESET_ALL +
+          f"\n- Past model performance: {eval_mae}")
+
     return eval_mae
 
 
@@ -31,9 +37,13 @@ def re_train(status):
     Run the training
     Returns train_mae
     """
+    # preprocess data chunk by chunk?
     train_mae = train()
-    return train_mae
 
+    print(Fore.GREEN + "\n🔥 Ran task: TRAIN MODEL:" + Style.RESET_ALL +
+          f"\n- New model performance: {train_mae}")
+
+    return train_mae
 
 @task
 def notify(eval_mae, train_mae):
@@ -47,86 +57,18 @@ def notify(eval_mae, train_mae):
     data = dict(author=author, content=content)
     response = requests.post(url, data=data)
     response.raise_for_status()
-
-
-"""@task
-def eval_perf(next_row):
-
-    # evaluate latest production model on new data
-    past_perf = evaluate()
-
-    print(Fore.GREEN + "\n🔥 Ran task: EVAL PERF:" + Style.RESET_ALL +
-          f"\n- Past model performance: {past_perf}")
-
-    return past_perf
-
-
-@task
-def train_model(next_row):
-
-    # preprocess data chunk by chunk
-    preprocess()
-    preprocess(source_type="val")
-
-    # train model chunk by chunk
-    new_perf = train()
-
-    print(Fore.GREEN + "\n🔥 Ran task: TRAIN MODEL:" + Style.RESET_ALL +
-          f"\n- New model performance: {new_perf}")
-
-    return new_perf
-
-
-@task
-def notify(past_perf, new_perf):
-
     print(Fore.GREEN + f"\n🔥 Run task: NOTIF" + Style.RESET_ALL +
-          f"\n- Past performance: {past_perf}" +
-          f"\n- New performance: {new_perf}")
+          f"\n- Past performance: {eval_mae}" +
+          f"\n- New performance: {train_mae}")
+
 
 def build_flow(schedule):
-
-    with Flow(name="garassino workflow", schedule=schedule) as flow:
-
-        next_row = 0
-
-        # evaluate the performance of the past model
-        past_perf = eval_perf(next_row)
-
-        # retrain the model with new lines
-        new_perf = train_model(next_row)
-
-        # print results
-        notify(past_perf, new_perf)
-
-    return flow
-
-
-if __name__ == "__main__":
-
-    # schedule = None
-    schedule = IntervalSchedule(interval=datetime.timedelta(minutes=2),
-                                end_date=datetime.datetime(2022, 11, 25))
-
-    flow = build_flow(schedule)
-
-    # flow.visualize()
-
-    # flow.run()
-
-    flow.executor = LocalDaskExecutor()
-
-    flow.register("garassinojuan project")
-"""
-
-
-def build_flow():
     """
     build the prefect workflow for the `taxifare` package
     """
     flow_name = os.environ.get("PREFECT_FLOW_NAME")
 
-    with Flow(flow_name) as flow:
+    with Flow(name=flow_name, schedule=schedule) as flow:
 
         # retrieve mlfow env params
         mlflow_experiment = os.environ.get("MLFLOW_EXPERIMENT")
@@ -136,8 +78,27 @@ def build_flow():
 
         # register tasks in the workflow
         status = preprocess_new_data(experiment)
+
         eval_mae = evaluate_production_model(status)
+
         train_mae = re_train(status)
+
         notify(eval_mae, train_mae)
 
     return flow
+
+if __name__ == "__main__":
+
+    # schedule = None
+    schedule = IntervalSchedule(interval=datetime.timedelta(minutes=2),
+                                end_date=datetime.datetime(2022, 12, 1))
+
+    flow = build_flow(schedule)
+
+    # flow.visualize()
+
+    # flow.run()
+
+    flow.executor = LocalDaskExecutor()
+
+    flow.register(os.environ.get("PREFECT_FLOW_NAME"))

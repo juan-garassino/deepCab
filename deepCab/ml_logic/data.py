@@ -81,7 +81,7 @@ def get_chunk(
             verbose=verbose,
         )
 
-    if os.environ.get("DATA_SOURCE") == "local":
+    elif os.environ.get("DATA_SOURCE") == "local":
 
         chunk_df = get_pandas_chunk(
             path=source_name,
@@ -92,7 +92,7 @@ def get_chunk(
             verbose=verbose,
         )
 
-    if os.environ.get("DATA_SOURCE") == "cloud":
+    elif os.environ.get("DATA_SOURCE") == "cloud":
 
         chunk_df = get_pandas_chunk(
             path=source_name,
@@ -102,6 +102,9 @@ def get_chunk(
             columns=columns,
             verbose=verbose,
         )
+
+    else:
+        print('Not a known argument for "DATA_SOURCE"')
 
     return chunk_df
 

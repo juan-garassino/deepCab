@@ -566,20 +566,20 @@ Now we are going to build our image again. This should be pretty fast since Dock
 Add a `GCR_MULTI_REGION` variable to your project configuration and set it to `eu.gcr.io`.
 
 ``` bash
-docker build -t $GCR_MULTI_REGION/$PROJECT/$IMAGE .
+docker build -t $GCR_MULTI_REGION/$GCP_PROJECT_ID/$IMAGE .
 ```
 
 Again, let's make sure that our image runs correctly, so that we avoid spending the time on pushing an image that is not working to the cloud.
 
 ``` bash
-docker run -e PORT=8000 -p 8000:8000 --env-file path/to/.env $GCR_MULTI_REGION/$PROJECT/$IMAGE
+docker run -e PORT=8000 -p 8000:8000 --env-file path/to/.env $GCR_MULTI_REGION/$GCP_PROJECT_ID/$IMAGE
 ```
 Visit [http://localhost:8000/](http://localhost:8000/) and check the API is running as expected.
 
 We can now push our image to Google Container Registry.
 
 ``` bash
-docker push $GCR_MULTI_REGION/$PROJECT/$IMAGE
+docker push $GCR_MULTI_REGION/$GCP_PROJECT_ID/$IMAGE
 ```
 
 The image should be visible in the GCP console [here](https://console.cloud.google.com/gcr/).
@@ -645,7 +645,7 @@ Cloud Run will instantiate the image into a container and run the `CMD` instruct
 Let's run one last command 🤞
 
 ``` bash
-gcloud run deploy --image $GCR_MULTI_REGION/$PROJECT/$IMAGE --memory $MEMORY --region $REGION --env-vars-file .env.yaml
+gcloud run deploy --image $GCR_MULTI_REGION/$GCP_PROJECT_ID/$IMAGE --memory $MEMORY --region $GCR_REGION --env-vars-file .env.yaml
 ```
 
 After confirmation, you should see a similar output indicating that the service is live 🎉

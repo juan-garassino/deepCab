@@ -11,7 +11,7 @@ VALIDATION_DATASET_SIZE = os.environ.get("VALIDATION_DATASET_SIZE")
 CHUNK_SIZE = int(os.environ.get("CHUNK_SIZE"))
 LOCAL_DATA_PATH = os.path.expanduser(os.environ.get("LOCAL_DATA_PATH"))
 LOCAL_REGISTRY_PATH = os.path.expanduser(os.environ.get("LOCAL_REGISTRY_PATH"))
-PROJECT = os.environ.get("PROJECT")
+GCP_PROJECT_ID = os.environ.get("GCP_PROJECT_ID")
 DATASET = os.environ.get("DATASET")
 
 # Use this to optimize loading of raw_data with headers: pd.read_csv(..., dtypes=..., headers=True)

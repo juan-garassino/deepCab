@@ -21,9 +21,9 @@ def preprocess(source_type="train"):
     chunk_id = 0
     row_count = 0
     cleaned_row_count = 0
-    source_name = f"{os.environ['SOURCE_TYPE']}_{os.environ['DATASET_SIZE']}"
+    source_name = f"{os.environ.get('SOURCE_TYPE')}_{os.environ['DATASET_SIZE']}"
     destination_name = (
-        f"{os.environ['SOURCE_TYPE']}_processed_{os.environ['DATASET_SIZE']}"
+        f"{os.environ.get('SOURCE_TYPE')}_processed_{os.environ['DATASET_SIZE']}"
     )
 
     while True:

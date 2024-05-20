@@ -13,6 +13,7 @@ deepCab/api/__init__.py
 deepCab/api/fast.py
 deepCab/data_sources/__init__.py
 deepCab/data_sources/big_query.py
+deepCab/data_sources/get_new_data.py
 deepCab/data_sources/local_disk.py
 deepCab/flow/__init__.py
 deepCab/flow/flow.py

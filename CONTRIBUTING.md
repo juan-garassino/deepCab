@@ -74,6 +74,10 @@ python -m deepCab.data.migrate --size 1k --split train
 python -m deepCab.data.migrate --size 1k --split val
 ```
 
+### "docker compose can't find docker-compose.yml at root"
+
+The compose files moved under `infra/compose/` in Sub-project A (2026-06-03). Run `make docker_up` instead of bare `docker compose up`, or pass `-f infra/compose/docker-compose.yml` explicitly.
+
 ### `/predict` returns 503 after API restart
 
 **Shouldn't happen after FR-1.** The lifespan autoloader reads

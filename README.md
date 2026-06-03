@@ -20,11 +20,14 @@ make run_api           # API serves /predict immediately — autoloader rehydrat
 # silicon Macs: run `make actions_reinstall_silicon` before `make bootstrap` for tensorflow-macos wheels
 ```
 
-Full stack via compose:
+Full stack via compose (files under `infra/compose/`):
 
 ```bash
-docker compose up -d                                                  # core
-docker compose -f docker-compose.yml -f docker-compose.obs.yml up -d  # + observability
+make docker_up                # core
+make docker_obs_up            # core + observability
+# or raw:
+docker compose -f infra/compose/docker-compose.yml up -d
+docker compose -f infra/compose/docker-compose.yml -f infra/compose/docker-compose.obs.yml up -d
 ```
 
 ## API endpoints
@@ -51,7 +54,7 @@ docker compose -f docker-compose.yml -f docker-compose.obs.yml up -d  # + observ
 ### curl examples
 
 ```bash
-KEY=$(cat secrets/deepcab_api_key)
+KEY=$(cat infra/secrets/deepcab_api_key)
 ROW='{"row":{"pickup_datetime":"2014-01-15T05:00:00","pickup_longitude":-73.97,"pickup_latitude":40.78,"dropoff_longitude":-73.99,"dropoff_latitude":40.74,"passenger_count":2}}'
 
 # predict (after make run_train)
@@ -69,7 +72,7 @@ curl -X POST http://localhost:8000/train -H "X-API-Key: $KEY" -H 'Content-Type: 
 ## Agent
 
 ```bash
-# REPL — needs OPENAI_API_KEY in .env.dev or secrets/openai_api_key
+# REPL — needs OPENAI_API_KEY in .env.dev or infra/secrets/openai_api_key
 python -m deepCab.agent.cli
 > /improve reduce val_mae below 3.0
 ```
@@ -116,7 +119,9 @@ Grafana auto-provisions three dashboards: **deepCab — API** (latency p50/p95/p
 ## GPU
 
 ```bash
-docker compose -f docker-compose.yml -f docker-compose.gpu.yml up -d --build api prefect-agent
+make docker_gpu_up
+# or raw:
+docker compose -f infra/compose/docker-compose.yml -f infra/compose/docker-compose.gpu.yml up -d --build api prefect-agent
 # requires nvidia-container-toolkit on the host
 ```
 

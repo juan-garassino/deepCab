@@ -6,7 +6,7 @@ services:
     restart: unless-stopped
     command: ["--config=/etc/otelcol/config.yaml"]
     volumes:
-      - ./compose/otel-collector.yaml:/etc/otelcol/config.yaml:ro
+      - ./conf/otel-collector.yaml:/etc/otelcol/config.yaml:ro
     ports:
       - "4317:4317"  # OTLP gRPC
       - "4318:4318"  # OTLP HTTP
@@ -24,7 +24,7 @@ services:
     image: prom/prometheus:v2.55.0
     restart: unless-stopped
     volumes:
-      - ./compose/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./conf/prometheus.yml:/etc/prometheus/prometheus.yml:ro
     ports:
       - "9090:9090"
 
@@ -36,7 +36,7 @@ services:
       GF_PATHS_PROVISIONING: /etc/grafana/provisioning
     volumes:
       - grafana_data:/var/lib/grafana
-      - ./compose/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./conf/grafana/provisioning:/etc/grafana/provisioning:ro
     ports:
       - "3000:3000"
     depends_on:

@@ -36,12 +36,12 @@ actions_reinstall:
 
 # PACKAGE ACTIONS — one-shot: install + seed secrets + migrate sample data
 bootstrap: actions_reinstall
-	@mkdir -p secrets
-	@test -s secrets/postgres_password   || echo dev-pg-pw      > secrets/postgres_password
-	@test -s secrets/minio_root_password || echo dev-minio-pw   > secrets/minio_root_password
-	@test -s secrets/deepcab_api_key     || openssl rand -hex 16 > secrets/deepcab_api_key
-	@test -s secrets/openai_api_key      || echo ""             > secrets/openai_api_key
-	@chmod 600 secrets/*
+	@mkdir -p infra/secrets
+	@test -s infra/secrets/postgres_password   || echo dev-pg-pw      > infra/secrets/postgres_password
+	@test -s infra/secrets/minio_root_password || echo dev-minio-pw   > infra/secrets/minio_root_password
+	@test -s infra/secrets/deepcab_api_key     || openssl rand -hex 16 > infra/secrets/deepcab_api_key
+	@test -s infra/secrets/openai_api_key      || echo ""             > infra/secrets/openai_api_key
+	@chmod 600 infra/secrets/*
 	@python -m deepCab.data.migrate --size 1k --split train 2>/dev/null || echo "  · skipped CSV→Parquet migrate (no source CSV)"
 	@python -m deepCab.data.migrate --size 1k --split val   2>/dev/null || true
 	@echo ""
@@ -161,7 +161,7 @@ gcpinstance_05_copyjson:
 	gcloud compute ssh ${INSTANCE} --command "echo 'export GOOGLE_APPLICATION_CREDENTIALS=~/.ssh/$(basename ${GOOGLE_APPLICATION_CREDENTIALS})' >> ~/.zshrc"
 # DOCKER
 docker_00_buildimage:
-	sudo docker build -t ${GCR_MULTI_REGION}/${GCP_PROJECT_ID}/${DOCKER_IMAGE_NAME} .
+	sudo docker build -f infra/docker/Dockerfile -t ${GCR_MULTI_REGION}/${GCP_PROJECT_ID}/${DOCKER_IMAGE_NAME} .
 
 # DOCKER
 docker_01_imagelist:
@@ -194,6 +194,22 @@ GCP_cloud_config:
 
 GCP_update_config:
 	gcloud run services replace service.yaml
+
+# DOCKER COMPOSE — layered stack under infra/compose/
+docker_up:
+	docker compose -f infra/compose/docker-compose.yml up -d
+
+docker_down:
+	docker compose -f infra/compose/docker-compose.yml down
+
+docker_obs_up:
+	docker compose -f infra/compose/docker-compose.yml -f infra/compose/docker-compose.obs.yml up -d
+
+docker_obs_down:
+	docker compose -f infra/compose/docker-compose.yml -f infra/compose/docker-compose.obs.yml down
+
+docker_gpu_up:
+	docker compose -f infra/compose/docker-compose.yml -f infra/compose/docker-compose.gpu.yml up -d --build api
 
 ################### DATA SOURCES ACTIONS ################
 

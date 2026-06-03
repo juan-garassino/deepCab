@@ -6,13 +6,13 @@ name: deepcab
 # manage values via the cluster secret store.
 secrets:
   postgres_password:
-    file: ./secrets/postgres_password
+    file: ../secrets/postgres_password
   minio_root_password:
-    file: ./secrets/minio_root_password
+    file: ../secrets/minio_root_password
   deepcab_api_key:
-    file: ./secrets/deepcab_api_key
+    file: ../secrets/deepcab_api_key
   openai_api_key:
-    file: ./secrets/openai_api_key
+    file: ../secrets/openai_api_key
 
 services:
   postgres:
@@ -105,7 +105,8 @@ services:
 
   prefect-agent:
     build:
-      context: .
+      context: ../..
+      dockerfile: infra/docker/Dockerfile
       args:
         GPU: "0"
     restart: unless-stopped
@@ -121,7 +122,8 @@ services:
 
   api:
     build:
-      context: .
+      context: ../..
+      dockerfile: infra/docker/Dockerfile
       args:
         GPU: "0"
     restart: unless-stopped

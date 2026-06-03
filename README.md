@@ -147,6 +147,19 @@ docker compose -f infra/compose/docker-compose.yml -f infra/compose/docker-compo
 # requires nvidia-container-toolkit on the host
 ```
 
+## Deploy to GCP Cloud Run
+
+1. One-time WIF bootstrap: `make wif_bootstrap` (after setting `PROJECT`, `PROJECT_NUMBER`, `GH_OWNER`, `GH_REPO`, `REGION` env vars). See `infra/gcp/workload-identity/README.md` for details.
+2. Set GitHub repo variables + secret: `GCP_PROJECT`, `GCP_PROJECT_NUMBER`, `GCP_REGION`, `GCP_WIF_PROVIDER`, `GCP_DEPLOYER_SA`, `MLFLOW_URL` (vars); `SLACK_WEBHOOK_URL` (secret). No long-lived GCP JSON keys — OIDC only.
+3. Push a tag: `git tag v0.1.0 && git push --tags`. The `deploy-cloud-run.yml` workflow builds + pushes the image, renders `infra/gcp/cloud-run/service.yaml`, and runs `gcloud run services replace`.
+4. Watch the Slack channel `#deepcab-ops` for `[ci] deploy → Cloud Run ✓`.
+
+GKE deploys are dispatch-only (avoids standing cluster cost):
+
+```bash
+gh workflow run deploy-gke.yml -f tag=v0.1.0 -f cluster=deepcab-prod -f cluster_region=us-central1
+```
+
 ## Tests
 
 ```bash

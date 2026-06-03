@@ -1,0 +1,99 @@
+name: deploy
+
+# Mirrors the user's reference screenshot's structure (build → push →
+# render task → deploy → Slack ✓/✗) but with GCP-native step names so
+# readers don't have to mentally translate AWS → GCP each time.
+#
+# Triggered by `v*` tags (default deploy) and manual dispatch.
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Image tag to deploy"
+        required: true
+        default: "latest"
+      model_uri:
+        description: "Optional GCS URI of the model artifact"
+        required: false
+        default: ""
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Slack — deploy starting
+        uses: rtcamp/action-slack-notify@v2.3.3
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_TITLE: "[ci] deploy → Cloud Run starting"
+          SLACK_MESSAGE: "ref=${{ github.ref_name }} sha=${{ github.sha }}"
+          SLACK_COLOR: "#cccccc"
+          MSG_MINIMAL: actions url
+
+      - name: Authenticate to GCP (OIDC / Workload Identity Federation)
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ vars.GCP_WIF_PROVIDER }}
+          service_account: ${{ vars.GCP_DEPLOYER_SA }}
+
+      - uses: google-github-actions/setup-gcloud@v2
+
+      - name: Login to Artifact Registry
+        run: gcloud auth configure-docker ${{ vars.GCP_REGION }}-docker.pkg.dev --quiet
+
+      - name: Build, tag, and push image to Artifact Registry
+        id: build
+        run: |
+          TAG="${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}"
+          IMG="${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT }}/deepcab/api:${TAG}"
+          docker buildx build \
+            --file infra/docker/Dockerfile \
+            --tag "$IMG" \
+            --push \
+            --build-arg GPU=0 \
+            .
+          echo "image=$IMG" >> "$GITHUB_OUTPUT"
+
+      - name: Render Cloud Run service spec (inject new image)
+        run: |
+          sed -e "s|__IMAGE__|${{ steps.build.outputs.image }}|g" \
+              -e "s|__GCP_PROJECT__|${{ vars.GCP_PROJECT }}|g" \
+              -e "s|__MLFLOW_URL__|${{ vars.MLFLOW_URL }}|g" \
+              -e "s|__MODEL_URI__|${{ inputs.model_uri }}|g" \
+              infra/gcp/cloud-run/service.yaml > service.rendered.yaml
+          cat service.rendered.yaml
+
+      - name: Deploy to Cloud Run
+        run: |
+          gcloud run services replace service.rendered.yaml \
+            --region=${{ vars.GCP_REGION }} \
+            --platform=managed \
+            --project=${{ vars.GCP_PROJECT }}
+
+      - name: Slack — deploy success
+        if: success()
+        uses: rtcamp/action-slack-notify@v2.3.3
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_COLOR: good
+          SLACK_TITLE: "[ci] deploy → Cloud Run ✓"
+          SLACK_MESSAGE: "${{ steps.build.outputs.image }}"
+
+      - name: Slack — deploy failure
+        if: failure()
+        uses: rtcamp/action-slack-notify@v2.3.3
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_COLOR: danger
+          SLACK_TITLE: "[ci] deploy → Cloud Run ✗"
+          SLACK_MESSAGE: "see ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"

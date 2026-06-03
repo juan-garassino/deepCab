@@ -1,0 +1,100 @@
+name: deploy-gke
+
+# Dispatch-only by default to avoid standing GKE cluster cost.
+# Flip the trigger to `push: tags: ['v*']` once you're paying for a cluster.
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Image tag to deploy"
+        required: true
+        default: "latest"
+      cluster:
+        description: "GKE cluster name"
+        required: true
+      cluster_region:
+        description: "GKE cluster region"
+        required: true
+        default: "us-central1"
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Slack — deploy starting
+        uses: rtcamp/action-slack-notify@v2.3.3
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_TITLE: "[ci] deploy → GKE starting"
+          SLACK_MESSAGE: "cluster=${{ inputs.cluster }} tag=${{ inputs.tag }}"
+          SLACK_COLOR: "#cccccc"
+
+      - name: Authenticate to GCP (OIDC / Workload Identity Federation)
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ vars.GCP_WIF_PROVIDER }}
+          service_account: ${{ vars.GCP_DEPLOYER_SA }}
+
+      - uses: google-github-actions/setup-gcloud@v2
+        with:
+          install_components: 'gke-gcloud-auth-plugin'
+
+      - name: Configure docker for Artifact Registry
+        run: gcloud auth configure-docker ${{ vars.GCP_REGION }}-docker.pkg.dev --quiet
+
+      - id: build
+        name: Build + push image
+        run: |
+          IMG="${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT }}/deepcab/api:${{ inputs.tag }}"
+          docker buildx build \
+            --file infra/docker/Dockerfile \
+            --tag "$IMG" \
+            --push \
+            --build-arg GPU=0 \
+            .
+          echo "image=$IMG" >> "$GITHUB_OUTPUT"
+
+      - name: Get GKE credentials
+        run: |
+          gcloud container clusters get-credentials ${{ inputs.cluster }} \
+            --region=${{ inputs.cluster_region }} \
+            --project=${{ vars.GCP_PROJECT }}
+
+      - name: Set image in overlay
+        run: |
+          cd infra/gcp/gke/overlays/prod
+          kustomize edit set image \
+            us-central1-docker.pkg.dev/PROJECT/deepcab/api=${{ steps.build.outputs.image }}
+
+      - name: kustomize build → kubectl apply
+        run: |
+          kustomize build infra/gcp/gke/overlays/prod | kubectl apply -f -
+
+      - name: Wait for rollout
+        run: |
+          kubectl -n deepcab-prod rollout status deployment/deepcab-api --timeout=5m
+
+      - name: Slack — success
+        if: success()
+        uses: rtcamp/action-slack-notify@v2.3.3
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_COLOR: good
+          SLACK_TITLE: "[ci] deploy → GKE ✓"
+          SLACK_MESSAGE: "${{ steps.build.outputs.image }}"
+
+      - name: Slack — failure
+        if: failure()
+        uses: rtcamp/action-slack-notify@v2.3.3
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_COLOR: danger
+          SLACK_TITLE: "[ci] deploy → GKE ✗"
+          SLACK_MESSAGE: "see ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"

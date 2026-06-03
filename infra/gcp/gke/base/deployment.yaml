@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deepcab-api
+spec:
+  replicas: 2
+  selector:
+    matchLabels: { app: deepcab-api }
+  template:
+    metadata:
+      labels: { app: deepcab-api }
+    spec:
+      serviceAccountName: deepcab-runtime
+      containers:
+        - name: api
+          image: us-central1-docker.pkg.dev/PROJECT/deepcab/api:latest   # overlay overrides
+          ports:
+            - containerPort: 8000
+          envFrom:
+            - configMapRef: { name: deepcab-config }
+          readinessProbe:
+            httpGet: { path: /readyz, port: 8000 }
+            periodSeconds: 5
+          livenessProbe:
+            httpGet: { path: /healthz, port: 8000 }
+            periodSeconds: 10
+          resources:
+            requests: { cpu: "500m", memory: "512Mi" }
+            limits:   { cpu: "2",    memory: "2Gi" }

@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: deepcab-config
+data:
+  APP_ENV: "prod"
+  MLFLOW_TRACKING_URI: "http://mlflow.deepcab.svc.cluster.local:5000"
+  MODEL_TARGET: "gcs"

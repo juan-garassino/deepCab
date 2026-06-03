@@ -1,0 +1,53 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: deepcab-api
+  annotations:
+    run.googleapis.com/launch-stage: BETA
+spec:
+  template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/minScale: "0"
+        autoscaling.knative.dev/maxScale: "10"
+        run.googleapis.com/cpu-throttling: "false"
+    spec:
+      serviceAccountName: deepcab-runtime@__GCP_PROJECT__.iam.gserviceaccount.com
+      containerConcurrency: 80
+      timeoutSeconds: 60
+      containers:
+        - image: __IMAGE__
+          ports:
+            - name: http1
+              containerPort: 8000
+          resources:
+            limits:
+              cpu: "2"
+              memory: 2Gi
+          env:
+            - name: APP_ENV
+              value: prod
+            - name: PORT
+              value: "8000"
+            - name: MLFLOW_TRACKING_URI
+              value: __MLFLOW_URL__
+            - name: MODEL_TARGET
+              value: gcs
+            - name: GCP_PROJECT
+              value: __GCP_PROJECT__
+            - name: MODEL_URI
+              value: __MODEL_URI__
+          startupProbe:
+            httpGet:
+              path: /healthz
+              port: 8000
+            failureThreshold: 30
+            periodSeconds: 2
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8000
+            periodSeconds: 10
+  traffic:
+    - percent: 100
+      latestRevision: true

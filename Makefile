@@ -421,3 +421,8 @@ docker_dev_up:
 
 docker_dev_down:
 	docker compose -f infra/compose/docker-compose.yml -f infra/compose/docker-compose.obs.yml -f infra/compose/docker-compose.dev.yml down
+
+# GCP — Workload Identity Federation bootstrap (Sub-project C)
+wif_bootstrap:
+	@echo "Set PROJECT, PROJECT_NUMBER, GH_OWNER, GH_REPO, REGION env vars first."
+	bash infra/gcp/workload-identity/bootstrap.sh

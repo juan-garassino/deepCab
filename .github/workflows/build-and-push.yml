@@ -1,0 +1,58 @@
+name: build-and-push
+
+# Reusable workflow: OIDC auth to GCP via Workload Identity Federation,
+# then build + push the api image to Artifact Registry (GAR).
+#
+# Callers pass an image `tag` (e.g. v1.2.3 or sha-abc1234) and receive
+# back the fully-qualified image URI as an output.
+
+on:
+  workflow_call:
+    inputs:
+      tag:
+        description: "Image tag (e.g. v1.2.3 or sha-abc1234)"
+        required: true
+        type: string
+    outputs:
+      image:
+        description: "Fully qualified image URI"
+        value: ${{ jobs.build.outputs.image }}
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      image: ${{ steps.image.outputs.uri }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - id: gcp-auth
+        name: Authenticate to GCP (OIDC / Workload Identity Federation)
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ vars.GCP_WIF_PROVIDER }}
+          service_account: ${{ vars.GCP_DEPLOYER_SA }}
+
+      - uses: google-github-actions/setup-gcloud@v2
+
+      - name: Configure docker for Artifact Registry
+        run: gcloud auth configure-docker ${{ vars.GCP_REGION }}-docker.pkg.dev --quiet
+
+      - id: image
+        name: Compose image URI
+        run: |
+          IMG=${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT }}/deepcab/api:${{ inputs.tag }}
+          echo "uri=$IMG" >> "$GITHUB_OUTPUT"
+
+      - name: Build, tag, and push image to Artifact Registry
+        run: |
+          docker buildx build \
+            --file infra/docker/Dockerfile \
+            --tag "${{ steps.image.outputs.uri }}" \
+            --push \
+            --build-arg GPU=0 \
+            .

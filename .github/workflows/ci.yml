@@ -60,15 +60,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Bring up core stack
-        run: docker compose up -d --build api mlflow postgres minio redis
+        run: docker compose -f infra/compose/docker-compose.yml up -d --build api mlflow postgres minio redis
       - name: Wait for /readyz
         run: |
           for i in $(seq 1 60); do
             if curl -sf http://localhost:8000/readyz; then exit 0; fi
             sleep 2
           done
-          docker compose logs
+          docker compose -f infra/compose/docker-compose.yml logs
           exit 1
       - name: Tear down
         if: always()
-        run: docker compose down -v
+        run: docker compose -f infra/compose/docker-compose.yml down -v

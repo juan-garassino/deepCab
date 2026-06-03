@@ -39,5 +39,21 @@ services:
     volumes:
       - pgadmin_data:/var/lib/pgadmin
 
+  react-dev:
+    image: node:20-alpine
+    working_dir: /app
+    command: sh -c "npm install && npm run dev"
+    environment:
+      VITE_API_BASE_URL: https://api.deepcab.localhost
+    volumes:
+      - ../../../003-deepCab-website:/app
+      - react_node_modules:/app/node_modules
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.react.rule=Host(`app.deepcab.localhost`)"
+      - "traefik.http.routers.react.tls=true"
+      - "traefik.http.services.react.loadbalancer.server.port=5173"
+
 volumes:
   pgadmin_data:
+  react_node_modules:

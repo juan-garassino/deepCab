@@ -422,6 +422,15 @@ docker_dev_up:
 docker_dev_down:
 	docker compose -f infra/compose/docker-compose.yml -f infra/compose/docker-compose.obs.yml -f infra/compose/docker-compose.dev.yml down
 
+# COLAB — print VS Code attach steps for the Colab GPU notebook
+colab_kernel:
+	@echo "1. Open https://colab.research.google.com/github/<owner>/<repo>/blob/main/001-deepCab-api/notebooks/colab-train-and-push.ipynb"
+	@echo "2. Switch runtime to GPU; set Colab secrets NGROK_AUTHTOKEN, GH_TOKEN, GCP_PROJECT, GH_REPO"
+	@echo "3. Run cells 1-3 on Colab; copy the printed URL"
+	@echo "4. VS Code: Cmd+Shift+P → 'Jupyter: Specify Jupyter Server for Connections' → paste URL"
+	@echo "5. Open notebooks/colab-train-and-push.ipynb locally; pick the remote server as kernel"
+	@echo "See notebooks/README.md for the full walkthrough."
+
 # GCP — Workload Identity Federation bootstrap (Sub-project C)
 wif_bootstrap:
 	@echo "Set PROJECT, PROJECT_NUMBER, GH_OWNER, GH_REPO, REGION env vars first."

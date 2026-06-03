@@ -34,3 +34,16 @@ Each notebook is a real lesson — research + prose + executable + exercise desi
 Doing 10 in one batch produces 10 mediocre notebooks. Doing 3 thoroughly
 (overview + the keystone backend factory + the agent loop) and scaffolding 7
 gives a clear roadmap without faking depth.
+
+## `colab-train-and-push.ipynb`
+
+Train on Colab's GPU with the editor still on your laptop:
+
+1. Open the notebook on Colab (https://colab.research.google.com/github/<owner>/<repo>/blob/main/001-deepCab-api/notebooks/colab-train-and-push.ipynb). Switch to GPU runtime.
+2. Set 4 Colab secrets (Tools → Secrets): `NGROK_AUTHTOKEN`, `GH_TOKEN`, `GCP_PROJECT`, `GH_REPO`.
+3. Run cells 1–3. Cell 3 prints a URL.
+4. In VS Code: `Cmd+Shift+P` → *Jupyter: Specify Jupyter Server for Connections* → paste the URL from cell 3.
+5. Open this notebook locally. Use the kernel picker to choose the remote ngrok server.
+6. Run cells 4–6 from VS Code. Cell 4 trains on Colab's GPU; cell 5 pushes to GCS; cell 6 triggers `deploy-cloud-run.yml`.
+
+If the Colab runtime disconnects, re-run cell 3 to get a new ngrok URL (free-tier ngrok URLs are ephemeral).

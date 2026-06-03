@@ -78,6 +78,10 @@ onnx = [
     "skl2onnx>=1.16",
     "tf2onnx>=1.16",
 ]
+notebook = [
+    "pyngrok>=7.1.6",
+    "jupyter-server>=2.14",
+]
 
 [project.urls]
 Repository = "https://github.com/juan-garassino/deepCab"

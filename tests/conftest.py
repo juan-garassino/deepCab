@@ -1,38 +1,22 @@
-import pickle
-import pandas as pd
-import os
+"""Shared pytest fixtures.
+
+P14 cleanup: the legacy env-var stub block (CHUNK_SIZE / DATASET_SIZE / etc.)
+went away with the legacy ml_logic/params.py import. New tests use the Pydantic
+Settings model directly; monkeypatch env vars and call get_settings.cache_clear()
+in your fixture if you need to override (see tests/security/test_secrets_and_auth.py
+for the pattern)."""
+from __future__ import annotations
+
 import pytest
-import numpy as np
 
-from deepCab.ml_logic.params import DTYPES_RAW_OPTIMIZED
-
-
-@pytest.fixture(scope="session")  # cached fixture
-def train_1k()->pd.DataFrame:
-
-    gcs_path = "https://storage.googleapis.com/datascience-mlops/taxi-fare-ny/train_1k.csv"
-    df_raw = pd.read_csv(gcs_path, dtype=DTYPES_RAW_OPTIMIZED)
-
-    return df_raw
+from deepCab.schemas.settings import get_settings
 
 
-@pytest.fixture(scope='session')
-def train_1k_cleaned()->pd.DataFrame:
-    gcs_path = "https://storage.googleapis.com/datascience-mlops/taxi-fare-ny/solutions/train_1k_cleaned.csv"
-    df_cleaned = pd.read_csv(gcs_path, dtype=DTYPES_RAW_OPTIMIZED)
-
-    return df_cleaned
-
-
-@pytest.fixture(scope='session')
-def X_processed_1k() -> np.ndarray:
-    with open(os.path.join(os.path.dirname(__file__), "fixtures", "X_processed_1k.npy"), "rb") as f:
-        X_processed_1k = np.load(f)
-    return X_processed_1k
-
-
-@pytest.fixture(scope='session')
-def y_1k() -> pd.Series:
-    with open(os.path.join(os.path.dirname(__file__), "fixtures", "y_1k.npy"), "rb") as f:
-        y = np.load(f)
-    return y
+@pytest.fixture(autouse=True)
+def _reset_settings_cache():
+    """Force a fresh Settings() per test so monkeypatch env changes always
+    take effect. The @lru_cache on get_settings is meant for prod (load once)
+    not tests."""
+    get_settings.cache_clear()  # type: ignore[attr-defined]
+    yield
+    get_settings.cache_clear()  # type: ignore[attr-defined]

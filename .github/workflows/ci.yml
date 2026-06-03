@@ -1,0 +1,74 @@
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint-and-type:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v3
+        with:
+          enable-cache: true
+      - name: Set up Python
+        run: uv python install 3.11
+      - name: Verify uv.lock matches pyproject.toml
+        run: uv lock --check
+      - name: Install dev deps
+        run: uv sync --extra dev --frozen
+      - name: Ruff format check
+        run: uv run ruff format --check .
+      - name: Ruff lint
+        run: uv run ruff check .
+      - name: Mypy (loose)
+        run: uv run mypy deepCab --ignore-missing-imports --check-untyped-defs || true
+        # Mypy is informational this phase; flip to required after the
+        # tests/types pass cleanup in Phase 11 (not yet scheduled).
+
+  unit-tests:
+    runs-on: ubuntu-latest
+    needs: lint-and-type
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v3
+        with:
+          enable-cache: true
+      - run: uv python install 3.11
+      - run: uv sync --extra dev --frozen
+      - name: Run unit + integration tests (no docker)
+        # tests/all is the legacy bootcamp self-check; tests/api integration
+        # tests use FastAPI TestClient, no docker required.
+        run: uv run pytest tests/ --ignore=tests/all -q
+
+  compose-integration:
+    runs-on: ubuntu-latest
+    needs: unit-tests
+    # Only run when the PR touches infra / serving so the heavy stack doesn't
+    # spin up on every doc change.
+    if: |
+      contains(github.event.pull_request.changed_files, 'docker-compose') ||
+      contains(github.event.pull_request.changed_files, 'Dockerfile') ||
+      contains(github.event.pull_request.changed_files, 'deepCab/serving') ||
+      contains(github.event.pull_request.changed_files, 'deepCab/api')
+    steps:
+      - uses: actions/checkout@v4
+      - name: Bring up core stack
+        run: docker compose up -d --build api mlflow postgres minio redis
+      - name: Wait for /readyz
+        run: |
+          for i in $(seq 1 60); do
+            if curl -sf http://localhost:8000/readyz; then exit 0; fi
+            sleep 2
+          done
+          docker compose logs
+          exit 1
+      - name: Tear down
+        if: always()
+        run: docker compose down -v

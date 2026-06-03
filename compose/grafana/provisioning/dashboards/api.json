@@ -1,0 +1,42 @@
+{
+  "uid": "deepcab-api",
+  "title": "deepCab — API",
+  "schemaVersion": 38,
+  "version": 1,
+  "refresh": "10s",
+  "time": {"from": "now-15m", "to": "now"},
+  "panels": [
+    {
+      "id": 1, "type": "timeseries", "title": "Request rate (req/s) by route",
+      "gridPos": {"x": 0, "y": 0, "w": 12, "h": 8},
+      "targets": [{
+        "expr": "sum by (route) (rate(http_request_duration_seconds_count[1m]))",
+        "legendFormat": "{{route}}"
+      }]
+    },
+    {
+      "id": 2, "type": "timeseries", "title": "p50 / p95 / p99 latency by route",
+      "gridPos": {"x": 12, "y": 0, "w": 12, "h": 8},
+      "targets": [
+        {"expr": "histogram_quantile(0.50, sum by (le, route) (rate(http_request_duration_seconds_bucket[5m])))", "legendFormat": "p50 {{route}}"},
+        {"expr": "histogram_quantile(0.95, sum by (le, route) (rate(http_request_duration_seconds_bucket[5m])))", "legendFormat": "p95 {{route}}"},
+        {"expr": "histogram_quantile(0.99, sum by (le, route) (rate(http_request_duration_seconds_bucket[5m])))", "legendFormat": "p99 {{route}}"}
+      ]
+    },
+    {
+      "id": 3, "type": "stat", "title": "5xx error rate",
+      "gridPos": {"x": 0, "y": 8, "w": 6, "h": 6},
+      "targets": [{
+        "expr": "sum(rate(http_request_duration_seconds_count{status=~\"5..\"}[5m]))"
+      }]
+    },
+    {
+      "id": 4, "type": "timeseries", "title": "Predicted fare distribution",
+      "gridPos": {"x": 6, "y": 8, "w": 18, "h": 6},
+      "targets": [{
+        "expr": "histogram_quantile(0.5, sum by (le, backend_kind) (rate(deepcab_prediction_value_bucket[5m])))",
+        "legendFormat": "p50 {{backend_kind}}"
+      }]
+    }
+  ]
+}

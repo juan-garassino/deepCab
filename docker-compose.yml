@@ -1,0 +1,149 @@
+name: deepcab
+
+# Secrets are sourced from ./secrets/<name>. Copy ./secrets.example/* into
+# ./secrets/ for first run; the directory is gitignored so dev defaults stay
+# off-repo. Production swarms / Kubernetes should use `external: true` and
+# manage values via the cluster secret store.
+secrets:
+  postgres_password:
+    file: ./secrets/postgres_password
+  minio_root_password:
+    file: ./secrets/minio_root_password
+  deepcab_api_key:
+    file: ./secrets/deepcab_api_key
+  openai_api_key:
+    file: ./secrets/openai_api_key
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    secrets:
+      - postgres_password
+    environment:
+      POSTGRES_USER: mlflow
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
+      POSTGRES_DB: mlflow
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mlflow"]
+      interval: 5s
+      retries: 5
+
+  minio:
+    image: minio/minio:latest
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    secrets:
+      - minio_root_password
+    environment:
+      MINIO_ROOT_USER: minio
+      MINIO_ROOT_PASSWORD_FILE: /run/secrets/minio_root_password
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 5s
+      retries: 5
+
+  mlflow:
+    image: ghcr.io/mlflow/mlflow:v2.16.2
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    secrets:
+      - postgres_password
+      - minio_root_password
+    environment:
+      MLFLOW_S3_ENDPOINT_URL: http://minio:9000
+      AWS_ACCESS_KEY_ID: minio
+    # mlflow doesn't natively read AWS_SECRET_ACCESS_KEY_FILE; we inline-load
+    # the secrets at startup and compose the connection URI.
+    command: >
+      bash -c "pip install psycopg2-binary boto3 &&
+      export PG_PW=$$(cat /run/secrets/postgres_password) &&
+      export AWS_SECRET_ACCESS_KEY=$$(cat /run/secrets/minio_root_password) &&
+      mlflow server --host 0.0.0.0 --port 5000
+      --backend-store-uri postgresql://mlflow:$$PG_PW@postgres:5432/mlflow
+      --artifacts-destination s3://mlflow"
+    ports:
+      - "5000:5000"
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+
+  prefect:
+    image: prefecthq/prefect:3-latest
+    restart: unless-stopped
+    secrets:
+      - postgres_password
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      PREFECT_SERVER_API_HOST: 0.0.0.0
+      PREFECT_HOME: /data
+    # Compose the postgres URI at startup from the mounted secret.
+    command: >
+      bash -c "export PG_PW=$$(cat /run/secrets/postgres_password) &&
+      export PREFECT_API_DATABASE_CONNECTION_URL=postgresql+asyncpg://mlflow:$$PG_PW@postgres:5432/prefect &&
+      prefect server start --host 0.0.0.0"
+    volumes:
+      - prefect_data:/data
+    ports:
+      - "4200:4200"
+
+  prefect-agent:
+    build:
+      context: .
+      args:
+        GPU: "0"
+    restart: unless-stopped
+    depends_on:
+      - prefect
+    environment:
+      PREFECT_API_URL: http://prefect:4200/api
+      APP_ENV: dev
+      MLFLOW_TRACKING_URI: http://mlflow:5000
+    command: python -m deepCab.flow_v2.schedules
+    # Reuses the api image (full deepCab + deps); avoids rebuilding for each
+    # flow run since the schedule serves in-process.
+
+  api:
+    build:
+      context: .
+      args:
+        GPU: "0"
+    restart: unless-stopped
+    depends_on:
+      - mlflow
+      - redis
+    secrets:
+      - deepcab_api_key
+      - openai_api_key
+    environment:
+      APP_ENV: dev
+      MLFLOW_TRACKING_URI: http://mlflow:5000
+      OBS_OTLP_ENDPOINT: otel-collector:4317
+      OBS_SERVICE_NAME: deepcab-api
+      # _maybe_read_file in schemas/settings.py resolves the `file:` URI
+      # at Settings() construction time.
+      DEEPCAB_API_KEY: file:/run/secrets/deepcab_api_key
+      OPENAI_API_KEY: file:/run/secrets/openai_api_key
+    ports:
+      - "8000:8000"
+
+volumes:
+  postgres_data:
+  minio_data:
+  prefect_data:

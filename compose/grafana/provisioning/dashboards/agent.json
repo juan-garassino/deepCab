@@ -1,0 +1,41 @@
+{
+  "uid": "deepcab-agent",
+  "title": "deepCab — Agent",
+  "schemaVersion": 38,
+  "version": 1,
+  "refresh": "30s",
+  "time": {"from": "now-1h", "to": "now"},
+  "panels": [
+    {
+      "id": 1, "type": "timeseries", "title": "Tool calls per minute (by tool)",
+      "gridPos": {"x": 0, "y": 0, "w": 12, "h": 8},
+      "targets": [{
+        "expr": "sum by (tool) (rate(deepcab_agent_tool_call_total[1m]))",
+        "legendFormat": "{{tool}}"
+      }]
+    },
+    {
+      "id": 2, "type": "timeseries", "title": "Tool error rate",
+      "gridPos": {"x": 12, "y": 0, "w": 12, "h": 8},
+      "targets": [{
+        "expr": "sum by (tool) (rate(deepcab_agent_tool_call_total{status=\"error\"}[5m]))",
+        "legendFormat": "{{tool}}"
+      }]
+    },
+    {
+      "id": 3, "type": "stat", "title": "Total tokens (24h)",
+      "gridPos": {"x": 0, "y": 8, "w": 6, "h": 6},
+      "targets": [{
+        "expr": "sum(increase(deepcab_agent_tokens_total[24h]))"
+      }]
+    },
+    {
+      "id": 4, "type": "timeseries", "title": "Prompt vs completion tokens",
+      "gridPos": {"x": 6, "y": 8, "w": 18, "h": 6},
+      "targets": [{
+        "expr": "sum by (kind) (rate(deepcab_agent_tokens_total[5m]))",
+        "legendFormat": "{{kind}}"
+      }]
+    }
+  ]
+}

@@ -32,8 +32,28 @@ IMAGE_FAMILY=ubuntu-2204-lts
 
 # PACKAGE ACTIONS
 actions_reinstall:
-	@pip uninstall -y taxifare || :
-	@pip install -e .
+	@uv sync --extra dev
+
+# PACKAGE ACTIONS — one-shot: install + seed secrets + migrate sample data
+bootstrap: actions_reinstall
+	@mkdir -p secrets
+	@test -s secrets/postgres_password   || echo dev-pg-pw      > secrets/postgres_password
+	@test -s secrets/minio_root_password || echo dev-minio-pw   > secrets/minio_root_password
+	@test -s secrets/deepcab_api_key     || openssl rand -hex 16 > secrets/deepcab_api_key
+	@test -s secrets/openai_api_key      || echo ""             > secrets/openai_api_key
+	@chmod 600 secrets/*
+	@python -m deepCab.data.migrate --size 1k --split train 2>/dev/null || echo "  · skipped CSV→Parquet migrate (no source CSV)"
+	@python -m deepCab.data.migrate --size 1k --split val   2>/dev/null || true
+	@echo ""
+	@echo "✓ bootstrap complete — next: \`make run_train\` then \`make run_api\`"
+
+# PACKAGE ACTIONS
+actions_reinstall_silicon:
+	@uv sync --extra dev --extra silicon
+
+# PACKAGE ACTIONS
+actions_lock:
+	@uv lock
 
 # PACKAGE ACTIONS
 actions_clean:
@@ -41,48 +61,45 @@ actions_clean:
 	@rm -f .coverage
 	@rm -fr */__pycache__ */*.pyc __pycache__
 	@rm -fr build dist
-	@rm -fr deepSculpt-*.dist-info
-	@rm -fr deepSculpt.egg-info
+	@rm -fr deepCab-*.dist-info
+	@rm -fr deepCab.egg-info
 
 # PACKAGE ACTIONS
-actions_black:
-	@black deepCab/*/*.py
+actions_format:
+	@uv run ruff format deepCab tests
 
-# PACKAGE RUNS
-run_model:
-	python -m deepCab.interface.main
-
-# PACKAGE RUNS
-run_flow:
-	python -m deepCab.flow.main
-
-# PACKAGE RUNS
-run_preprocess:
-	python -c 'from deepCab.interface.main import preprocess; preprocess(); preprocess(source_type="val")'
+# PACKAGE ACTIONS
+actions_lint:
+	@uv run ruff check deepCab tests
 
 # PACKAGE RUNS
 run_train:
-	python -c 'from deepCab.interface.main import train; train()'
-
-# PACKAGE RUNS
-run_pred:
-	python -c 'from deepCab.interface.main import pred; pred()'
-
-# PACKAGE RUNS
-run_evaluate:
-	python -c 'from deepCab.interface.main import evaluate; evaluate()'
-
-# PACKAGE RUNS
-run_all:
-	run_preprocess run_train run_pred run_evaluate
-
-# PACKAGE RUNS
-run_workflow:
-	PREFECT__LOGGING__LEVEL=${PREFECT_LOG_LEVEL} python -m deepCab.flow.main
+	python -m deepCab.training.train backend=tf_mlp data=1k
 
 # PACKAGE RUNS
 run_api:
-	uvicorn deepCab.api.fast:app --reload
+	uvicorn deepCab.api.app:app --reload
+
+# PACKAGE RUNS  (Prefect 3 — replaces legacy `run_workflow`)
+run_flow:
+	python -c 'from deepCab.flow_v2.retrain import retrain_flow; from deepCab.schemas.config import TrainConfig, XGBConfig, DataRef; retrain_flow(TrainConfig(backend=XGBConfig(), data=DataRef()))'
+
+flow_serve:
+	python -m deepCab.flow_v2.schedules
+
+# Regenerate gRPC stubs (uses ephemeral grpcio-tools env to avoid protobuf 5
+# conflict with mlflow/tensorflow in the main lockfile).
+grpc_gen:
+	uv run --with grpcio-tools python -m grpc_tools.protoc \
+		-I proto --python_out=deepCab/grpc --grpc_python_out=deepCab/grpc \
+		proto/deepcab.proto
+	@# protoc emits `import deepcab_pb2` (flat). Patch to package-relative.
+	@sed -i.bak 's/^import deepcab_pb2 as deepcab__pb2$$/from deepCab.grpc import deepcab_pb2 as deepcab__pb2/' deepCab/grpc/deepcab_pb2_grpc.py
+	@rm -f deepCab/grpc/deepcab_pb2_grpc.py.bak
+	@echo 'stubs written to deepCab/grpc/deepcab_pb2*.py'
+
+run_grpc:
+	python -m deepCab.grpc.server
 
 # TESTS
 default:
@@ -177,15 +194,6 @@ GCP_cloud_config:
 
 GCP_update_config:
 	gcloud run services replace service.yaml
-
-prefect_server_start:
-	prefect server start --postgres-port 5433 --ui-port 8088
-
-prefect_agent_start:
-	prefect agent local start
-
-prefect_project_create:
-	prefect create project ${PREFECT_FLOW_NAME}
 
 ################### DATA SOURCES ACTIONS ################
 
@@ -347,11 +355,10 @@ list:
 	@echo "            Show the environment variables used by the package by category."
 
 	@echo "\n    $(ccgreen)$(fbold)run rules:$(ccreset)"
-	@echo "\n        $(fbold)run_all$(ccreset)"
-	@echo "            Run the package (\`deepCab.interface.main\` module)."
-
-	@echo "\n        $(fbold)run_workflow$(ccreset)"
-	@echo "            Start a prefect workflow locally (run the \`deepCab.flow.main\` module)."
+	@echo "\n        $(fbold)run_train$(ccreset)"
+	@echo "            Train via Hydra entry (deepCab.training.train)."
+	@echo "\n        $(fbold)run_api$(ccreset)"
+	@echo "            Serve the FastAPI app with reload."
 
 	@echo "\n$(ccgreen)$(fbold)WORKFLOW$(ccreset)"
 

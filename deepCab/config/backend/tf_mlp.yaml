@@ -1,0 +1,8 @@
+kind: tf_mlp
+hidden: [100, 50, 10]
+dropout: 0.1
+l2: 0.005
+learning_rate: 0.001
+batch_size: 256
+patience: 2
+epochs: 100

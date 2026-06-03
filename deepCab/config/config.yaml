@@ -1,0 +1,8 @@
+defaults:
+  - backend: tf_mlp
+  - data: 1k
+  - _self_
+
+seed: 42
+cv: null
+hpo: null

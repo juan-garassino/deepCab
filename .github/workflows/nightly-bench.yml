@@ -1,0 +1,64 @@
+name: nightly-bench
+
+# Full Optuna study on the 10k slice. Posts a summary comment to a long-lived
+# tracking issue so the agent's `list_runs` tool has fresh data each morning.
+
+on:
+  schedule:
+    - cron: "0 6 * * *"   # 06:00 UTC daily
+  workflow_dispatch:
+
+jobs:
+  bench:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      APP_ENV: prod
+      MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
+      MLFLOW_EXPERIMENT: deepcab-nightly
+      MLFLOW_MODEL_NAME: deepcab
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v3
+        with:
+          enable-cache: true
+      - run: uv python install 3.11
+      - run: uv sync --frozen
+
+      - name: Optuna HPO across backends (10k)
+        run: |
+          uv run python -c "
+          from deepCab.schemas.config import HPOConfig, LGBMConfig, TrainConfig, DataRef
+          from deepCab.training.hpo import tune
+          from deepCab.training.preprocess import preprocess as pp
+          import numpy as np
+
+          X_tr, y_tr = pp(DataRef(size='10k'), split='train')
+          X_val, y_val = pp(DataRef(size='10k'), split='val')
+
+          def obj(cfg):
+              from deepCab.models.factory import build_estimator
+              est = build_estimator(cfg.backend)
+              est.fit(X_tr, y_tr)
+              pred = est.predict(X_val)
+              return float(np.mean((pred - y_val) ** 2) ** 0.5)
+
+          base = TrainConfig(backend=LGBMConfig(), data=DataRef(size='10k'),
+                             hpo=HPOConfig(n_trials=30, sampler='tpe'))
+          res = tune(base, obj)
+          print(f'best_value={res.best_value:.4f}  best_params={res.best_params}')
+          "
+
+      - name: Post summary to tracking issue
+        if: success() && vars.NIGHTLY_TRACKING_ISSUE
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: parseInt(process.env.NIGHTLY_TRACKING_ISSUE),
+              body: `Nightly bench finished: ${context.runId}\nLogs: ${context.payload.repository.html_url}/actions/runs/${context.runId}`
+            })
+        env:
+          NIGHTLY_TRACKING_ISSUE: ${{ vars.NIGHTLY_TRACKING_ISSUE }}

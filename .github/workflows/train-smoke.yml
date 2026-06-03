@@ -1,0 +1,83 @@
+name: train-smoke
+
+# 1k-dataset training smoke per backend on every PR. Gates merging on a real
+# end-to-end fit + ONNX export, not just unit tests.
+
+on:
+  pull_request:
+    paths:
+      - "deepCab/models/**"
+      - "deepCab/features/**"
+      - "deepCab/training/**"
+      - "deepCab/data/**"
+      - "deepCab/schemas/**"
+      - "pyproject.toml"
+      - "uv.lock"
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        backend: [xgb, lgbm, catboost, tf_mlp, torch_mlp, ft_transformer]
+    env:
+      APP_ENV: dev
+      MLFLOW_TRACKING_URI: ""  # log to local file URI; CI doesn't run mlflow-server
+      DATA_LOCAL_PATH: /tmp/mlops-data
+      DATA_PARQUET_PATH: /tmp/mlops-data/parquet
+      REGISTRY_LOCAL_PATH: /tmp/mlops-registry
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v3
+        with:
+          enable-cache: true
+      - run: uv python install 3.11
+      - run: uv sync --extra dev --frozen
+
+      - name: Seed 1k dataset
+        # The full dataset migration would run here. For PR smoke we just
+        # synthesize 1k rows so this gate is fast + hermetic. Production CI
+        # would `aws s3 cp s3://datascience-mlops/taxi-fare-ny/train_1k.csv ...`.
+        run: |
+          uv run python -c "
+          import numpy as np, polars as pl
+          from datetime import datetime, timedelta
+          from pathlib import Path
+          rng = np.random.default_rng(0)
+          n = 1000
+          base = datetime(2014, 1, 1)
+          df = pl.DataFrame({
+            'key': [f'k{i}' for i in range(n)],
+            'fare_amount': rng.uniform(2.5, 60, n),
+            'pickup_datetime': [base + timedelta(minutes=int(m)) for m in rng.integers(0, 60*24*365, n)],
+            'pickup_longitude': rng.uniform(-74.05, -73.75, n),
+            'pickup_latitude': rng.uniform(40.65, 40.85, n),
+            'dropoff_longitude': rng.uniform(-74.05, -73.75, n),
+            'dropoff_latitude': rng.uniform(40.65, 40.85, n),
+            'passenger_count': rng.integers(1, 5, n),
+          })
+          from deepCab.data.io import write_partitioned
+          write_partitioned(df.with_columns(pl.lit('train').alias('split')), 'train_1k')
+          write_partitioned(df.with_columns(pl.lit('val').alias('split')), 'val_1k')
+          "
+
+      - name: Train ${{ matrix.backend }} on 1k
+        run: |
+          uv run python -m deepCab.training.train backend=${{ matrix.backend }} data=1k
+
+      - name: Assert val_mae below ceiling
+        # Synthetic data ceilings are loose — real bound numbers belong in a
+        # per-backend YAML the agent reads from. Hardcoded for now.
+        run: |
+          uv run python -c "
+          from pathlib import Path; import json
+          provs = list(Path('runs').rglob('provenance.json'))
+          assert provs, 'no provenance written'
+          blob = json.loads(provs[-1].read_text())
+          mae = blob['metrics'].get('val_mae')
+          assert mae is not None, 'val_mae missing'
+          ceiling = {'xgb': 25.0, 'lgbm': 25.0, 'catboost': 25.0, 'tf_mlp': 30.0, 'torch_mlp': 30.0, 'ft_transformer': 35.0}['${{ matrix.backend }}']
+          assert mae < ceiling, f'val_mae={mae} >= ceiling={ceiling}'
+          print(f'val_mae={mae:.3f} < ceiling={ceiling} ✓')
+          "

@@ -1,0 +1,26 @@
+{
+  "uid": "deepcab-training",
+  "title": "deepCab — Training",
+  "schemaVersion": 38,
+  "version": 1,
+  "refresh": "30s",
+  "time": {"from": "now-6h", "to": "now"},
+  "panels": [
+    {
+      "id": 1, "type": "timeseries", "title": "Training runs (success/fail)",
+      "gridPos": {"x": 0, "y": 0, "w": 12, "h": 8},
+      "targets": [{
+        "expr": "sum by (backend_kind, status) (deepcab_training_run_total)",
+        "legendFormat": "{{backend_kind}} ({{status}})"
+      }]
+    },
+    {
+      "id": 2, "type": "timeseries", "title": "Epoch duration p50 / p95 by backend",
+      "gridPos": {"x": 12, "y": 0, "w": 12, "h": 8},
+      "targets": [
+        {"expr": "histogram_quantile(0.5, sum by (le, backend_kind) (rate(deepcab_training_epoch_duration_seconds_bucket[5m])))", "legendFormat": "p50 {{backend_kind}}"},
+        {"expr": "histogram_quantile(0.95, sum by (le, backend_kind) (rate(deepcab_training_epoch_duration_seconds_bucket[5m])))", "legendFormat": "p95 {{backend_kind}}"}
+      ]
+    }
+  ]
+}

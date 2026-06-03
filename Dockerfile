@@ -1,49 +1,43 @@
-# $DEL_BEGIN
-FROM tensorflow/tensorflow:2.9.1
+# Hybrid CPU/GPU image. Pass `--build-arg GPU=1` (or use docker-compose.gpu.yml)
+# to swap the torch/tf wheels for CUDA-enabled ones after the base sync.
+#
+# CPU path (default): every dep comes from uv.lock, including the CPU torch wheel.
+# GPU path: post-sync pip-installs CUDA wheels over the CPU ones via PyTorch's
+# extra-index URL. We do this AFTER the lock-sync so the lock stays GPU-agnostic.
+FROM python:3.11-slim AS builder
+
+ARG GPU=0
+
+ENV UV_COMPILE_BYTECODE=1 \
+    UV_LINK_MODE=copy \
+    UV_PYTHON_DOWNLOADS=never
+
+COPY --from=ghcr.io/astral-sh/uv:0.6.8 /uv /uvx /bin/
 
 WORKDIR /prod
 
+COPY pyproject.toml uv.lock ./
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --frozen --no-install-project --no-dev
+
 COPY deepCab deepCab
-COPY requirements.txt requirements.txt
-COPY setup.py setup.py
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --frozen --no-dev
 
-# CMD /usr/bin/python3 -m pip install --upgrade pip
+# Swap to CUDA wheels when requested. Keeps the default image lean; only GPU
+# builds pay the ~2GB torch-cu121 download.
+RUN --mount=type=cache,target=/root/.cache/uv \
+    if [ "$GPU" = "1" ]; then \
+        uv pip install --upgrade \
+            --index-url https://download.pytorch.org/whl/cu121 \
+            torch ; \
+    fi
 
-RUN pip install .
-RUN pip install --upgrade pip
-RUN export $(grep -v '^#' .env | xargs)
+FROM python:3.11-slim AS runtime
 
-# CUALQUES NECESITO Y CUALES NO!!!
+WORKDIR /prod
 
-ENV SOURCE_TYPE=val
+COPY --from=builder /prod /prod
+ENV PATH="/prod/.venv/bin:$PATH"
 
-ENV MODEL_TARGET=mlflow
-ENV DATA_SOURCE=query
-
-ENV CHUNK_SIZE=2000
-ENV BUCKET_NAME=deepcab
-
-ENV LOCAL_DATA_PATH=$HOME/code/juan-garassino/leWagon/projects-le-wagon/MLops-taxiFare/taxifare/data
-ENV LOCAL_REGISTRY_PATH=$HOME/code/juan-garassino/leWagon/projects-le-wagon/MLops-taxiFare/taxifare/results
-
-ENV DATASET_SIZE=10k
-ENV VALIDATION_DATASET_SIZE=10k
-
-ENV INSTANCE=deepCab-instance
-
-ENV TABLE=train_10k
-ENV DATASET=deepCab_dataset
-ENV GCP_PROJECT_ID=deepcab
-
-ENV MLFLOW_TRACKING_URI=https://mlflow.lewagon.ai
-ENV MLFLOW_EXPERIMENT=[BERLIN][GARASSINO][DEEPCAB]
-ENV MLFLOW_MODEL_NAME=[BERLIN][GARASSINO][DEEPCAB]
-
-ENV API_KEY=pcu_Hsg4VzeL8SHW9jnCwkVFqUhG5ySddW4vFMVj
-
-ENV PREFECT_FLOW_NAME=prefect-flow-garassino
-ENV PREFECT_BACKEND=development
-
-CMD uvicorn deepCab.api.fast:app --host 0.0.0.0 --port $PORT --reload
-
-# $DEL_END
+CMD uvicorn deepCab.api.app:app --host 0.0.0.0 --port ${PORT:-8000}

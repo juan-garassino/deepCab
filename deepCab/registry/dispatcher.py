@@ -18,22 +18,18 @@ from __future__ import annotations
 
 import base64
 import json
-import tempfile
 import uuid
 from pathlib import Path
 from typing import TYPE_CHECKING
 
 import numpy as np
 
-from deepCab.models.base import AbstractEstimator
 from deepCab.models.conformal import ACIRegressor
-from deepCab.models.factory import build_estimator
 from deepCab.obs.log import get_logger
-from deepCab.schemas.config import BackendConfig
 from deepCab.schemas.settings import get_settings
 
 if TYPE_CHECKING:
-    from deepCab.api.state import ModelHandle
+    from deepCab.api.state import ModelHandle  # noqa: F401
 
 log = get_logger(__name__)
 
@@ -49,27 +45,6 @@ def runs_root() -> Path:
 
 def latest_pointer() -> Path:
     return runs_root() / "LATEST"
-
-
-# ---- legacy compat ------------------------------------------------------
-
-
-def save_artifact(estimator: AbstractEstimator) -> Path:
-    """Legacy: save estimator weights to a temp dir. Kept so training/train.py
-    can still hand the path to MLflow.log_artifacts. New callers should use
-    save_full_state for full ModelHandle persistence."""
-    tmp = Path(tempfile.mkdtemp(prefix="deepcab-model-"))
-    out = tmp / "model"
-    estimator.save(out)
-    log.info("registry.saved", path=str(out), backend=estimator.cfg.kind)
-    return out
-
-
-def load_artifact(backend_cfg: BackendConfig, path: Path) -> AbstractEstimator:
-    cls = type(build_estimator(backend_cfg))
-    est = cls.load(path)
-    log.info("registry.loaded", path=str(path), backend=backend_cfg.kind)
-    return est
 
 
 # ---- persistent state (FR-1) -------------------------------------------

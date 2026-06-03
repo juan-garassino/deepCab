@@ -30,13 +30,7 @@ def _avail(mod: str) -> bool:
         return False
 
 
-@pytest.fixture(autouse=True)
-def _clean_state():
-    STATE.model = None
-    STATE.tasks.clear()
-    yield
-    STATE.model = None
-    STATE.tasks.clear()
+# `_clean_state` autouse fixture lives in tests/api/conftest.py (B.6).
 
 
 @pytest.fixture

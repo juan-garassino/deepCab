@@ -96,8 +96,19 @@ def test_file_prefix_raises_when_missing(tmp_path: Path, monkeypatch, fresh_sett
     monkeypatch.setenv("DEEPCAB_API_KEY", f"file:{tmp_path / 'nope'}")
     from deepCab.schemas.settings import get_settings
 
-    with pytest.raises(FileNotFoundError):
+    # B.2: the FileNotFoundError is raised inside FileUriEnvSettingsSource;
+    # pydantic-settings wraps it in a SettingsError with the underlying
+    # FileNotFoundError as __cause__.
+    with pytest.raises(Exception) as exc_info:
         get_settings()
+    chain = []
+    cur = exc_info.value
+    while cur is not None:
+        chain.append(cur)
+        cur = cur.__cause__
+    assert any(isinstance(e, FileNotFoundError) for e in chain), (
+        f"FileNotFoundError not in exception chain: {[type(e).__name__ for e in chain]}"
+    )
 
 
 def test_plain_env_value_unchanged(monkeypatch, fresh_settings) -> None:

@@ -1,0 +1,8 @@
+pydeps skipped — graphviz `dot` binary unavailable on this host.
+
+Reproduction (after installing graphviz, e.g. `brew install graphviz`):
+
+    uv run pydeps deepCab --max-bacon=2 --show-cycles -T png -o infra/audit/cycles.png
+
+Manual cycle inspection performed via `pylint --disable=all --enable=cyclic-import`
+and visual review of import graph; no cycles found in deepCab/ as of 2026-06-04.

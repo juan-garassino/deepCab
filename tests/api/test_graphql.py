@@ -21,13 +21,7 @@ def _avail(mod: str) -> bool:
 SKIP = pytest.mark.skipif(not _avail("strawberry"), reason="strawberry-graphql not installed")
 
 
-@pytest.fixture(autouse=True)
-def _clean_state():
-    from deepCab.api.state import STATE
-
-    STATE.model = None
-    yield
-    STATE.model = None
+# `_clean_state` autouse fixture lives in tests/api/conftest.py (B.6).
 
 
 @SKIP

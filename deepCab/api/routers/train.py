@@ -39,10 +39,9 @@ def _run_training(task_id: str, req: TrainStartRequest) -> None:
             "backend_kind": result.backend_kind,
             "model_path": result.model_path,
         }
-        # NOTE: training/train.py.run() doesn't currently expose the fitted
-        # estimator (it persists via registry.save_artifact). Phase 8 will
-        # reload from disk into STATE.model. For now the predict endpoint stays
-        # 503 until something also wires the model handle here.
+        # NOTE: training/train.py.run() publishes the fitted handle into
+        # STATE.model and persists it via registry.save_full_state. The API
+        # lifespan reloads from disk on cold start.
         training_run_total.labels(backend_kind=req.config.backend.kind, status="succeeded").inc()
     except Exception as e:  # noqa: BLE001
         rec.status = "failed"

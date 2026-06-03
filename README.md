@@ -181,6 +181,19 @@ uv run pytest tests/ -q       # ~100 tests, ~13 skipped (backends/onnx/openai ga
 
 See `/Users/juan-garassino/Code/005-products/006-deep-projects/001-deepCab/CLAUDE.md` for the per-module tree and design decisions per phase.
 
+## Audit
+
+See `infra/AUDIT.md` for the latest simplification pass — LOC delta, complexity
+delta, dead code triaged, fixtures consolidated. Raw analyzer output lives in
+`infra/audit/` (radon before/after, vulture dead-code, pylint duplicate-code,
+pydeps cycles or skip marker). Re-run with:
+
+```
+uv sync --extra dev
+uv run radon cc -s -a deepCab/
+uv run vulture deepCab/ tests/ --min-confidence 70
+```
+
 ## Production deferred
 
 These are intentionally **not** in the MVP — documented + scoped post-MVP:

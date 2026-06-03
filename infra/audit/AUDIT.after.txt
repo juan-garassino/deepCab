@@ -1,0 +1,1580 @@
+deepCab/serving/quantize.py
+    F 23:0 quantize - A (2)
+deepCab/serving/runtime.py
+    C 22:0 ONNXRuntime - A (3)
+    M 30:4 ONNXRuntime.from_path - A (2)
+    M 45:4 ONNXRuntime.predict - A (2)
+    C 54:0 RuntimeRegistry - A (2)
+    M 63:4 RuntimeRegistry.register - A (2)
+    M 69:4 RuntimeRegistry.activate - A (2)
+    M 75:4 RuntimeRegistry.active - A (2)
+    M 58:4 RuntimeRegistry.__init__ - A (1)
+    M 79:4 RuntimeRegistry.keys - A (1)
+deepCab/serving/batcher.py
+    M 66:4 Batcher._run - C (13)
+    C 34:0 Batcher - A (5)
+    M 90:4 Batcher._collect_batch - A (4)
+    M 48:4 Batcher.start - A (2)
+    M 52:4 Batcher.stop - A (2)
+    M 59:4 Batcher.submit - A (2)
+    C 29:0 _Item - A (1)
+    M 35:4 Batcher.__init__ - A (1)
+deepCab/explain/aggregate.py
+    F 37:0 aggregate_shap - A (4)
+    F 56:0 aggregate_global - A (4)
+deepCab/explain/explainer.py
+    F 41:0 make_explainer - A (5)
+    F 116:0 _get_base_value - A (4)
+    F 69:0 explain_row - A (2)
+    F 102:0 explain_batch - A (2)
+    C 34:0 Explanation - A (1)
+deepCab/explain/cache.py
+    F 67:0 _redis_client - A (4)
+    F 88:0 _get_cached - A (4)
+    F 101:0 _put_cached - A (3)
+    F 115:0 get_global_summary - A (2)
+    F 129:0 clear_cache - A (2)
+    F 40:0 fingerprint - A (1)
+    F 48:0 compute_global_summary - A (1)
+    C 30:0 GlobalSummary - A (1)
+deepCab/grpc/server.py
+    F 20:0 _build_servicer - A (2)
+    F 64:0 serve - A (1)
+deepCab/grpc/deepcab_pb2_grpc.py
+    C 28:0 PredictServiceStub - A (2)
+    C 44:0 PredictServiceServicer - A (2)
+    C 69:0 PredictService - A (2)
+    F 54:0 add_PredictServiceServicer_to_server - A (1)
+    M 31:4 PredictServiceStub.__init__ - A (1)
+    M 47:4 PredictServiceServicer.Predict - A (1)
+    M 73:4 PredictService.Predict - A (1)
+deepCab/flow_v2/retrain.py
+    F 107:0 retrain_flow - A (4)
+    F 70:0 evaluate_task - A (2)
+    F 140:0 _get - A (2)
+    F 45:0 preprocess_task - A (1)
+    F 57:0 train_task - A (1)
+    F 82:0 _default_cfg - A (1)
+    F 94:0 _preprocess - A (1)
+    F 98:0 _train - A (1)
+    F 102:0 _evaluate - A (1)
+    C 37:0 RetrainResult - A (1)
+deepCab/flow_v2/schedules.py
+    F 37:0 deploy_one_off - A (2)
+    F 19:0 deploy_nightly - A (1)
+deepCab/training/preprocess.py
+    F 43:0 load - A (3)
+    F 22:0 clean - A (2)
+    F 51:0 featurize - A (1)
+    F 59:0 preprocess - A (1)
+deepCab/training/predict.py
+    F 17:0 predict_many - A (4)
+    F 12:0 predict_one - A (1)
+deepCab/training/seed.py
+    F 8:0 set_all - A (4)
+deepCab/training/train.py
+    F 134:0 _run_training - B (8)
+    F 70:0 _start_mlflow_run - A (4)
+    F 221:0 run - A (4)
+    F 238:0 _emit_model_card - A (4)
+    F 98:0 _calibrate_aci - A (2)
+    F 271:0 _emit_lineage - A (2)
+    F 292:0 _export_and_register_onnx - A (2)
+    C 88:0 _NoopCtx - A (2)
+    F 118:0 _publish_to_state - A (1)
+    F 206:0 _push_to_gcs - A (1)
+    F 312:0 _mae - A (1)
+    F 319:0 _to_pydantic - A (1)
+    F 327:0 main - A (1)
+    C 55:0 TrainResult - A (1)
+    M 89:4 _NoopCtx.__enter__ - A (1)
+    M 92:4 _NoopCtx.__exit__ - A (1)
+deepCab/training/cv.py
+    F 31:0 run_cv - B (7)
+    F 74:0 _is_sorted - A (1)
+    C 25:0 CVResult - A (1)
+deepCab/training/evaluate.py
+    F 22:0 evaluate - A (1)
+    C 16:0 EvalResult - A (1)
+deepCab/training/_mlflow.py
+    F 21:0 flatten - B (6)
+    F 38:0 log_params_flat - A (1)
+    F 44:0 log_config_artifact - A (1)
+deepCab/training/provenance.py
+    F 43:0 emit_provenance - A (3)
+    F 98:0 _dep_versions - A (3)
+    F 71:0 _git_sha - A (2)
+    F 80:0 _cuda_available - A (2)
+    F 89:0 _cuda_version - A (2)
+    C 28:0 Provenance - A (1)
+deepCab/training/hpo.py
+    F 124:0 tune - A (4)
+    F 171:0 _make_sampler - A (3)
+    F 181:0 _make_pruner - A (3)
+    F 41:0 _xgb_space - A (1)
+    F 50:0 _lgbm_space - A (1)
+    F 58:0 _catboost_space - A (1)
+    F 66:0 _tf_mlp_space - A (1)
+    F 75:0 _torch_mlp_space - A (1)
+    F 83:0 _ft_space - A (1)
+    C 117:0 HPOResult - A (1)
+deepCab/features/transformers.py
+    F 26:0 transform_time_features - A (4)
+    F 62:0 transform_lonlat_features - A (1)
+    F 103:0 compute_geohash - A (1)
+deepCab/features/golden.py
+    F 108:0 reference_geohash - A (3)
+    F 69:0 as_dataframe - A (1)
+    F 80:0 reference_time_features - A (1)
+    F 95:0 reference_lonlat_features - A (1)
+deepCab/features/pipeline.py
+    F 46:0 _make_preprocessor - A (1)
+    F 96:0 preprocess_features - A (1)
+deepCab/agent/planner.py
+    F 39:0 make_plan - B (8)
+deepCab/agent/trace.py
+    M 59:4 AgentTrace.completed_request_ids - A (5)
+    C 32:0 AgentTrace - A (4)
+    M 47:4 AgentTrace.replay - A (4)
+    M 35:4 AgentTrace.__init__ - A (2)
+    M 42:4 AgentTrace.append - A (2)
+    C 22:0 AgentEvent - A (1)
+deepCab/agent/memory.py
+    F 32:0 list_runs - B (6)
+    F 62:0 compare_runs - B (6)
+    F 118:0 _diff_dicts - B (6)
+    F 84:0 propose_next_experiment - A (4)
+    F 19:0 _client - A (3)
+    F 109:0 _digest - A (1)
+deepCab/agent/budget.py
+    M 38:4 Budget.restore - B (7)
+    C 32:0 Budget - A (4)
+    M 74:4 Budget.check_or_raise - A (4)
+    M 48:4 Budget.charge_llm_usage - A (2)
+    M 68:4 Budget.charge_tool_call - A (1)
+    M 71:4 Budget.charge_iter - A (1)
+    C 90:0 BudgetExhausted - A (1)
+deepCab/agent/tools.py
+    F 348:0 dispatch - A (5)
+    F 202:0 _explain - A (3)
+    F 181:0 _evaluate - A (2)
+    F 192:0 _predict - A (2)
+    F 259:0 _list_runs - A (2)
+    F 330:0 openai_tools - A (2)
+    F 152:0 _preprocess - A (1)
+    F 166:0 _train - A (1)
+    F 229:0 _tune - A (1)
+    F 266:0 _compare_runs - A (1)
+    F 272:0 _propose - A (1)
+    F 373:0 tool_names - A (1)
+    C 39:0 _ToolIn - A (1)
+    C 43:0 _ToolOut - A (1)
+    C 48:0 PreprocessIn - A (1)
+    C 53:0 PreprocessOut - A (1)
+    C 62:0 TrainIn - A (1)
+    C 68:0 TrainOut - A (1)
+    C 75:0 EvaluateIn - A (1)
+    C 79:0 EvaluateOut - A (1)
+    C 86:0 PredictIn - A (1)
+    C 90:0 PredictOut - A (1)
+    C 96:0 ExplainIn - A (1)
+    C 100:0 ExplainOut - A (1)
+    C 107:0 TuneIn - A (1)
+    C 113:0 TuneOut - A (1)
+    C 121:0 ListRunsIn - A (1)
+    C 126:0 ListRunsOut - A (1)
+    C 130:0 ComparePairIn - A (1)
+    C 134:0 ComparePairOut - A (1)
+    C 140:0 ProposeIn - A (1)
+    C 144:0 ProposeOut - A (1)
+deepCab/agent/cli.py
+    F 41:0 repl - B (8)
+    F 32:0 _client - A (2)
+    F 27:0 _print - A (1)
+deepCab/agent/improve.py
+    F 36:0 run_improve - D (21)
+    F 177:0 _err_key - A (1)
+    C 29:0 IterRecord - A (1)
+deepCab/agent/executor.py
+    F 51:0 run_one_turn - D (27)
+    F 38:0 _call_tool_with_timeout - A (2)
+    F 189:0 _cache_key - A (1)
+deepCab/models/ft_transformer.py
+    M 100:4 FTTransformerEstimator._fit - A (4)
+    C 97:0 FTTransformerEstimator - A (3)
+    F 36:0 _build_module - A (2)
+    M 160:4 FTTransformerEstimator.load - A (2)
+    M 137:4 FTTransformerEstimator._predict - A (1)
+    M 145:4 FTTransformerEstimator.save - A (1)
+deepCab/models/conformal.py
+    C 31:0 ACIRegressor - A (2)
+    M 69:4 ACIRegressor.predict - A (2)
+    M 77:4 ACIRegressor.bracket - A (2)
+    M 90:4 ACIRegressor.update - A (2)
+    M 38:4 ACIRegressor.fit - A (1)
+    M 50:4 ACIRegressor.from_fitted - A (1)
+deepCab/models/torch_mlp.py
+    M 41:4 TorchMLPEstimator._fit - B (10)
+    C 21:0 TorchMLPEstimator - A (4)
+    M 24:4 TorchMLPEstimator._build - A (2)
+    M 140:4 TorchMLPEstimator.load - A (2)
+    M 107:4 TorchMLPEstimator._eval - A (1)
+    M 116:4 TorchMLPEstimator._predict - A (1)
+    M 124:4 TorchMLPEstimator.save - A (1)
+deepCab/models/onnx_export.py
+    F 30:0 export_to_onnx - B (7)
+    F 53:0 _export_tf_mlp - A (1)
+    F 66:0 _export_torch - A (1)
+    F 86:0 _export_xgb - A (1)
+    F 99:0 _export_lgbm - A (1)
+    F 114:0 _export_catboost - A (1)
+    F 124:0 ort_predict - A (1)
+    F 138:0 attach_onnx_method - A (1)
+deepCab/models/tf_mlp.py
+    M 23:4 TFMLPEstimator._build - A (3)
+    C 20:0 TFMLPEstimator - A (2)
+    M 52:4 TFMLPEstimator._fit - A (2)
+    M 81:4 TFMLPEstimator._predict - A (1)
+    M 84:4 TFMLPEstimator.save - A (1)
+    M 90:4 TFMLPEstimator.load - A (1)
+deepCab/models/factory.py
+    F 14:0 build_estimator - A (3)
+deepCab/models/base.py
+    C 22:0 AbstractEstimator - A (2)
+    M 29:4 AbstractEstimator.__init__ - A (2)
+    M 42:4 AbstractEstimator.set_params - A (2)
+    M 39:4 AbstractEstimator.get_params - A (1)
+    M 49:4 AbstractEstimator.cfg - A (1)
+    M 54:4 AbstractEstimator.fit - A (1)
+    M 58:4 AbstractEstimator.predict - A (1)
+    M 64:4 AbstractEstimator._fit - A (1)
+    M 67:4 AbstractEstimator._predict - A (1)
+    M 70:4 AbstractEstimator.save - A (1)
+    M 74:4 AbstractEstimator.load - A (1)
+    M 76:4 AbstractEstimator.to_onnx - A (1)
+deepCab/models/gbm.py
+    C 22:0 XGBEstimator - A (2)
+    C 56:0 LGBMEstimator - A (2)
+    C 90:0 CatBoostEstimator - A (2)
+    M 25:4 XGBEstimator._fit - A (1)
+    M 39:4 XGBEstimator._predict - A (1)
+    M 42:4 XGBEstimator.save - A (1)
+    M 47:4 XGBEstimator.load - A (1)
+    M 59:4 LGBMEstimator._fit - A (1)
+    M 72:4 LGBMEstimator._predict - A (1)
+    M 75:4 LGBMEstimator.save - A (1)
+    M 80:4 LGBMEstimator.load - A (1)
+    M 93:4 CatBoostEstimator._fit - A (1)
+    M 106:4 CatBoostEstimator._predict - A (1)
+    M 109:4 CatBoostEstimator.save - A (1)
+    M 114:4 CatBoostEstimator.load - A (1)
+deepCab/schemas/config.py
+    C 17:0 BackendBase - A (1)
+    C 21:0 TFMLPConfig - A (1)
+    C 32:0 TorchMLPConfig - A (1)
+    C 42:0 XGBConfig - A (1)
+    C 50:0 LGBMConfig - A (1)
+    C 57:0 CatBoostConfig - A (1)
+    C 64:0 FTTransformerConfig - A (1)
+    C 84:0 DataRef - A (1)
+    C 93:0 CVConfig - A (1)
+    C 100:0 HPOConfig - A (1)
+    C 110:0 TrainConfig - A (1)
+deepCab/schemas/registry.py
+    C 9:0 ModelArtifact - A (1)
+    C 19:0 RunMetadata - A (1)
+deepCab/schemas/api.py
+    C 13:0 PredictRequest - A (1)
+    C 19:0 PredictResponse - A (1)
+    C 28:0 BatchPredictRequest - A (1)
+    C 34:0 BatchPredictResponse - A (1)
+    C 40:0 ExplainRequest - A (1)
+    C 47:0 ExplainResponse - A (1)
+    C 55:0 TrainStartRequest - A (1)
+    C 61:0 TrainStartResponse - A (1)
+    C 67:0 TrainStatusResponse - A (1)
+deepCab/schemas/agent.py
+    C 9:0 ToolCall - A (1)
+    C 20:0 ToolResult - A (1)
+    C 31:0 AgentMessage - A (1)
+    C 40:0 Plan - A (1)
+    C 47:0 BudgetCap - A (1)
+    C 57:0 ImproveConfig - A (1)
+    C 69:0 MemoryEntry - A (1)
+deepCab/schemas/settings.py
+    C 24:0 FileUriEnvSettingsSource - A (5)
+    M 44:4 FileUriEnvSettingsSource.get_field_value - A (4)
+    C 109:0 ObsSettings - A (2)
+    C 131:0 OpenAISettings - A (2)
+    C 142:0 DeepCabSettings - A (2)
+    F 19:0 _env_file - A (1)
+    F 56:0 _customise_sources - A (1)
+    F 174:0 get_settings - A (1)
+    C 73:0 DataSettings - A (1)
+    C 84:0 RegistrySettings - A (1)
+    C 92:0 GCPSettings - A (1)
+    C 99:0 MLflowSettings - A (1)
+    M 127:4 ObsSettings.settings_customise_sources - A (1)
+    M 138:4 OpenAISettings.settings_customise_sources - A (1)
+    M 152:4 DeepCabSettings.settings_customise_sources - A (1)
+    C 156:0 Settings - A (1)
+deepCab/schemas/data.py
+    C 25:0 RawRow - A (3)
+    M 33:4 RawRow._positive_fare - A (2)
+    C 14:0 FeatureRow - A (1)
+deepCab/obs/log.py
+    F 13:0 configure_logging - A (2)
+    F 36:0 get_logger - A (2)
+deepCab/obs/jsonl.py
+    F 149:0 _safe - B (10)
+    C 49:0 Tracer - A (5)
+    M 67:4 Tracer.span - A (5)
+    M 50:4 Tracer.__init__ - A (4)
+    M 121:4 Tracer.note - A (4)
+    M 60:4 Tracer._write - A (2)
+    F 139:0 attach_result - A (1)
+    F 166:0 _json_default - A (1)
+    C 24:0 Event - A (1)
+    C 40:0 Span - A (1)
+deepCab/obs/otel.py
+    F 18:0 init_tracing - A (1)
+    F 28:0 get_tracer - A (1)
+deepCab/obs/slack.py
+    F 39:0 post - B (6)
+    F 29:0 _webhook_url - A (2)
+    F 61:0 notify_alias_change - A (1)
+    F 70:0 notify_flow_event - A (1)
+deepCab/registry/dispatcher.py
+    F 53:0 save_full_state - A (5)
+    F 106:0 load_state_from_disk - A (5)
+    F 179:0 set_alias - A (4)
+    F 151:0 read_latest_run_id - A (3)
+    F 162:0 _set_alias_backend - A (2)
+    F 40:0 runs_root - A (1)
+    F 46:0 latest_pointer - A (1)
+deepCab/registry/model_card.py
+    F 63:0 write_model_card - B (7)
+deepCab/api/deps.py
+    F 36:0 api_key_guard - A (5)
+    F 24:0 get_model_handle - A (2)
+    F 17:0 settings_dep - A (1)
+deepCab/api/app.py
+    F 37:0 _resolve_cors_origins - B (6)
+    F 52:0 create_app - A (3)
+deepCab/api/middleware.py
+    C 21:0 RequestIDMiddleware - A (3)
+    C 31:0 PromMiddleware - A (3)
+    M 22:4 RequestIDMiddleware.dispatch - A (2)
+    M 32:4 PromMiddleware.dispatch - A (2)
+deepCab/api/state.py
+    C 30:0 _State - A (2)
+    C 14:0 TaskRecord - A (1)
+    C 23:0 ModelHandle - A (1)
+    M 31:4 _State.__init__ - A (1)
+    M 36:4 _State.set_model - A (1)
+    M 40:4 _State.upsert_task - A (1)
+deepCab/api/lifespan.py
+    F 68:0 _try_load_champion - B (6)
+    F 22:0 _try_init_otel - A (3)
+    F 38:0 _try_load_local_latest - A (3)
+    F 99:0 lifespan - A (1)
+deepCab/api/routers/graphql.py
+    C 44:0 Query - A (3)
+    M 50:4 Query.predict - A (3)
+    C 94:0 Mutation - A (3)
+    M 72:4 Query.list_runs - A (2)
+    M 96:4 Mutation.train - A (2)
+    C 23:0 FeatureRowInput - A (1)
+    C 28:0 PredictionType - A (1)
+    C 36:0 RunSummary - A (1)
+    M 46:4 Query.version - A (1)
+    C 87:0 TrainResultType - A (1)
+deepCab/api/routers/monitor.py
+    F 17:0 readyz - A (2)
+    F 12:0 healthz - A (1)
+deepCab/api/routers/predict.py
+    F 72:0 predict_batch - B (6)
+    F 33:0 _point_predict - A (3)
+    F 46:0 _predict_with_interval - A (2)
+    F 65:0 predict - A (1)
+    F 96:0 predict_stream - A (1)
+deepCab/api/routers/agent.py
+    F 50:0 _openai_client - A (3)
+    F 68:0 agent_turn - A (1)
+    F 82:0 agent_improve - A (1)
+    C 32:0 AgentTurnRequest - A (1)
+    C 40:0 AgentImproveRequest - A (1)
+deepCab/api/routers/train.py
+    F 26:0 _run_training - A (2)
+    F 67:0 get_train_status - A (2)
+    F 58:0 start_train - A (1)
+deepCab/api/routers/explain.py
+    F 19:0 explain - A (2)
+    F 37:0 explain_summary - A (2)
+deepCab/api/routers/meta.py
+    F 10:0 root - A (1)
+    F 20:0 version - A (1)
+deepCab/data/io.py
+    F 17:0 scan - A (3)
+    F 59:0 duckdb_query - A (2)
+    F 13:0 parquet_root - A (1)
+    F 28:0 read - A (1)
+    F 32:0 write_partitioned - A (1)
+deepCab/data/validate.py
+    C 17:0 RawSchema - A (1)
+    C 32:0 CleanSchema - A (1)
+deepCab/data/splits.py
+    F 13:0 time_series_splits - A (2)
+    F 29:0 kfold_splits - A (2)
+    F 38:0 _is_sorted - A (1)
+deepCab/data/lineage.py
+    F 29:0 hash_path - B (6)
+    C 14:0 LineageEdge - A (2)
+    F 47:0 hash_obj - A (1)
+    M 20:4 LineageEdge.manifest - A (1)
+deepCab/data/migrate.py
+    F 25:0 migrate - A (3)
+    F 48:0 main - A (1)
+deepCab/data/lineage_store.py
+    F 62:0 query_by_run - A (2)
+    F 82:0 runs_sharing_input - A (2)
+    F 34:0 _db_path - A (1)
+    F 38:0 _connect - A (1)
+    F 46:0 write_edge - A (1)
+
+375 blocks (classes, functions, methods) analyzed.
+Average complexity: A (2.1093333333333333)
+
+=== Maintainability Index ===
+deepCab/__init__.py - A (100.00)
+deepCab/serving/quantize.py - A (81.37)
+deepCab/serving/__init__.py - A (100.00)
+deepCab/serving/runtime.py - A (71.01)
+deepCab/serving/batcher.py - A (61.49)
+deepCab/explain/aggregate.py - A (82.93)
+deepCab/explain/explainer.py - A (74.01)
+deepCab/explain/cache.py - A (66.30)
+deepCab/explain/__init__.py - A (100.00)
+deepCab/grpc/server.py - A (72.72)
+deepCab/grpc/__init__.py - A (100.00)
+deepCab/grpc/deepcab_pb2_grpc.py - A (71.74)
+deepCab/grpc/deepcab_pb2.py - A (93.50)
+deepCab/flow_v2/retrain.py - A (76.58)
+deepCab/flow_v2/__init__.py - A (100.00)
+deepCab/flow_v2/schedules.py - A (90.62)
+deepCab/training/preprocess.py - A (73.10)
+deepCab/training/predict.py - A (93.59)
+deepCab/training/__init__.py - A (100.00)
+deepCab/training/seed.py - A (100.00)
+deepCab/training/train.py - A (56.94)
+deepCab/training/cv.py - A (74.22)
+deepCab/training/evaluate.py - A (60.59)
+deepCab/training/_mlflow.py - A (81.96)
+deepCab/training/provenance.py - A (63.19)
+deepCab/training/hpo.py - A (63.46)
+deepCab/features/transformers.py - A (71.45)
+deepCab/features/golden.py - A (73.93)
+deepCab/features/__init__.py - A (100.00)
+deepCab/features/pipeline.py - A (79.35)
+deepCab/agent/planner.py - A (80.84)
+deepCab/agent/trace.py - A (68.61)
+deepCab/agent/memory.py - A (60.49)
+deepCab/agent/budget.py - A (64.38)
+deepCab/agent/tools.py - A (50.65)
+deepCab/agent/__init__.py - A (100.00)
+deepCab/agent/cli.py - A (71.76)
+deepCab/agent/improve.py - A (59.70)
+deepCab/agent/executor.py - A (56.04)
+deepCab/models/_kinds.py - A (100.00)
+deepCab/models/ft_transformer.py - A (60.54)
+deepCab/models/conformal.py - A (74.04)
+deepCab/models/torch_mlp.py - A (56.19)
+deepCab/models/onnx_export.py - A (75.34)
+deepCab/models/tf_mlp.py - A (78.09)
+deepCab/models/__init__.py - A (100.00)
+deepCab/models/factory.py - A (92.94)
+deepCab/models/base.py - A (100.00)
+deepCab/models/gbm.py - A (72.62)
+deepCab/schemas/config.py - A (59.55)
+deepCab/schemas/registry.py - A (58.90)
+deepCab/schemas/__init__.py - A (100.00)
+deepCab/schemas/api.py - A (69.04)
+deepCab/schemas/agent.py - A (55.41)
+deepCab/schemas/settings.py - A (61.76)
+deepCab/schemas/data.py - A (70.73)
+deepCab/obs/log.py - A (64.42)
+deepCab/obs/__init__.py - A (100.00)
+deepCab/obs/prom.py - A (100.00)
+deepCab/obs/jsonl.py - A (46.31)
+deepCab/obs/otel.py - A (100.00)
+deepCab/obs/slack.py - A (82.08)
+deepCab/registry/dispatcher.py - A (62.44)
+deepCab/registry/__init__.py - A (100.00)
+deepCab/registry/model_card.py - A (77.43)
+deepCab/api/deps.py - A (84.99)
+deepCab/api/__init__.py - A (100.00)
+deepCab/api/app.py - A (73.32)
+deepCab/api/middleware.py - A (80.68)
+deepCab/api/state.py - A (76.06)
+deepCab/api/lifespan.py - A (74.05)
+deepCab/api/routers/graphql.py - A (67.56)
+deepCab/api/routers/monitor.py - A (93.93)
+deepCab/api/routers/predict.py - A (67.46)
+deepCab/api/routers/__init__.py - A (100.00)
+deepCab/api/routers/agent.py - A (73.11)
+deepCab/api/routers/train.py - A (87.36)
+deepCab/api/routers/explain.py - A (79.51)
+deepCab/api/routers/meta.py - A (100.00)
+deepCab/data/io.py - A (81.10)
+deepCab/data/__init__.py - A (100.00)
+deepCab/data/validate.py - A (85.08)
+deepCab/data/splits.py - A (88.77)
+deepCab/data/lineage.py - A (79.77)
+deepCab/data/migrate.py - A (81.70)
+deepCab/data/lineage_store.py - A (83.62)
+
+=== Raw metrics (LOC, LLOC, comments) ===
+deepCab/__init__.py
+    LOC: 8
+    LLOC: 6
+    SLOC: 6
+    Comments: 0
+    Single comments: 0
+    Multi: 0
+    Blank: 2
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+deepCab/serving/quantize.py
+    LOC: 71
+    LLOC: 30
+    SLOC: 47
+    Comments: 0
+    Single comments: 0
+    Multi: 10
+    Blank: 14
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 14%
+deepCab/serving/__init__.py
+    LOC: 7
+    LLOC: 4
+    SLOC: 3
+    Comments: 3
+    Single comments: 0
+    Multi: 3
+    Blank: 1
+    - Comment Stats
+        (C % L): 43%
+        (C % S): 100%
+        (C + M % L): 86%
+deepCab/serving/runtime.py
+    LOC: 84
+    LLOC: 57
+    SLOC: 54
+    Comments: 1
+    Single comments: 1
+    Multi: 11
+    Blank: 18
+    - Comment Stats
+        (C % L): 1%
+        (C % S): 2%
+        (C + M % L): 14%
+deepCab/serving/batcher.py
+    LOC: 104
+    LLOC: 76
+    SLOC: 77
+    Comments: 3
+    Single comments: 1
+    Multi: 10
+    Blank: 16
+    - Comment Stats
+        (C % L): 3%
+        (C % S): 4%
+        (C + M % L): 12%
+deepCab/explain/aggregate.py
+    LOC: 65
+    LLOC: 32
+    SLOC: 32
+    Comments: 1
+    Single comments: 1
+    Multi: 21
+    Blank: 11
+    - Comment Stats
+        (C % L): 2%
+        (C % S): 3%
+        (C + M % L): 34%
+deepCab/explain/explainer.py
+    LOC: 125
+    LLOC: 67
+    SLOC: 75
+    Comments: 7
+    Single comments: 4
+    Multi: 20
+    Blank: 26
+    - Comment Stats
+        (C % L): 6%
+        (C % S): 9%
+        (C + M % L): 22%
+deepCab/explain/cache.py
+    LOC: 133
+    LLOC: 87
+    SLOC: 93
+    Comments: 9
+    Single comments: 2
+    Multi: 11
+    Blank: 27
+    - Comment Stats
+        (C % L): 7%
+        (C % S): 10%
+        (C + M % L): 15%
+deepCab/explain/__init__.py
+    LOC: 5
+    LLOC: 4
+    SLOC: 3
+    Comments: 3
+    Single comments: 0
+    Multi: 2
+    Blank: 0
+    - Comment Stats
+        (C % L): 60%
+        (C % S): 100%
+        (C + M % L): 100%
+deepCab/grpc/server.py
+    LOC: 75
+    LLOC: 43
+    SLOC: 53
+    Comments: 0
+    Single comments: 0
+    Multi: 6
+    Blank: 16
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 8%
+deepCab/grpc/__init__.py
+    LOC: 14
+    LLOC: 1
+    SLOC: 0
+    Comments: 0
+    Single comments: 0
+    Multi: 11
+    Blank: 3
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 79%
+deepCab/grpc/deepcab_pb2_grpc.py
+    LOC: 97
+    LLOC: 37
+    SLOC: 70
+    Comments: 3
+    Single comments: 7
+    Multi: 4
+    Blank: 16
+    - Comment Stats
+        (C % L): 3%
+        (C % S): 4%
+        (C + M % L): 7%
+deepCab/grpc/deepcab_pb2.py
+    LOC: 42
+    LLOC: 22
+    SLOC: 28
+    Comments: 7
+    Single comments: 8
+    Multi: 0
+    Blank: 6
+    - Comment Stats
+        (C % L): 17%
+        (C % S): 25%
+        (C + M % L): 17%
+deepCab/flow_v2/retrain.py
+    LOC: 146
+    LLOC: 79
+    SLOC: 77
+    Comments: 9
+    Single comments: 8
+    Multi: 26
+    Blank: 35
+    - Comment Stats
+        (C % L): 6%
+        (C % S): 12%
+        (C + M % L): 24%
+deepCab/flow_v2/__init__.py
+    LOC: 5
+    LLOC: 1
+    SLOC: 0
+    Comments: 0
+    Single comments: 0
+    Multi: 4
+    Blank: 1
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 80%
+deepCab/flow_v2/schedules.py
+    LOC: 58
+    LLOC: 20
+    SLOC: 33
+    Comments: 2
+    Single comments: 2
+    Multi: 10
+    Blank: 13
+    - Comment Stats
+        (C % L): 3%
+        (C % S): 6%
+        (C + M % L): 21%
+deepCab/training/preprocess.py
+    LOC: 61
+    LLOC: 30
+    SLOC: 38
+    Comments: 0
+    Single comments: 4
+    Multi: 7
+    Blank: 12
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 11%
+deepCab/training/predict.py
+    LOC: 21
+    LLOC: 14
+    SLOC: 13
+    Comments: 0
+    Single comments: 0
+    Multi: 2
+    Blank: 6
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 10%
+deepCab/training/__init__.py
+    LOC: 17
+    LLOC: 9
+    SLOC: 8
+    Comments: 13
+    Single comments: 5
+    Multi: 4
+    Blank: 0
+    - Comment Stats
+        (C % L): 76%
+        (C % S): 162%
+        (C + M % L): 100%
+deepCab/training/seed.py
+    LOC: 34
+    LLOC: 25
+    SLOC: 24
+    Comments: 0
+    Single comments: 1
+    Multi: 0
+    Blank: 9
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+deepCab/training/train.py
+    LOC: 332
+    LLOC: 182
+    SLOC: 196
+    Comments: 30
+    Single comments: 24
+    Multi: 50
+    Blank: 62
+    - Comment Stats
+        (C % L): 9%
+        (C % S): 15%
+        (C + M % L): 24%
+deepCab/training/cv.py
+    LOC: 75
+    LLOC: 47
+    SLOC: 47
+    Comments: 3
+    Single comments: 3
+    Multi: 10
+    Blank: 15
+    - Comment Stats
+        (C % L): 4%
+        (C % S): 6%
+        (C + M % L): 17%
+deepCab/training/evaluate.py
+    LOC: 28
+    LLOC: 23
+    SLOC: 19
+    Comments: 0
+    Single comments: 1
+    Multi: 0
+    Blank: 8
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+deepCab/training/_mlflow.py
+    LOC: 50
+    LLOC: 33
+    SLOC: 27
+    Comments: 1
+    Single comments: 0
+    Multi: 13
+    Blank: 10
+    - Comment Stats
+        (C % L): 2%
+        (C % S): 4%
+        (C + M % L): 28%
+deepCab/training/provenance.py
+    LOC: 117
+    LLOC: 79
+    SLOC: 88
+    Comments: 3
+    Single comments: 1
+    Multi: 7
+    Blank: 21
+    - Comment Stats
+        (C % L): 3%
+        (C % S): 3%
+        (C + M % L): 9%
+deepCab/training/hpo.py
+    LOC: 188
+    LLOC: 81
+    SLOC: 129
+    Comments: 2
+    Single comments: 2
+    Multi: 14
+    Blank: 43
+    - Comment Stats
+        (C % L): 1%
+        (C % S): 2%
+        (C + M % L): 9%
+deepCab/features/transformers.py
+    LOC: 131
+    LLOC: 41
+    SLOC: 96
+    Comments: 8
+    Single comments: 6
+    Multi: 14
+    Blank: 15
+    - Comment Stats
+        (C % L): 6%
+        (C % S): 8%
+        (C + M % L): 17%
+deepCab/features/golden.py
+    LOC: 120
+    LLOC: 30
+    SLOC: 87
+    Comments: 11
+    Single comments: 6
+    Multi: 10
+    Blank: 17
+    - Comment Stats
+        (C % L): 9%
+        (C % S): 13%
+        (C + M % L): 18%
+deepCab/features/__init__.py
+    LOC: 9
+    LLOC: 3
+    SLOC: 6
+    Comments: 2
+    Single comments: 0
+    Multi: 3
+    Blank: 0
+    - Comment Stats
+        (C % L): 22%
+        (C % S): 33%
+        (C + M % L): 56%
+deepCab/features/pipeline.py
+    LOC: 99
+    LLOC: 25
+    SLOC: 76
+    Comments: 7
+    Single comments: 3
+    Multi: 10
+    Blank: 10
+    - Comment Stats
+        (C % L): 7%
+        (C % S): 9%
+        (C + M % L): 17%
+deepCab/agent/planner.py
+    LOC: 83
+    LLOC: 30
+    SLOC: 60
+    Comments: 3
+    Single comments: 2
+    Multi: 9
+    Blank: 12
+    - Comment Stats
+        (C % L): 4%
+        (C % S): 5%
+        (C + M % L): 14%
+deepCab/agent/trace.py
+    LOC: 64
+    LLOC: 53
+    SLOC: 44
+    Comments: 1
+    Single comments: 2
+    Multi: 7
+    Blank: 11
+    - Comment Stats
+        (C % L): 2%
+        (C % S): 2%
+        (C + M % L): 12%
+deepCab/agent/memory.py
+    LOC: 125
+    LLOC: 70
+    SLOC: 96
+    Comments: 1
+    Single comments: 1
+    Multi: 9
+    Blank: 19
+    - Comment Stats
+        (C % L): 1%
+        (C % S): 1%
+        (C + M % L): 8%
+deepCab/agent/budget.py
+    LOC: 92
+    LLOC: 55
+    SLOC: 63
+    Comments: 1
+    Single comments: 3
+    Multi: 10
+    Blank: 16
+    - Comment Stats
+        (C % L): 1%
+        (C % S): 2%
+        (C + M % L): 12%
+deepCab/agent/tools.py
+    LOC: 374
+    LLOC: 211
+    SLOC: 253
+    Comments: 16
+    Single comments: 14
+    Multi: 13
+    Blank: 94
+    - Comment Stats
+        (C % L): 4%
+        (C % S): 6%
+        (C + M % L): 8%
+deepCab/agent/__init__.py
+    LOC: 13
+    LLOC: 7
+    SLOC: 6
+    Comments: 6
+    Single comments: 0
+    Multi: 6
+    Blank: 1
+    - Comment Stats
+        (C % L): 46%
+        (C % S): 100%
+        (C + M % L): 92%
+deepCab/agent/cli.py
+    LOC: 72
+    LLOC: 50
+    SLOC: 51
+    Comments: 0
+    Single comments: 0
+    Multi: 7
+    Blank: 14
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 10%
+deepCab/agent/improve.py
+    LOC: 179
+    LLOC: 98
+    SLOC: 128
+    Comments: 14
+    Single comments: 14
+    Multi: 17
+    Blank: 20
+    - Comment Stats
+        (C % L): 8%
+        (C % S): 11%
+        (C + M % L): 17%
+deepCab/agent/executor.py
+    LOC: 195
+    LLOC: 97
+    SLOC: 150
+    Comments: 4
+    Single comments: 4
+    Multi: 16
+    Blank: 25
+    - Comment Stats
+        (C % L): 2%
+        (C % S): 3%
+        (C + M % L): 10%
+deepCab/models/_kinds.py
+    LOC: 21
+    LLOC: 9
+    SLOC: 14
+    Comments: 0
+    Single comments: 0
+    Multi: 4
+    Blank: 3
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 19%
+deepCab/models/ft_transformer.py
+    LOC: 178
+    LLOC: 107
+    SLOC: 124
+    Comments: 3
+    Single comments: 1
+    Multi: 20
+    Blank: 33
+    - Comment Stats
+        (C % L): 2%
+        (C % S): 2%
+        (C + M % L): 13%
+deepCab/models/conformal.py
+    LOC: 95
+    LLOC: 54
+    SLOC: 52
+    Comments: 2
+    Single comments: 3
+    Multi: 26
+    Blank: 14
+    - Comment Stats
+        (C % L): 2%
+        (C % S): 4%
+        (C + M % L): 29%
+deepCab/models/torch_mlp.py
+    LOC: 153
+    LLOC: 100
+    SLOC: 113
+    Comments: 2
+    Single comments: 0
+    Multi: 11
+    Blank: 29
+    - Comment Stats
+        (C % L): 1%
+        (C % S): 2%
+        (C + M % L): 8%
+deepCab/models/onnx_export.py
+    LOC: 147
+    LLOC: 70
+    SLOC: 73
+    Comments: 14
+    Single comments: 13
+    Multi: 18
+    Blank: 43
+    - Comment Stats
+        (C % L): 10%
+        (C % S): 19%
+        (C + M % L): 22%
+deepCab/models/tf_mlp.py
+    LOC: 96
+    LLOC: 47
+    SLOC: 71
+    Comments: 4
+    Single comments: 4
+    Multi: 6
+    Blank: 15
+    - Comment Stats
+        (C % L): 4%
+        (C % S): 6%
+        (C + M % L): 10%
+deepCab/models/__init__.py
+    LOC: 9
+    LLOC: 6
+    SLOC: 5
+    Comments: 5
+    Single comments: 1
+    Multi: 2
+    Blank: 1
+    - Comment Stats
+        (C % L): 56%
+        (C % S): 100%
+        (C + M % L): 78%
+deepCab/models/factory.py
+    LOC: 24
+    LLOC: 13
+    SLOC: 15
+    Comments: 0
+    Single comments: 0
+    Multi: 4
+    Blank: 5
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 17%
+deepCab/models/base.py
+    LOC: 78
+    LLOC: 48
+    SLOC: 39
+    Comments: 6
+    Single comments: 6
+    Multi: 13
+    Blank: 20
+    - Comment Stats
+        (C % L): 8%
+        (C % S): 15%
+        (C + M % L): 24%
+deepCab/models/gbm.py
+    LOC: 120
+    LLOC: 65
+    SLOC: 82
+    Comments: 2
+    Single comments: 1
+    Multi: 8
+    Blank: 29
+    - Comment Stats
+        (C % L): 2%
+        (C % S): 2%
+        (C + M % L): 8%
+deepCab/schemas/config.py
+    LOC: 117
+    LLOC: 122
+    SLOC: 73
+    Comments: 5
+    Single comments: 6
+    Multi: 3
+    Blank: 35
+    - Comment Stats
+        (C % L): 4%
+        (C % S): 7%
+        (C + M % L): 7%
+deepCab/schemas/registry.py
+    LOC: 29
+    LLOC: 34
+    SLOC: 20
+    Comments: 0
+    Single comments: 1
+    Multi: 0
+    Blank: 8
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+deepCab/schemas/__init__.py
+    LOC: 5
+    LLOC: 1
+    SLOC: 0
+    Comments: 0
+    Single comments: 0
+    Multi: 4
+    Blank: 1
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 80%
+deepCab/schemas/api.py
+    LOC: 73
+    LLOC: 60
+    SLOC: 41
+    Comments: 2
+    Single comments: 0
+    Multi: 2
+    Blank: 30
+    - Comment Stats
+        (C % L): 3%
+        (C % S): 5%
+        (C + M % L): 5%
+deepCab/schemas/agent.py
+    LOC: 79
+    LLOC: 85
+    SLOC: 49
+    Comments: 1
+    Single comments: 4
+    Multi: 0
+    Blank: 26
+    - Comment Stats
+        (C % L): 1%
+        (C % S): 2%
+        (C + M % L): 1%
+deepCab/schemas/settings.py
+    LOC: 175
+    LLOC: 126
+    SLOC: 104
+    Comments: 6
+    Single comments: 6
+    Multi: 23
+    Blank: 42
+    - Comment Stats
+        (C % L): 3%
+        (C % S): 6%
+        (C + M % L): 17%
+deepCab/schemas/data.py
+    LOC: 36
+    LLOC: 32
+    SLOC: 21
+    Comments: 1
+    Single comments: 4
+    Multi: 0
+    Blank: 11
+    - Comment Stats
+        (C % L): 3%
+        (C % S): 5%
+        (C + M % L): 3%
+deepCab/obs/log.py
+    LOC: 38
+    LLOC: 17
+    SLOC: 28
+    Comments: 0
+    Single comments: 1
+    Multi: 0
+    Blank: 9
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+deepCab/obs/__init__.py
+    LOC: 8
+    LLOC: 3
+    SLOC: 2
+    Comments: 2
+    Single comments: 0
+    Multi: 5
+    Blank: 1
+    - Comment Stats
+        (C % L): 25%
+        (C % S): 100%
+        (C + M % L): 88%
+deepCab/obs/prom.py
+    LOC: 53
+    LLOC: 10
+    SLOC: 40
+    Comments: 4
+    Single comments: 3
+    Multi: 2
+    Blank: 8
+    - Comment Stats
+        (C % L): 8%
+        (C % S): 10%
+        (C + M % L): 11%
+deepCab/obs/jsonl.py
+    LOC: 167
+    LLOC: 118
+    SLOC: 142
+    Comments: 4
+    Single comments: 1
+    Multi: 3
+    Blank: 21
+    - Comment Stats
+        (C % L): 2%
+        (C % S): 3%
+        (C + M % L): 4%
+deepCab/obs/otel.py
+    LOC: 29
+    LLOC: 21
+    SLOC: 19
+    Comments: 0
+    Single comments: 0
+    Multi: 3
+    Blank: 7
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 10%
+deepCab/obs/slack.py
+    LOC: 76
+    LLOC: 37
+    SLOC: 36
+    Comments: 1
+    Single comments: 2
+    Multi: 19
+    Blank: 19
+    - Comment Stats
+        (C % L): 1%
+        (C % S): 3%
+        (C + M % L): 26%
+deepCab/registry/dispatcher.py
+    LOC: 203
+    LLOC: 100
+    SLOC: 124
+    Comments: 12
+    Single comments: 10
+    Multi: 25
+    Blank: 44
+    - Comment Stats
+        (C % L): 6%
+        (C % S): 10%
+        (C + M % L): 18%
+deepCab/registry/__init__.py
+    LOC: 9
+    LLOC: 3
+    SLOC: 7
+    Comments: 2
+    Single comments: 0
+    Multi: 2
+    Blank: 0
+    - Comment Stats
+        (C % L): 22%
+        (C % S): 29%
+        (C + M % L): 44%
+deepCab/registry/model_card.py
+    LOC: 108
+    LLOC: 18
+    SLOC: 83
+    Comments: 0
+    Single comments: 0
+    Multi: 7
+    Blank: 18
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 6%
+deepCab/api/deps.py
+    LOC: 67
+    LLOC: 26
+    SLOC: 36
+    Comments: 2
+    Single comments: 1
+    Multi: 12
+    Blank: 18
+    - Comment Stats
+        (C % L): 3%
+        (C % S): 6%
+        (C + M % L): 21%
+deepCab/api/__init__.py
+    LOC: 1
+    LLOC: 1
+    SLOC: 0
+    Comments: 0
+    Single comments: 1
+    Multi: 0
+    Blank: 0
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+deepCab/api/app.py
+    LOC: 103
+    LLOC: 58
+    SLOC: 70
+    Comments: 9
+    Single comments: 5
+    Multi: 9
+    Blank: 19
+    - Comment Stats
+        (C % L): 9%
+        (C % S): 13%
+        (C + M % L): 17%
+deepCab/api/middleware.py
+    LOC: 47
+    LLOC: 28
+    SLOC: 31
+    Comments: 1
+    Single comments: 1
+    Multi: 5
+    Blank: 10
+    - Comment Stats
+        (C % L): 2%
+        (C % S): 3%
+        (C + M % L): 13%
+deepCab/api/state.py
+    LOC: 45
+    LLOC: 42
+    SLOC: 30
+    Comments: 3
+    Single comments: 0
+    Multi: 3
+    Blank: 12
+    - Comment Stats
+        (C % L): 7%
+        (C % S): 10%
+        (C + M % L): 13%
+deepCab/api/lifespan.py
+    LOC: 105
+    LLOC: 58
+    SLOC: 67
+    Comments: 5
+    Single comments: 1
+    Multi: 18
+    Blank: 19
+    - Comment Stats
+        (C % L): 5%
+        (C % S): 7%
+        (C + M % L): 22%
+deepCab/api/routers/graphql.py
+    LOC: 142
+    LLOC: 80
+    SLOC: 102
+    Comments: 4
+    Single comments: 3
+    Multi: 10
+    Blank: 27
+    - Comment Stats
+        (C % L): 3%
+        (C % S): 4%
+        (C + M % L): 10%
+deepCab/api/routers/monitor.py
+    LOC: 25
+    LLOC: 14
+    SLOC: 14
+    Comments: 0
+    Single comments: 1
+    Multi: 3
+    Blank: 7
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 12%
+deepCab/api/routers/predict.py
+    LOC: 107
+    LLOC: 62
+    SLOC: 73
+    Comments: 1
+    Single comments: 1
+    Multi: 11
+    Blank: 22
+    - Comment Stats
+        (C % L): 1%
+        (C % S): 1%
+        (C + M % L): 11%
+deepCab/api/routers/__init__.py
+    LOC: 0
+    LLOC: 0
+    SLOC: 0
+    Comments: 0
+    Single comments: 0
+    Multi: 0
+    Blank: 0
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+deepCab/api/routers/agent.py
+    LOC: 100
+    LLOC: 73
+    SLOC: 74
+    Comments: 0
+    Single comments: 0
+    Multi: 6
+    Blank: 20
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 6%
+deepCab/api/routers/train.py
+    LOC: 79
+    LLOC: 42
+    SLOC: 48
+    Comments: 9
+    Single comments: 7
+    Multi: 9
+    Blank: 15
+    - Comment Stats
+        (C % L): 11%
+        (C % S): 19%
+        (C + M % L): 23%
+deepCab/api/routers/explain.py
+    LOC: 48
+    LLOC: 25
+    SLOC: 37
+    Comments: 2
+    Single comments: 2
+    Multi: 2
+    Blank: 7
+    - Comment Stats
+        (C % L): 4%
+        (C % S): 5%
+        (C + M % L): 8%
+deepCab/api/routers/meta.py
+    LOC: 21
+    LLOC: 12
+    SLOC: 14
+    Comments: 0
+    Single comments: 1
+    Multi: 0
+    Blank: 6
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+deepCab/data/io.py
+    LOC: 66
+    LLOC: 32
+    SLOC: 39
+    Comments: 0
+    Single comments: 0
+    Multi: 12
+    Blank: 15
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 18%
+deepCab/data/__init__.py
+    LOC: 7
+    LLOC: 6
+    SLOC: 5
+    Comments: 5
+    Single comments: 0
+    Multi: 2
+    Blank: 0
+    - Comment Stats
+        (C % L): 71%
+        (C % S): 100%
+        (C + M % L): 100%
+deepCab/data/validate.py
+    LOC: 45
+    LLOC: 44
+    SLOC: 26
+    Comments: 1
+    Single comments: 2
+    Multi: 7
+    Blank: 10
+    - Comment Stats
+        (C % L): 2%
+        (C % S): 4%
+        (C + M % L): 18%
+deepCab/data/splits.py
+    LOC: 39
+    LLOC: 20
+    SLOC: 23
+    Comments: 0
+    Single comments: 0
+    Multi: 7
+    Blank: 9
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 18%
+deepCab/data/lineage.py
+    LOC: 50
+    LLOC: 40
+    SLOC: 36
+    Comments: 0
+    Single comments: 1
+    Multi: 5
+    Blank: 8
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 10%
+deepCab/data/migrate.py
+    LOC: 58
+    LLOC: 30
+    SLOC: 34
+    Comments: 1
+    Single comments: 1
+    Multi: 9
+    Blank: 14
+    - Comment Stats
+        (C % L): 2%
+        (C % S): 3%
+        (C + M % L): 17%
+deepCab/data/lineage_store.py
+    LOC: 92
+    LLOC: 30
+    SLOC: 67
+    Comments: 0
+    Single comments: 0
+    Multi: 10
+    Blank: 15
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 11%
+** Total **
+    LOC: 6891
+    LLOC: 3888
+    SLOC: 4559
+    Comments: 295
+    Single comments: 225
+    Multi: 737
+    Blank: 1370
+    - Comment Stats
+        (C % L): 4%
+        (C % S): 6%
+        (C + M % L): 15%

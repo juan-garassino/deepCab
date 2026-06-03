@@ -164,18 +164,21 @@ def _run_training(cfg: TrainConfig) -> TrainResult:
         _publish_to_state(estimator, cfg.backend.kind, X_val, aci)
 
         from deepCab.api.state import STATE
-        from deepCab.registry.dispatcher import save_artifact, save_full_state
+        from deepCab.registry.dispatcher import save_full_state
 
-        # Legacy save_artifact (tempdir, used for MLflow upload).
-        model_path = save_artifact(estimator)
-        if mlflow_mod is not None:
-            mlflow_mod.log_artifacts(str(model_path.parent), artifact_path="model")
-
-        # FR-1: persistent on-disk state so the API lifespan loader can
-        # rehydrate STATE.model on restart without a fresh /train. The LATEST
-        # pointer is updated atomically inside save_full_state.
+        # FR-1: persistent on-disk state (single source of truth — used for the
+        # MLflow upload, the ONNX export target, and the API lifespan loader's
+        # cold-start rehydration). The LATEST pointer is updated atomically
+        # inside save_full_state.
         if STATE.model is not None:
             run_dir = save_full_state(STATE.model, run_id=run_id)
+
+        # model_path is the backend-native weights dir under the run_dir —
+        # written by save_full_state above. Use it for MLflow + ONNX so we
+        # don't double-write to a throwaway tempdir.
+        model_path = (run_dir / "model") if run_dir is not None else None
+        if mlflow_mod is not None and model_path is not None:
+            mlflow_mod.log_artifacts(str(model_path.parent), artifact_path="model")
 
         provenance_path = emit_provenance(
             cfg, run_id=run_id, metrics={"val_mae": val_mae}
@@ -185,13 +188,14 @@ def _run_training(cfg: TrainConfig) -> TrainResult:
         # try/except so a failure in one doesn't kill the run.
         _emit_model_card(cfg, run_id=run_id, val_mae=val_mae, provenance_path=provenance_path, mlflow_mod=mlflow_mod)
         _emit_lineage(cfg, run_id=run_id)
-        _export_and_register_onnx(estimator, cfg, X_val[:1], model_path.parent)
+        if model_path is not None:
+            _export_and_register_onnx(estimator, cfg, X_val[:1], model_path.parent)
 
     return TrainResult(
         run_id=run_id,
         backend_kind=cfg.backend.kind,
         val_mae=val_mae,
-        model_path=str(model_path),
+        model_path=str(model_path) if model_path is not None else "",
         estimator=estimator,
         background=X_val[: min(200, len(X_val))],
         aci=aci,

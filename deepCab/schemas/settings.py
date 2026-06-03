@@ -5,10 +5,15 @@ from __future__ import annotations
 import os
 from functools import lru_cache
 from pathlib import Path
-from typing import Literal
+from typing import Any, Literal
 
-from pydantic import Field, field_validator
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic import Field
+from pydantic.fields import FieldInfo
+from pydantic_settings import (
+    BaseSettings,
+    EnvSettingsSource,
+    SettingsConfigDict,
+)
 
 
 def _env_file() -> str:
@@ -16,10 +21,8 @@ def _env_file() -> str:
     return f".env.{env}"
 
 
-def _maybe_read_file(value: str | None) -> str | None:
-    """If the env value starts with `file:` (docker secrets convention) or
-    points at a readable file, return the file content stripped. Otherwise
-    pass the raw value through unchanged.
+class FileUriEnvSettingsSource(EnvSettingsSource):
+    """Source-level resolver for the docker-secrets `file:` URI convention.
 
     Compose pattern:
         secrets:
@@ -31,18 +34,40 @@ def _maybe_read_file(value: str | None) -> str | None:
             environment:
               DEEPCAB_API_KEY: file:/run/secrets/deepcab_api_key
 
-    On host startup the file appears at `/run/secrets/deepcab_api_key`;
-    pydantic-settings reads the env var, this helper detects the `file:` prefix
-    and substitutes the file content. Never logs the value.
+    When the resolved env value starts with `file:`, this source reads the
+    referenced file and substitutes its (stripped) contents. Plain values pass
+    through untouched. Resolution happens once at the source layer instead of
+    per-field via `@field_validator`, so every string field benefits without
+    boilerplate.
     """
-    if value is None:
-        return None
-    if value.startswith("file:"):
-        path = Path(value[len("file:"):])
-        if not path.exists():
-            raise FileNotFoundError(f"secret file not found: {path}")
-        return path.read_text().strip()
-    return value
+
+    def get_field_value(
+        self, field: FieldInfo, field_name: str
+    ) -> tuple[Any, str, bool]:
+        value, key, is_complex = super().get_field_value(field, field_name)
+        if isinstance(value, str) and value.startswith("file:"):
+            path = Path(value[len("file:"):]).expanduser()
+            if not path.exists():
+                raise FileNotFoundError(f"secret file not found: {path}")
+            value = path.read_text().strip()
+        return value, key, is_complex
+
+
+def _customise_sources(
+    settings_cls,
+    init_settings,
+    env_settings,
+    dotenv_settings,
+    file_secret_settings,
+):
+    """Replace the default env source with `FileUriEnvSettingsSource` so any
+    `file:` URI in env (or `.env`) is resolved before assignment."""
+    return (
+        init_settings,
+        FileUriEnvSettingsSource(settings_cls),
+        dotenv_settings,
+        file_secret_settings,
+    )
 
 
 class DataSettings(BaseSettings):
@@ -98,10 +123,9 @@ class ObsSettings(BaseSettings):
     # Empty/None means the in-process slack helper is a no-op.
     slack_webhook_url: str | None = None
 
-    @field_validator("slack_webhook_url", mode="before")
     @classmethod
-    def _read_file(cls, v):
-        return _maybe_read_file(v)
+    def settings_customise_sources(cls, settings_cls, init_settings, env_settings, dotenv_settings, file_secret_settings):
+        return _customise_sources(settings_cls, init_settings, env_settings, dotenv_settings, file_secret_settings)
 
 
 class OpenAISettings(BaseSettings):
@@ -110,10 +134,9 @@ class OpenAISettings(BaseSettings):
     api_key: str | None = None
     model: str = "gpt-4o-mini"
 
-    @field_validator("api_key", mode="before")
     @classmethod
-    def _read_file(cls, v):
-        return _maybe_read_file(v)
+    def settings_customise_sources(cls, settings_cls, init_settings, env_settings, dotenv_settings, file_secret_settings):
+        return _customise_sources(settings_cls, init_settings, env_settings, dotenv_settings, file_secret_settings)
 
 
 class DeepCabSettings(BaseSettings):
@@ -125,10 +148,9 @@ class DeepCabSettings(BaseSettings):
 
     api_key: str | None = None
 
-    @field_validator("api_key", mode="before")
     @classmethod
-    def _read_file(cls, v):
-        return _maybe_read_file(v)
+    def settings_customise_sources(cls, settings_cls, init_settings, env_settings, dotenv_settings, file_secret_settings):
+        return _customise_sources(settings_cls, init_settings, env_settings, dotenv_settings, file_secret_settings)
 
 
 class Settings(BaseSettings):

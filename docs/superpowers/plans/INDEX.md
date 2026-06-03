@@ -9,14 +9,17 @@ Five sub-projects, executed in order. Each = one PR / one commit. Spec: `docs/su
 | C | `2026-06-03-C-gcp-cicd.md` | GCP CI/CD with Workload Identity Federation: build-and-push.yml (reusable), deploy-cloud-run.yml (default, tag-triggered), deploy-gke.yml (dispatch-only). Slack via `rtcamp/action-slack-notify@v2.3.3`. | Workflows lint OK, WIF README documents one-time bootstrap, GitHub vars/secret list documented |
 | D | `2026-06-03-D-react-and-colab.md` | Replace Streamlit at `003-deepCab-website/` with Vite+React+TS+Tailwind SPA (Predict/Explain/Runs). Add Colab notebook bridging VS Code via ngrok kernel + GCS push + trigger deploy. | `npm run build` succeeds, `app.deepcab.localhost` renders, 7-cell ipynb valid JSON |
 | E | `2026-06-03-E-audit-and-simplify.md` | Phase A automated metrics (radon + vulture + pylint + pydeps), Phase B manual simplifications across 6 areas, `infra/AUDIT.md`. No new deps. | AUDIT.md has no `<...>` placeholders, tests pass, LOC/complexity delta recorded |
+| F | `2026-06-03-F-cloud-training-trigger.md` | Cloud Scheduler → Cloud Run Job (default training trigger) + Prefect Cloud + Cloud Run worker documented as alternative. Adds `REGISTRY_GCS_BUCKET` env-driven artifact push to `training/train.py`. | `gh workflow run deploy-retrain-job.yml -f tag=v0.1.0` builds + pushes + replaces the Job; `make scheduler_bootstrap` wires Scheduler |
 
 ## Execution dependencies
 
 ```
 A → B → C → D → E
+        ↓
+        F (after C lands; can run in parallel with D)
 ```
 
-Each plan ends with its own commit. Sub-project A's commit also includes the spec + all 5 plan docs.
+For simplicity execute sequentially: A → B → C → F → D → E. F slots after C because it reuses C's WIF + GAR setup; before D because D's notebook (cell 6) can choose to fire either `deploy-cloud-run.yml` (API) or `deploy-retrain-job.yml` (Job). Each plan ends with its own commit.
 
 ## Test count expectations
 

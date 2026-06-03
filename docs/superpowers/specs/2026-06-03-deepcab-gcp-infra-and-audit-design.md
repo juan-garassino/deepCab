@@ -42,6 +42,9 @@ This is a single design covering five intentional sub-projects executed in order
 | Notebook bridge | Colab as remote kernel via ngrok TCP tunnel + VS Code "Specify Jupyter Server" | User picked this option |
 | ngrok purpose | Expose local API for a React frontend during dev | User-specified |
 | Sequence | Infra first, audit the new whole last | User picked this option |
+| Cloud training trigger (default) | Cloud Scheduler → Cloud Run Job invoking `python -m deepCab.training.train` | User decided 2026-06-04. Zero idle cost; no Prefect server in cloud |
+| Cloud training trigger (alternative) | Prefect Cloud (free tier) + a Cloud Run worker (`min_instances=1`) polling the work queue | User decided 2026-06-04. Adds Prefect's UI/state model when multiple flows arrive |
+| Local training trigger | Prefect server + prefect-agent containers (unchanged from compose stack) | UI lives locally; cloud doesn't need it |
 
 ## 4. Architecture
 
@@ -69,6 +72,10 @@ This is a single design covering five intentional sub-projects executed in order
 │   │       └── grafana/provisioning/   # datasources: prom, loki, jaeger
 │   ├── gcp/
 │   │   ├── cloud-run/service.yaml      # Knative service KRM; __IMAGE__ placeholder rendered in CI
+│   │   ├── cloud-run-jobs/
+│   │   │   └── retrain-job.yaml        # Cloud Run Job spec — nightly retrain (default training trigger)
+│   │   ├── scheduler/
+│   │   │   └── retrain-schedule.yaml   # Cloud Scheduler job firing the Cloud Run Job daily
 │   │   ├── gke/
 │   │   │   ├── base/
 │   │   │   │   ├── deployment.yaml

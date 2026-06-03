@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package deepcab;
+
+// Mirror of deepCab.schemas.api.{PredictRequest, PredictResponse}.
+// Regen stubs:
+//   uv run --with grpcio-tools python -m grpc_tools.protoc \
+//     -I proto --python_out=deepCab/grpc --grpc_python_out=deepCab/grpc \
+//     proto/deepcab.proto
+
+message FeatureRow {
+  string pickup_datetime = 1;   // ISO 8601
+  double pickup_longitude = 2;
+  double pickup_latitude = 3;
+  double dropoff_longitude = 4;
+  double dropoff_latitude = 5;
+  int32  passenger_count = 6;
+}
+
+message PredictRequest {
+  FeatureRow row = 1;
+}
+
+message PredictResponse {
+  double fare = 1;
+  optional double interval_lower = 2;
+  optional double interval_upper = 3;
+  string backend_kind = 4;
+}
+
+service PredictService {
+  rpc Predict(PredictRequest) returns (PredictResponse);
+}

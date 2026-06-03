@@ -12,3 +12,13 @@ raw_data/
 *.svg
 *.png
 *.npy
+
+# Phase 13 — docker secrets
+secrets/
+
+# FR-1 runtime artifacts
+runs/
+traces/
+*.onnx
+*.onnx.cfg.json
+lineage.db

@@ -13,8 +13,32 @@ secrets:
     file: ../secrets/deepcab_api_key
   openai_api_key:
     file: ../secrets/openai_api_key
+  slack_webhook_url:
+    file: ../secrets/slack_webhook_url
 
 services:
+  traefik:
+    image: traefik:v3.1
+    restart: unless-stopped
+    command:
+      - "--configFile=/etc/traefik/traefik.yml"
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"    # dashboard
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./conf/traefik/traefik.yml:/etc/traefik/traefik.yml:ro
+      - ./conf/traefik/dynamic.yml:/etc/traefik/dynamic/dynamic.yml:ro
+      - ../secrets/traefik-cert.pem:/certs/traefik-cert.pem:ro
+      - ../secrets/traefik-key.pem:/certs/traefik-key.pem:ro
+      - traefik_acme:/letsencrypt
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.traefik.rule=Host(`traefik.deepcab.localhost`)"
+      - "traefik.http.routers.traefik.tls=true"
+      - "traefik.http.routers.traefik.service=api@internal"
+
   postgres:
     image: postgres:16-alpine
     restart: unless-stopped
@@ -45,6 +69,11 @@ services:
       - "9001:9001"
     volumes:
       - minio_data:/data
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.minio.rule=Host(`minio.deepcab.localhost`)"
+      - "traefik.http.routers.minio.tls=true"
+      - "traefik.http.services.minio.loadbalancer.server.port=9001"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
       interval: 5s
@@ -73,8 +102,11 @@ services:
       mlflow server --host 0.0.0.0 --port 5000
       --backend-store-uri postgresql://mlflow:$$PG_PW@postgres:5432/mlflow
       --artifacts-destination s3://mlflow"
-    ports:
-      - "5000:5000"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.mlflow.rule=Host(`mlflow.deepcab.localhost`)"
+      - "traefik.http.routers.mlflow.tls=true"
+      - "traefik.http.services.mlflow.loadbalancer.server.port=5000"
 
   redis:
     image: redis:7-alpine
@@ -100,8 +132,11 @@ services:
       prefect server start --host 0.0.0.0"
     volumes:
       - prefect_data:/data
-    ports:
-      - "4200:4200"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.prefect.rule=Host(`prefect.deepcab.localhost`)"
+      - "traefik.http.routers.prefect.tls=true"
+      - "traefik.http.services.prefect.loadbalancer.server.port=4200"
 
   prefect-agent:
     build:
@@ -112,10 +147,13 @@ services:
     restart: unless-stopped
     depends_on:
       - prefect
+    secrets:
+      - slack_webhook_url
     environment:
       PREFECT_API_URL: http://prefect:4200/api
       APP_ENV: dev
       MLFLOW_TRACKING_URI: http://mlflow:5000
+      OBS_SLACK_WEBHOOK_URL: file:/run/secrets/slack_webhook_url
     command: python -m deepCab.flow_v2.schedules
     # Reuses the api image (full deepCab + deps); avoids rebuilding for each
     # flow run since the schedule serves in-process.
@@ -133,6 +171,7 @@ services:
     secrets:
       - deepcab_api_key
       - openai_api_key
+      - slack_webhook_url
     environment:
       APP_ENV: dev
       MLFLOW_TRACKING_URI: http://mlflow:5000
@@ -142,10 +181,17 @@ services:
       # at Settings() construction time.
       DEEPCAB_API_KEY: file:/run/secrets/deepcab_api_key
       OPENAI_API_KEY: file:/run/secrets/openai_api_key
+      OBS_SLACK_WEBHOOK_URL: file:/run/secrets/slack_webhook_url
     ports:
       - "8000:8000"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.api.rule=Host(`api.deepcab.localhost`)"
+      - "traefik.http.routers.api.tls=true"
+      - "traefik.http.services.api.loadbalancer.server.port=8000"
 
 volumes:
   postgres_data:
   minio_data:
   prefect_data:
+  traefik_acme:

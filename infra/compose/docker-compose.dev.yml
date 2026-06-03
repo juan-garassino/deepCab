@@ -1,0 +1,43 @@
+name: deepcab
+
+secrets:
+  ngrok_authtoken:
+    file: ../secrets/ngrok_authtoken
+  pgadmin_password:
+    file: ../secrets/pgadmin_password
+
+services:
+  ngrok:
+    image: ngrok/ngrok:latest
+    restart: unless-stopped
+    command: http api:8000 --log=stdout
+    secrets:
+      - ngrok_authtoken
+    environment:
+      NGROK_AUTHTOKEN_FILE: /run/secrets/ngrok_authtoken
+    depends_on:
+      - api
+    labels:
+      - "traefik.enable=false"
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    restart: unless-stopped
+    secrets:
+      - pgadmin_password
+    environment:
+      PGADMIN_DEFAULT_EMAIL: dev@deepcab.localhost
+      PGADMIN_DEFAULT_PASSWORD_FILE: /run/secrets/pgadmin_password
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+    depends_on:
+      - postgres
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.pgadmin.rule=Host(`pgadmin.deepcab.localhost`)"
+      - "traefik.http.routers.pgadmin.tls=true"
+      - "traefik.http.services.pgadmin.loadbalancer.server.port=80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+
+volumes:
+  pgadmin_data:

@@ -1,0 +1,9 @@
+tls:
+  certificates:
+    - certFile: /certs/traefik-cert.pem
+      keyFile: /certs/traefik-key.pem
+  stores:
+    default:
+      defaultCertificate:
+        certFile: /certs/traefik-cert.pem
+        keyFile: /certs/traefik-key.pem

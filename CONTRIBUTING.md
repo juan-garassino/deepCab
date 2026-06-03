@@ -78,6 +78,19 @@ python -m deepCab.data.migrate --size 1k --split val
 
 The compose files moved under `infra/compose/` in Sub-project A (2026-06-03). Run `make docker_up` instead of bare `docker compose up`, or pass `-f infra/compose/docker-compose.yml` explicitly.
 
+### Traefik dashboard / `*.deepcab.localhost` not resolving
+
+Sub-project B (2026-06-04) put Traefik in front of every HTTP service.
+
+- **Dashboard**: http://localhost:8080 (insecure by design — dev only).
+- **`*.deepcab.localhost` resolution**: Chrome / Firefox / Safari resolve `*.localhost` to 127.0.0.1 natively; `curl` and Edge don't. Run `make hosts` once to seed `/etc/hosts`.
+- **Local TLS**: `make mkcert` (requires `brew install mkcert`) writes `infra/secrets/traefik-{cert,key}.pem`. Without these files Traefik fails to start.
+- **First-run secret seeds**: `make docker_obs_up` expects `infra/secrets/slack_webhook_url` (Alertmanager) and the existing `postgres_password / minio_root_password / deepcab_api_key / openai_api_key`. The bootstrap script + `make hosts && make mkcert` is the canonical first-run sequence.
+
+### Loki shows "no data" in Grafana
+
+Promtail reads `/var/run/docker.sock` to discover containers. On Docker Desktop for Mac the socket sometimes lags after a restart — `docker compose logs promtail` and re-up if it's stuck. Loki itself is filesystem-backed at `loki_data:/loki` so logs survive container restarts.
+
 ### `/predict` returns 503 after API restart
 
 **Shouldn't happen after FR-1.** The lifespan autoloader reads

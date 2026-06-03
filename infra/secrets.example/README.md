@@ -29,6 +29,12 @@ chmod 600 infra/secrets/*
 | `minio_root_password`| `minio` (MINIO_ROOT_PASSWORD_FILE), `mlflow` (AWS_SECRET_ACCESS_KEY)     |
 | `deepcab_api_key`    | `api` (X-API-Key gate on /train and /agent)                              |
 | `openai_api_key`     | `api` (OpenAI SDK; fallback to deepcab_api_key for backward compat)      |
+| `slack_webhook_url`  | `api`, `prefect-agent`, `alertmanager` (notify_alias_change, retrain flow events, prom alerts) |
+| `gcp_sa_key`         | future CI/CD push to GCR + Cloud Run (Sub-project C)                     |
+| `ngrok_authtoken`    | `ngrok` (dev compose) — public tunnel to local API                       |
+| `pgadmin_password`   | `pgadmin` (dev compose) — admin login                                    |
+| `traefik_acme_email` | `traefik` (Let's Encrypt registration, staging/prod only)                |
+| `traefik-cert.pem` / `traefik-key.pem` | `traefik` (mkcert-generated local TLS for `*.deepcab.localhost`) — produced by `make mkcert`, not by copying an example |
 
 ## Production (swarm / k8s)
 

@@ -1,0 +1,30 @@
+groups:
+  - name: deepcab-api
+    interval: 30s
+    rules:
+      - alert: HighErrorRate
+        expr: sum(rate(http_requests_total{status=~"5.."}[5m])) by (job) / sum(rate(http_requests_total[5m])) by (job) > 0.05
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "5xx rate above 5%"
+          description: "{{ $labels.job }} returned {{ printf \"%.2f\" $value }} 5xx-rate for 5m."
+
+      - alert: ApiDown
+        expr: up{job="deepcab-api"} == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "deepcab-api is unreachable"
+          description: "prometheus has not scraped /metrics for 2 minutes."
+
+      - alert: LatencyP99High
+        expr: histogram_quantile(0.99, sum(rate(http_request_duration_seconds_bucket[5m])) by (le, job)) > 1.0
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "p99 latency above 1s"
+          description: "p99 = {{ printf \"%.2f\" $value }}s for 10m on {{ $labels.job }}."

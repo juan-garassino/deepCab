@@ -397,3 +397,27 @@ list:
 	@echo "            Install the version of the package corresponding to the challenge."
 	@echo "\n        $(fbold)test_cloud_training$(ccreset)"
 	@echo "            Run the tests."
+
+# LOCAL TLS + HOSTS (Sub-project B)
+HOSTS_LINE := 127.0.0.1 api.deepcab.localhost mlflow.deepcab.localhost prefect.deepcab.localhost grafana.deepcab.localhost jaeger.deepcab.localhost minio.deepcab.localhost traefik.deepcab.localhost pgadmin.deepcab.localhost app.deepcab.localhost alertmanager.deepcab.localhost
+
+hosts:
+	@if ! grep -q "deepcab.localhost" /etc/hosts; then \
+	  echo "$(HOSTS_LINE)" | sudo tee -a /etc/hosts ; \
+	else \
+	  echo "/etc/hosts already configured" ; \
+	fi
+
+mkcert:
+	@command -v mkcert >/dev/null || { echo "install mkcert first: brew install mkcert"; exit 1; }
+	mkcert -install
+	@mkdir -p infra/secrets
+	mkcert -cert-file infra/secrets/traefik-cert.pem -key-file infra/secrets/traefik-key.pem '*.deepcab.localhost' localhost
+	@echo "TLS cert in infra/secrets/"
+
+# DOCKER COMPOSE — dev override layered on top of core + obs
+docker_dev_up:
+	docker compose -f infra/compose/docker-compose.yml -f infra/compose/docker-compose.obs.yml -f infra/compose/docker-compose.dev.yml up -d
+
+docker_dev_down:
+	docker compose -f infra/compose/docker-compose.yml -f infra/compose/docker-compose.obs.yml -f infra/compose/docker-compose.dev.yml down

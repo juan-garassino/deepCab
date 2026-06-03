@@ -93,6 +93,15 @@ class ObsSettings(BaseSettings):
     # Comma-separated origins, e.g. "http://localhost:3000,https://app.example.com".
     # Empty in prod forces explicit allowlist; "*" allowed in dev only.
     cors_allow_origins: str = "http://localhost:3000,http://localhost:8501"
+    # Optional Slack incoming-webhook URL. Resolved via the `file:` docker-secrets
+    # pattern (set OBS_SLACK_WEBHOOK_URL=file:/run/secrets/slack_webhook_url).
+    # Empty/None means the in-process slack helper is a no-op.
+    slack_webhook_url: str | None = None
+
+    @field_validator("slack_webhook_url", mode="before")
+    @classmethod
+    def _read_file(cls, v):
+        return _maybe_read_file(v)
 
 
 class OpenAISettings(BaseSettings):

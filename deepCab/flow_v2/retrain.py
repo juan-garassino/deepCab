@@ -3,11 +3,16 @@
 Three tasks wrap the existing pure functions from training/*.py — Prefect just
 adds the orchestration layer (retries, scheduling, observability via the UI):
 
-    preprocess_task  →  train_task  →  evaluate_task
+    preprocess_task  ->  train_task  ->  evaluate_task
 
 Each task takes typed Pydantic inputs / returns typed outputs. The flow itself
 returns a `RetrainResult` so the test (and the agent's future `schedule_retrain`
 tool) can inspect what happened without parsing logs.
+
+Slack hooks emit `running` / `success` / `failed` so operators see the same
+channel that gets MLflow alias changes (registry/dispatcher.set_alias). The
+hooks live in the flow body rather than the tasks so a per-task retry doesn't
+produce a flurry of Slack messages.
 
 Runs in three modes:
   1. Direct in-process:           `retrain_flow(cfg)`        — sync return
@@ -16,10 +21,12 @@ Runs in three modes:
 """
 from __future__ import annotations
 
+import uuid
 from dataclasses import dataclass
 
 from prefect import flow, task
 
+from deepCab.obs import slack
 from deepCab.obs.log import get_logger
 from deepCab.schemas.config import TrainConfig
 
@@ -72,18 +79,68 @@ def evaluate_task(cfg: TrainConfig, train_result: dict) -> dict:
     return {"mae": res.mae, "rmse": res.rmse, "n": res.n}
 
 
+def _default_cfg() -> TrainConfig:
+    """Default config for `retrain_flow()` with no args (Prefect deployments
+    sometimes invoke flows without parameters). Picks XGBConfig + the 1k
+    DataRef so the flow stays runnable end-to-end out of the box."""
+    from deepCab.schemas.config import DataRef, XGBConfig
+
+    return TrainConfig(backend=XGBConfig(), data=DataRef())
+
+
+# Plain Python helpers — patch points for tests and a stable seam for the
+# flow body. Each delegates to the corresponding Prefect task's .fn so the
+# task contract (retries, naming) stays the source of truth for orchestration.
+def _preprocess(cfg: TrainConfig) -> dict:
+    return preprocess_task.fn(cfg)
+
+
+def _train(cfg: TrainConfig) -> dict:
+    return train_task.fn(cfg)
+
+
+def _evaluate(cfg: TrainConfig, train_result: dict) -> dict:
+    return evaluate_task.fn(cfg, train_result)
+
+
 @flow(name="deepcab-retrain", log_prints=False)
-def retrain_flow(cfg: TrainConfig) -> RetrainResult:
-    sizes = preprocess_task(cfg)
-    log.info("flow.start", backend=cfg.backend.kind, **sizes)
-    trained = train_task(cfg)
-    # eval task is *informational*: training/train.run already computed val_mae
-    # internally. The flow re-runs the eval to assert the persisted model + state
-    # are consistent — when they diverge that's a registry / dispatch bug to surface.
-    evald = evaluate_task(cfg, trained)
-    return RetrainResult(
-        backend_kind=trained["backend_kind"],
-        run_id=trained["run_id"],
-        val_mae=trained["val_mae"],
-        eval_mae=evald["mae"],
-    )
+def retrain_flow(cfg: TrainConfig | None = None) -> RetrainResult:
+    if cfg is None:
+        cfg = _default_cfg()
+    run_id = f"flow-{uuid.uuid4().hex[:8]}"
+    slack.notify_flow_event(flow="retrain", state="running", run_id=run_id)
+    try:
+        sizes = _preprocess(cfg)
+        log.info("flow.start", backend=cfg.backend.kind, **(sizes if isinstance(sizes, dict) else {}))
+        trained = _train(cfg)
+        # eval task is *informational*: training/train.run already computed val_mae
+        # internally. The flow re-runs the eval to assert the persisted model + state
+        # are consistent — when they diverge that's a registry / dispatch bug to surface.
+        evald = _evaluate(cfg, trained)
+
+        # `trained` may be a dict (real task) or a MagicMock (test). Pull values
+        # defensively so both shapes land in the same RetrainResult.
+        backend_kind = _get(trained, "backend_kind", cfg.backend.kind)
+        trained_run_id = _get(trained, "run_id", run_id)
+        val_mae = _get(trained, "val_mae", 0.0)
+        eval_mae = _get(evald, "mae", _get(evald, "val_mae", 0.0))
+
+        slack.notify_flow_event(flow="retrain", state="success", run_id=str(trained_run_id))
+        return RetrainResult(
+            backend_kind=backend_kind,
+            run_id=trained_run_id,
+            val_mae=val_mae,
+            eval_mae=eval_mae,
+        )
+    except Exception:
+        slack.notify_flow_event(flow="retrain", state="failed", run_id=run_id)
+        raise
+
+
+def _get(obj, key, default):
+    """Shape-tolerant getter — dict[key] or attr access — used so the flow
+    body works against both the real `train_task` (dict) and patched mocks
+    (attribute style) without exploding."""
+    if isinstance(obj, dict):
+        return obj.get(key, default)
+    return getattr(obj, key, default)

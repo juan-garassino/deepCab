@@ -1,5 +1,9 @@
 name: deepcab
 
+secrets:
+  slack_webhook_url:
+    file: ../secrets/slack_webhook_url
+
 services:
   otel-collector:
     image: otel/opentelemetry-collector-contrib:0.110.0
@@ -19,12 +23,19 @@ services:
     ports:
       - "16686:16686"  # UI
       - "14250:14250"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.jaeger.rule=Host(`jaeger.deepcab.localhost`)"
+      - "traefik.http.routers.jaeger.tls=true"
+      - "traefik.http.services.jaeger.loadbalancer.server.port=16686"
 
   prometheus:
     image: prom/prometheus:v2.55.0
     restart: unless-stopped
     volumes:
       - ./conf/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./conf/prometheus-rules.yml:/etc/prometheus/rules.yml:ro
+      - prometheus_data:/prometheus
     ports:
       - "9090:9090"
 
@@ -41,6 +52,49 @@ services:
       - "3000:3000"
     depends_on:
       - prometheus
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.grafana.rule=Host(`grafana.deepcab.localhost`)"
+      - "traefik.http.routers.grafana.tls=true"
+      - "traefik.http.services.grafana.loadbalancer.server.port=3000"
+
+  loki:
+    image: grafana/loki:3.2.0
+    restart: unless-stopped
+    command: -config.file=/etc/loki/local-config.yaml
+    volumes:
+      - ./conf/loki-config.yaml:/etc/loki/local-config.yaml:ro
+      - loki_data:/loki
+
+  promtail:
+    image: grafana/promtail:3.2.0
+    restart: unless-stopped
+    command: -config.file=/etc/promtail/config.yml
+    volumes:
+      - ./conf/promtail-config.yaml:/etc/promtail/config.yml:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+    depends_on:
+      - loki
+
+  alertmanager:
+    image: prom/alertmanager:v0.27.0
+    restart: unless-stopped
+    command:
+      - --config.file=/etc/alertmanager/alertmanager.yml
+    secrets:
+      - slack_webhook_url
+    volumes:
+      - ./conf/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
+      - alertmanager_data:/alertmanager
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.alertmanager.rule=Host(`alertmanager.deepcab.localhost`)"
+      - "traefik.http.routers.alertmanager.tls=true"
+      - "traefik.http.services.alertmanager.loadbalancer.server.port=9093"
 
 volumes:
   grafana_data:
+  loki_data:
+  alertmanager_data:
+  prometheus_data:

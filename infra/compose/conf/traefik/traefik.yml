@@ -1,0 +1,26 @@
+api:
+  dashboard: true
+  insecure: true   # dev only; dashboard at :8080
+
+entryPoints:
+  web:
+    address: ":80"
+  websecure:
+    address: ":443"
+
+providers:
+  docker:
+    exposedByDefault: false
+    network: deepcab_default
+  file:
+    directory: /etc/traefik/dynamic
+    watch: true
+
+# Let's Encrypt enabled in staging/prod only; locally we use mkcert via dynamic config.
+certificatesResolvers:
+  letsencrypt:
+    acme:
+      email: ${TRAEFIK_ACME_EMAIL:-noreply@example.com}
+      storage: /letsencrypt/acme.json
+      httpChallenge:
+        entryPoint: web

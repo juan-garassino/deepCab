@@ -184,18 +184,45 @@ def read_latest_run_id() -> str | None:
 # ---- MLflow alias (unchanged) ------------------------------------------
 
 
-def set_alias(version: int, alias: str | None = None) -> None:
-    """Set @<alias> on the latest registered model version. Defaults to
-    settings.mlflow.challenger_alias."""
+def _set_alias_backend(*, model: str, alias: str, version: str) -> None:
+    """The MLflow-backed implementation of `set_alias`. Kept separate so the
+    public `set_alias` can layer side-effects (Slack) on top without the test
+    needing a real MLflow server."""
     import mlflow
     from mlflow.tracking import MlflowClient
 
     m = get_settings().mlflow
-    alias = alias or m.challenger_alias
-    if not m.tracking_uri or not m.model_name:
-        log.warning("registry.alias.skipped", reason="mlflow tracking_uri/model_name unset")
+    if not m.tracking_uri:
+        log.warning("registry.alias.skipped", reason="mlflow tracking_uri unset")
         return
     mlflow.set_tracking_uri(m.tracking_uri)
     client = MlflowClient()
-    client.set_registered_model_alias(name=m.model_name, alias=alias, version=version)
-    log.info("registry.alias.set", alias=alias, version=version, model=m.model_name)
+    client.set_registered_model_alias(name=model, alias=alias, version=version)
+    log.info("registry.alias.set", alias=alias, version=version, model=model)
+
+
+def set_alias(
+    *,
+    model: str | None = None,
+    alias: str | None = None,
+    version: str | int,
+) -> None:
+    """Set @<alias> on a registered model version, then notify Slack.
+
+    `model` defaults to `settings.mlflow.model_name`; `alias` defaults to
+    `settings.mlflow.challenger_alias`. `version` is required (MLflow returns
+    it as a string in practice; we accept int for ergonomics)."""
+    m = get_settings().mlflow
+    model = model or m.model_name
+    alias = alias or m.challenger_alias
+    version_str = str(version)
+    if not model:
+        log.warning("registry.alias.skipped", reason="mlflow model_name unset")
+        return
+
+    _set_alias_backend(model=model, alias=alias, version=version_str)
+
+    # Local import to avoid module-load-time circular imports (settings -> obs).
+    from deepCab.obs import slack
+
+    slack.notify_alias_change(model=model, alias=alias, version=version_str)

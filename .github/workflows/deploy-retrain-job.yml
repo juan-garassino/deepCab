@@ -1,0 +1,98 @@
+name: deploy-retrain-job
+
+# OIDC -> GAR -> build/push the deepcab-api image -> render the Cloud Run
+# Job spec with the new image -> `gcloud run jobs replace` -> optionally
+# execute the job. Mirrors the structure of deploy-cloud-run.yml.
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Image tag (e.g. v0.1.0, latest, sha-...)"
+        required: true
+        default: "latest"
+  push:
+    tags: ['retrain-v*']
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Slack — job deploy starting
+        uses: rtcamp/action-slack-notify@v2.3.3
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_TITLE: "[ci] deploy → Cloud Run Job (retrain) starting"
+          SLACK_MESSAGE: "tag=${{ inputs.tag || github.ref_name }}"
+          SLACK_COLOR: "#cccccc"
+
+      - uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ vars.GCP_WIF_PROVIDER }}
+          service_account: ${{ vars.GCP_DEPLOYER_SA }}
+
+      - uses: google-github-actions/setup-gcloud@v2
+
+      - name: Configure docker for GAR
+        run: gcloud auth configure-docker ${{ vars.GCP_REGION }}-docker.pkg.dev --quiet
+
+      - id: build
+        name: Build + push image
+        run: |
+          TAG="${{ inputs.tag || github.ref_name }}"
+          IMG="${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT }}/deepcab/api:${TAG}"
+          docker buildx build \
+            --file infra/docker/Dockerfile \
+            --tag "$IMG" \
+            --push \
+            --build-arg GPU=0 \
+            .
+          echo "image=$IMG" >> "$GITHUB_OUTPUT"
+
+      - name: Render Cloud Run Job spec
+        run: |
+          sed -e "s|__IMAGE__|${{ steps.build.outputs.image }}|g" \
+              -e "s|__GCP_PROJECT__|${{ vars.GCP_PROJECT }}|g" \
+              -e "s|__MLFLOW_URL__|${{ vars.MLFLOW_URL }}|g" \
+              -e "s|__MODELS_BUCKET__|${{ vars.GCP_MODELS_BUCKET }}|g" \
+              infra/gcp/cloud-run-jobs/retrain-job.yaml > job.rendered.yaml
+          cat job.rendered.yaml
+
+      - name: Deploy Cloud Run Job
+        run: |
+          gcloud run jobs replace job.rendered.yaml \
+            --region=${{ vars.GCP_REGION }} \
+            --project=${{ vars.GCP_PROJECT }}
+
+      - name: Optionally execute the job now
+        if: ${{ inputs.tag != 'latest' }}
+        run: |
+          gcloud run jobs execute deepcab-retrain \
+            --region=${{ vars.GCP_REGION }} \
+            --project=${{ vars.GCP_PROJECT }} \
+            --wait \
+            || true   # don't fail the workflow on training failure — Slack will report
+
+      - name: Slack — success
+        if: success()
+        uses: rtcamp/action-slack-notify@v2.3.3
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_COLOR: good
+          SLACK_TITLE: "[ci] deploy → Cloud Run Job (retrain) ✓"
+          SLACK_MESSAGE: "${{ steps.build.outputs.image }}"
+
+      - name: Slack — failure
+        if: failure()
+        uses: rtcamp/action-slack-notify@v2.3.3
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_COLOR: danger
+          SLACK_TITLE: "[ci] deploy → Cloud Run Job (retrain) ✗"
+          SLACK_MESSAGE: "see ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"

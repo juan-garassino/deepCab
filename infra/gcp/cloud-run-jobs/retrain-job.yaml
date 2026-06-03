@@ -1,0 +1,37 @@
+apiVersion: run.googleapis.com/v1
+kind: Job
+metadata:
+  name: deepcab-retrain
+  labels:
+    cloud.googleapis.com/location: us-central1
+spec:
+  template:
+    spec:
+      template:
+        spec:
+          serviceAccountName: deepcab-runtime@__GCP_PROJECT__.iam.gserviceaccount.com
+          timeoutSeconds: 3600
+          maxRetries: 1
+          containers:
+            - image: __IMAGE__
+              command: ["python"]
+              args:
+                - "-m"
+                - "deepCab.training.train"
+                - "backend=tf_mlp"
+                - "data=full"
+              env:
+                - name: APP_ENV
+                  value: prod
+                - name: MLFLOW_TRACKING_URI
+                  value: __MLFLOW_URL__
+                - name: MODEL_TARGET
+                  value: gcs
+                - name: GCP_PROJECT
+                  value: __GCP_PROJECT__
+                - name: REGISTRY_GCS_BUCKET
+                  value: __MODELS_BUCKET__
+              resources:
+                limits:
+                  cpu: "4"
+                  memory: "8Gi"

@@ -1,0 +1,17 @@
+# Cloud Scheduler doesn't accept YAML directly — this file is a DOCUMENTED
+# declarative reference that `bootstrap.sh` translates into the equivalent
+# `gcloud scheduler jobs create http ...` invocation. Keep in sync with the
+# bootstrap script.
+name: deepcab-retrain-daily
+schedule: "0 2 * * *"      # 02:00 UTC daily
+timezone: "Etc/UTC"
+description: "Daily deepcab retrain — fires Cloud Run Job deepcab-retrain"
+httpTarget:
+  uri: "https://${GCP_REGION}-run.googleapis.com/apis/run.googleapis.com/v1/namespaces/${GCP_PROJECT}/jobs/deepcab-retrain:run"
+  httpMethod: POST
+  oauthToken:
+    serviceAccountEmail: "deepcab-scheduler@${GCP_PROJECT}.iam.gserviceaccount.com"
+    scope: "https://www.googleapis.com/auth/cloud-platform"
+attemptDeadline: "1800s"
+retryConfig:
+  retryCount: 0    # job retries internally (maxRetries on the Cloud Run Job)

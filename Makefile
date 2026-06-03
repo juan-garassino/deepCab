@@ -426,3 +426,8 @@ docker_dev_down:
 wif_bootstrap:
 	@echo "Set PROJECT, PROJECT_NUMBER, GH_OWNER, GH_REPO, REGION env vars first."
 	bash infra/gcp/workload-identity/bootstrap.sh
+
+# GCP — Cloud Scheduler -> Cloud Run Job bootstrap (Sub-project F)
+scheduler_bootstrap:
+	@echo "Make sure GCP_PROJECT and GCP_REGION are set."
+	bash infra/gcp/scheduler/bootstrap.sh

@@ -160,6 +160,10 @@ GKE deploys are dispatch-only (avoids standing cluster cost):
 gh workflow run deploy-gke.yml -f tag=v0.1.0 -f cluster=deepcab-prod -f cluster_region=us-central1
 ```
 
+## Cloud training trigger
+
+The default cloud training path uses Cloud Scheduler firing a Cloud Run Job at 02:00 UTC daily. See `infra/gcp/cloud-run-jobs/README.md` for setup. Alternative Prefect Cloud path documented in the same README.
+
 ## Tests
 
 ```bash

@@ -14,9 +14,16 @@ Lifecycle:
            router) sees the same fitted estimator
 
 `run(cfg: TrainConfig) -> TrainResult` is the pure function the agent's `train`
-tool calls. The Hydra `main()` is a thin OmegaConf->Pydantic bridge."""
+tool calls. The Hydra `main()` is a thin OmegaConf->Pydantic bridge.
+
+Sub-project F: when env `REGISTRY_GCS_BUCKET` is set, `run()` mirrors the
+local run directory to `gs://<bucket>/runs/<run_id>/` after `_run_training`
+returns. The push is a thin `gsutil` shell-out, so the unit tests stub the
+helper out and never touch the cloud. The default cloud training trigger
+(Cloud Scheduler -> Cloud Run Job) sets this env on the Job container."""
 from __future__ import annotations
 
+import os
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
@@ -55,6 +62,9 @@ class TrainResult:
     estimator: Any = None
     background: np.ndarray | None = field(default=None, repr=False)
     aci: ACIRegressor | None = None
+    # Sub-project F: persistent on-disk run directory (when save_full_state
+    # succeeded). Used by the cloud Job to mirror artifacts into GCS.
+    run_dir: Path | None = None
 
 
 def _start_mlflow_run():
@@ -121,7 +131,10 @@ def _publish_to_state(
     )
 
 
-def run(cfg: TrainConfig) -> TrainResult:
+def _run_training(cfg: TrainConfig) -> TrainResult:
+    """Core training body. Pure-ish: no env reads beyond what its dependencies
+    already do (`get_settings()` reads `MLFLOW_*`, etc.). Returns the result
+    with `run_dir` populated when the persistent state save succeeded."""
     set_all(cfg.seed)
     log.info("train.start", backend=cfg.backend.kind, data=cfg.data.size, seed=cfg.seed)
 
@@ -138,6 +151,7 @@ def run(cfg: TrainConfig) -> TrainResult:
 
     mlflow_mod, run_ctx = _start_mlflow_run()
     run_id: str | None = None
+    run_dir: Path | None = None
     with run_ctx as r:
         if mlflow_mod is not None:
             log_params_flat(mlflow_mod, cfg)
@@ -161,7 +175,7 @@ def run(cfg: TrainConfig) -> TrainResult:
         # rehydrate STATE.model on restart without a fresh /train. The LATEST
         # pointer is updated atomically inside save_full_state.
         if STATE.model is not None:
-            save_full_state(STATE.model, run_id=run_id)
+            run_dir = save_full_state(STATE.model, run_id=run_id)
 
         provenance_path = emit_provenance(
             cfg, run_id=run_id, metrics={"val_mae": val_mae}
@@ -181,7 +195,40 @@ def run(cfg: TrainConfig) -> TrainResult:
         estimator=estimator,
         background=X_val[: min(200, len(X_val))],
         aci=aci,
+        run_dir=run_dir,
     )
+
+
+def _push_to_gcs(local_dir: Path, gcs_uri: str) -> None:
+    """Mirror a local run directory to GCS via `gsutil -m cp -r`.
+
+    Kept as a thin shell-out (vs `google-cloud-storage`) so the runtime image
+    needs only `google-cloud-sdk` already present in the deepcab-api image,
+    and so unit tests can patch this single function without mocking a chain
+    of boto-style clients."""
+    import subprocess
+
+    subprocess.run(
+        ["gsutil", "-m", "cp", "-r", str(local_dir), gcs_uri],
+        check=True,
+    )
+
+
+def run(cfg: TrainConfig | None) -> TrainResult:
+    """Public entrypoint. Runs the training pipeline, then optionally mirrors
+    the run directory to GCS when `REGISTRY_GCS_BUCKET` is set (Cloud Run Job
+    path). Local / dev runs leave the env unset and skip the push."""
+    result = _run_training(cfg)
+    bucket = os.environ.get("REGISTRY_GCS_BUCKET")
+    if bucket and result.run_id and result.run_dir is not None:
+        # Tolerate either `deepcab-models` or `gs://deepcab-models` from
+        # operators' env files. `removeprefix` is a no-op when the prefix
+        # is absent.
+        clean = bucket.removeprefix("gs://").rstrip("/")
+        gcs_uri = f"gs://{clean}/runs/{result.run_id}/"
+        log.info("train.gcs_push", local=str(result.run_dir), gcs=gcs_uri)
+        _push_to_gcs(result.run_dir, gcs_uri)
+    return result
 
 
 def _emit_model_card(

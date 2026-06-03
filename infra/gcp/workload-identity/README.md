@@ -123,3 +123,26 @@ gh secret set SLACK_WEBHOOK_URL    # paste the URL when prompted
 ## Verification
 
 After the first push of a `v*` tag, watch `.github/workflows/deploy-cloud-run.yml` succeed. If WIF is misconfigured the auth step fails with a clear message like "Permission 'iam.serviceAccounts.getAccessToken' denied".
+
+## Scheduler + Cloud Run Job (Sub-project F)
+
+Additional one-time setup for the daily training trigger:
+
+```bash
+# 1. Grant the deployer SA the Cloud Run Admin role on Jobs (Sub-project C grants it on Services)
+gcloud projects add-iam-policy-binding $PROJECT \
+  --member="serviceAccount:deepcab-deployer@$PROJECT.iam.gserviceaccount.com" \
+  --role=roles/run.developer
+
+# 2. Create the scheduler SA (different from deployer) and bind to Cloud Run Job invoker
+make scheduler_bootstrap   # idempotent — creates deepcab-scheduler@$PROJECT.iam.gserviceaccount.com
+
+# 3. Set GitHub variable for the models bucket
+gh variable set GCP_MODELS_BUCKET --body "deepcab-models"
+```
+
+That's the full extra setup. From there:
+
+- `gh workflow run deploy-retrain-job.yml -f tag=v0.1.0` registers the Job
+- Cloud Scheduler fires it every day at 02:00 UTC
+- Artifacts land in `gs://deepcab-models/runs/<run_id>/`

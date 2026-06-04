@@ -5,8 +5,6 @@ A deployment binds (flow, parameters, schedule, work-pool) and is what the
 agent's future `schedule_retrain` tool would create programmatically."""
 from __future__ import annotations
 
-from prefect.client.schemas.schedules import CronSchedule
-
 from deepCab.flow_v2.retrain import retrain_flow
 from deepCab.schemas.config import DataRef, TrainConfig, XGBConfig
 
@@ -31,27 +29,6 @@ def deploy_nightly() -> None:
         description="Nightly retrain on the 1k slice; smoke + canary.",
         tags=["deepcab", "retrain", "nightly"],
     )
-
-
-# Convenience for the agent's `schedule_retrain` tool (Phase 10+) to invoke ad-hoc:
-def deploy_one_off(cfg: TrainConfig, cron: str | None = None) -> None:
-    if cron is None:
-        retrain_flow.serve(
-            name=f"deepcab-retrain-oneoff-{cfg.backend.kind}",
-            parameters={"cfg": cfg.model_dump()},
-            tags=["deepcab", "retrain", "oneoff"],
-        )
-    else:
-        retrain_flow.serve(
-            name=f"deepcab-retrain-{cfg.backend.kind}",
-            cron=cron,
-            parameters={"cfg": cfg.model_dump()},
-            tags=["deepcab", "retrain", "scheduled"],
-        )
-
-
-# Silence unused-import warnings when type-checked without ever calling serve()
-_ = CronSchedule
 
 
 if __name__ == "__main__":

@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from pathlib import Path
 
-import duckdb
 import polars as pl
 
 from deepCab.schemas.settings import get_settings
@@ -23,10 +22,6 @@ def scan(size: str | None = None) -> pl.LazyFrame:
     if size is not None:
         lf = lf.filter(pl.col("dataset_size") == size) if "dataset_size" in lf.columns else lf
     return lf
-
-
-def read(size: str | None = None) -> pl.DataFrame:
-    return scan(size).collect()
 
 
 def write_partitioned(df: pl.DataFrame, dataset_size: str) -> Path:
@@ -54,13 +49,3 @@ def write_partitioned(df: pl.DataFrame, dataset_size: str) -> Path:
         existing_data_behavior="overwrite_or_ignore",
     )
     return root
-
-
-def duckdb_query(sql: str, **kwargs: pl.DataFrame) -> pl.DataFrame:
-    """Run a DuckDB SQL query against Polars frames passed as kwargs. The kwargs
-    names become referenceable table names in the SQL. Used for ad-hoc EDA + the
-    nightly-bench Optuna summary queries."""
-    con = duckdb.connect()
-    for name, df in kwargs.items():
-        con.register(name, df.to_arrow())
-    return pl.from_arrow(con.execute(sql).fetch_arrow_table())

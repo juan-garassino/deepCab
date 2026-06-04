@@ -27,7 +27,6 @@ from deepCab.obs.log import get_logger
 log = get_logger(__name__)
 
 TREE_KINDS = {"xgb", "lgbm", "catboost"}
-DEEP_MLP_KINDS = {"tf_mlp", "torch_mlp"}
 
 
 @dataclass

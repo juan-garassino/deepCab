@@ -9,15 +9,7 @@ separated:
   - `routers/`  : FastAPI specifics (URL, methods, status codes, response_model)
   - `services/` : business logic, free of FastAPI imports
   - `providers.py` : side-effects (Slack, model registry, trace)
-"""
-from deepCab.api.services.agent import AgentService
-from deepCab.api.services.explain import ExplanationService
-from deepCab.api.services.predict import PredictionService
-from deepCab.api.services.train import TrainingService
 
-__all__ = [
-    "AgentService",
-    "ExplanationService",
-    "PredictionService",
-    "TrainingService",
-]
+Importers reach for the concrete module (`deepCab.api.services.predict`, etc.)
+rather than re-exports — keeping the dependency graph explicit.
+"""

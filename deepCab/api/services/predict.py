@@ -14,7 +14,6 @@ from typing import AsyncIterator
 import numpy as np
 import pandas as pd
 
-from deepCab.api.providers import ModelHandleProvider, SlackProvider
 from deepCab.api.state import ModelHandle
 from deepCab.features.pipeline import preprocess_features
 from deepCab.obs.prom import prediction_value
@@ -29,14 +28,13 @@ from deepCab.schemas.data import FeatureRow
 
 @dataclass
 class PredictionService:
-    """Pure-Python service holding the model handle and notification provider.
+    """Pure-Python service holding the model handle.
 
     Constructed per-request by `deps.get_prediction_service`. The model handle
     is captured at construction time so the dependency override pattern works
     cleanly in tests."""
 
     model: ModelHandle
-    slack: SlackProvider
 
     # ------------------------------------------------------------------
     # Internal helpers (preserved verbatim from the old router)

@@ -1,16 +1,15 @@
 """ASGI middleware:
 - RequestIDMiddleware: stamps `X-Request-Id` in / out; threaded through structlog contextvars.
 - PromMiddleware: increments http_request_duration_seconds histogram per request.
-- OTel auto-instrumentation: applied in app.create_app() when opentelemetry is importable.
 
-Structured error JSON: handled at app level via exception_handler in app.py."""
+OTel auto-instrumentation and the unhandled-exception JSON handler are wired
+in `app.create_app()`."""
 from __future__ import annotations
 
 import time
 import uuid
 
 import structlog
-from prometheus_client import CollectorRegistry
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
 from starlette.responses import Response
@@ -41,7 +40,3 @@ class PromMiddleware(BaseHTTPMiddleware):
             status=str(response.status_code),
         ).observe(elapsed)
         return response
-
-
-# Re-export so app.py can attach /metrics without re-importing registry
-__all__ = ["RequestIDMiddleware", "PromMiddleware", "CollectorRegistry"]

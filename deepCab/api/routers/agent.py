@@ -21,9 +21,7 @@ from deepCab.api.services.agent import (
     AgentTurnRequest,
     OpenAIUnavailableError,
 )
-from deepCab.obs.log import get_logger
 
-log = get_logger(__name__)
 router = APIRouter(tags=["agent"])
 
 

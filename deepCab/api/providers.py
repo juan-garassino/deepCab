@@ -48,8 +48,8 @@ class WebhookSlackProvider:
     """Concrete Slack provider that POSTs to a webhook URL.
 
     Mirrors `obs/slack.py::post` byte-for-byte so behavior is unchanged when
-    swapped in. Constructed once per request via `get_slack_provider` so the
-    URL lookup happens through pydantic-settings."""
+    swapped in. URL lookup is the caller's responsibility (pulled from
+    pydantic-settings at construction time)."""
 
     def __init__(self, webhook_url: str | None) -> None:
         self.webhook_url = webhook_url

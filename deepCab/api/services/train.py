@@ -48,11 +48,6 @@ class TrainingService:
             result = run_train_fn(req.config)
             rec.status = "succeeded"
             rec.run_id = result.run_id
-            rec.result = {
-                "val_mae": result.val_mae,
-                "backend_kind": result.backend_kind,
-                "model_path": result.model_path,
-            }
             # training/train.py.run() publishes the fitted handle into
             # STATE.model and persists it via registry.save_full_state. The API
             # lifespan reloads from disk on cold start.

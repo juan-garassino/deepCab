@@ -1,7 +1,7 @@
 """Unit tests for PredictionService.
 
 The service is plain Python — we can instantiate it directly with a stub
-estimator and a Noop slack provider, no FastAPI or TestClient involved."""
+estimator, no FastAPI or TestClient involved."""
 from __future__ import annotations
 
 import asyncio
@@ -10,7 +10,6 @@ import importlib.util
 import numpy as np
 import pytest
 
-from deepCab.api.providers import NoopSlackProvider
 from deepCab.api.services.predict import PredictionService
 from deepCab.api.state import ModelHandle
 from deepCab.schemas.api import BatchPredictRequest, PredictRequest
@@ -44,7 +43,7 @@ def test_predict_one_returns_fare_and_backend_kind() -> None:
     est.fit(X, y)
 
     handle = ModelHandle(estimator=est, backend_kind="lgbm", background=X[:32])
-    svc = PredictionService(model=handle, slack=NoopSlackProvider())
+    svc = PredictionService(model=handle)
 
     resp = asyncio.run(svc.predict_one(PredictRequest(row=_row())))
     assert isinstance(resp.fare, float)
@@ -65,7 +64,7 @@ def test_predict_many_returns_one_response_per_row() -> None:
     y = X[:, 0] + rng.normal(scale=0.1, size=64)
     est.fit(X, y)
     handle = ModelHandle(estimator=est, backend_kind="lgbm", background=X[:32])
-    svc = PredictionService(model=handle, slack=NoopSlackProvider())
+    svc = PredictionService(model=handle)
 
     req = BatchPredictRequest(rows=[_row(), _row(), _row()])
     resp = asyncio.run(svc.predict_many(req))
@@ -82,7 +81,7 @@ def test_predict_one_propagates_estimator_error() -> None:
             raise RuntimeError("boom")
 
     handle = ModelHandle(estimator=_Broken(), backend_kind="stub", background=None)
-    svc = PredictionService(model=handle, slack=NoopSlackProvider())
+    svc = PredictionService(model=handle)
 
     with pytest.raises(RuntimeError, match="boom"):
         asyncio.run(svc.predict_one(PredictRequest(row=_row())))

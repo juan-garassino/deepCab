@@ -2,19 +2,18 @@
 
 After the services/providers refactor, this module's job is to:
   1. Resolve singletons (`get_settings`, `get_model_handle`).
-  2. Pick a provider strategy based on settings (`get_slack_provider`, ...).
+  2. Pick a provider strategy based on settings (`get_trace_provider`).
   3. Compose a service out of (handle, providers) for each router endpoint.
 
-Tests override providers via `app.dependency_overrides[get_slack_provider]`,
+Tests override providers via `app.dependency_overrides[get_trace_provider]`,
 which makes per-test isolation trivial.
 
 Public surface for routers (unchanged names so existing imports keep working):
   - SettingsDep              — alias for Annotated[Settings, Depends(...)]
-  - ModelDep                 — alias for Annotated[ModelHandle, Depends(...)]
   - get_model_handle         — 503s when no model is loaded
-  - api_key_guard / ApiKeyDep — existing X-API-Key gate (unchanged)
+  - api_key_guard            — X-API-Key gate for /train and /agent
   - get_prediction_service / get_explanation_service / get_training_service
-    / get_agent_service       — new in P15 polish.
+    / get_agent_service       — per-router service factories.
 """
 from __future__ import annotations
 
@@ -22,13 +21,7 @@ from typing import Annotated
 
 from fastapi import Depends, Header, HTTPException, status
 
-from deepCab.api.providers import (
-    JsonlTraceProvider,
-    NoopSlackProvider,
-    SlackProvider,
-    TraceProvider,
-    WebhookSlackProvider,
-)
+from deepCab.api.providers import JsonlTraceProvider, TraceProvider
 from deepCab.api.services.agent import AgentService
 from deepCab.api.services.explain import ExplanationService
 from deepCab.api.services.predict import PredictionService
@@ -62,9 +55,6 @@ def get_model_handle() -> ModelHandle:
             detail="no model loaded — POST /train first or run `make run_train`",
         )
     return STATE.model
-
-
-ModelDep = Annotated[ModelHandle, Depends(get_model_handle)]
 
 
 # ---------------------------------------------------------------------------
@@ -101,20 +91,9 @@ def api_key_guard(
         )
 
 
-ApiKeyDep = Annotated[None, Depends(api_key_guard)]
-
-
 # ---------------------------------------------------------------------------
 # Provider factories (strategy selection happens here)
 # ---------------------------------------------------------------------------
-
-
-def get_slack_provider(settings: SettingsDep) -> SlackProvider:
-    """Pick `WebhookSlackProvider` when an URL is configured, else `NoopSlackProvider`."""
-    url = getattr(settings.obs, "slack_webhook_url", None)
-    if url:
-        return WebhookSlackProvider(url)
-    return NoopSlackProvider()
 
 
 def get_trace_provider() -> TraceProvider:
@@ -130,9 +109,8 @@ def get_trace_provider() -> TraceProvider:
 
 def get_prediction_service(
     model: ModelHandle = Depends(get_model_handle),
-    slack: SlackProvider = Depends(get_slack_provider),
 ) -> PredictionService:
-    return PredictionService(model=model, slack=slack)
+    return PredictionService(model=model)
 
 
 def get_explanation_service(

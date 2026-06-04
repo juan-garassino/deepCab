@@ -16,7 +16,6 @@ class TaskRecord:
     status: str = "pending"   # pending | running | succeeded | failed
     run_id: str | None = None
     error: str | None = None
-    result: dict | None = None
 
 
 @dataclass

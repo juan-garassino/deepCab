@@ -194,3 +194,57 @@ Router LOC trimmed (business logic moved to services):
 | Services + providers LOC | 0 | ~530 | +530 (was inline; now organized) |
 
 Net: cleaner separation of concerns, friendlier CLI, exhaustive enums replacing magic strings. No HTTP contracts or env var names changed.
+
+---
+
+# Simplification Audit Pass — 2026-06-04 (post-polish)
+
+After the v1 polish pass added ~+930 LOC, this audit ran 5 parallel `code-simplifier` subagents over disjoint subtrees of the `deepCab/` source tree. Goal: delete code that doesn't earn its place. Result: **-156 LOC** across 5 commits. 178 tests still passing (no regressions; 2 pre-existing `prefect`-import failures are env-only).
+
+## Per-lane summary
+
+| Lane | Owned subtrees | Commit | LOC Δ | Highlights |
+|---|---|---|---|---|
+| S1 | `schemas/` + `obs/` | `82ed677` | -15 | Drop `_positive_fare` (duplicate of `Field(gt=0)`); drop dead `obs/__init__.py` re-exports; drop `obs.otel.get_tracer()` wrapper |
+| S2 | `data + features + registry + serving + flow_v2 + explain` | `7010a3d` | -49 | Drop unused `io.read()` + `io.duckdb_query()` (kills duckdb import); drop `__init__.py` F401 re-exports across 5 packages; drop `flow_v2.deploy_one_off()` (speculative, no callers); drop dead `DEEP_MLP_KINDS` constant |
+| S3 | `models + training` | `388c420` | -20 | Drop stale `_ = Any` / `_ = BaseModel; _ = os` silencer pairs; collapse two-arm if into `if kind in (...)` in `onnx_export`; inline single-use `est_cls` in factory; `torch_mlp._eval` now delegates to `_predict`; drop duplicate `mlflow` import in `train.py` |
+| S4 | `api + grpc + __main__` | `9e57542` | -46 | Drop `PredictionService.slack` field (never invoked); drop `get_slack_provider()` factory; drop `ModelDep` / `ApiKeyDep` Annotated aliases (zero callers); drop `TaskRecord.result` (write-only); drop `CollectorRegistry` re-export |
+| S5 | `agent + cli` | `4e323d1` | -26 | Drop `tracer` param + dead branch from `agent.tools.dispatch()` + `agent.executor._call_tool_with_timeout` (only caller always passed `None`); drop `_started = time.time()` instrument-but-never-emit pair; drop unused `IterRecord` dataclass; drop orphaned `AgentTrace.completed_request_ids()` |
+
+## What we didn't delete (and why)
+
+Each lane's report has a "rejected" list. Highlights:
+
+- **All 14 enums** (`schemas/enums.py`) — kept per spec §3 even single-consumer ones.
+- **Hand-rolled OpenAI tool-call loop** (`agent/executor.py`) — CLAUDE.md mandate: no LangChain.
+- **6 backend classes + `BACKENDS` plain-dict registry** — explicit learning surface (017 pattern).
+- **Provider Protocols** (`SlackProvider`, `ModelHandleProvider`, `TraceProvider`) — kept though some impls now have no production callers (see Follow-ups below).
+- **Pydantic boundary schemas** at `schemas/{api,config,data,registry,settings,agent}.py` — contracts.
+- **`obs/jsonl.py`** vendored 017 tracer — preserved as a learning artifact.
+
+## Race-condition note
+
+S2 and S3 ran in parallel on the same git index. S2's first commit (`e93cd90`, now orphaned) accidentally absorbed S3's staged files. S2 detected this, ran `git reset HEAD~1`, restored the working tree, and recommitted as `7010a3d`. S3's changes were then committed by the integrator (`388c420`) using path-scoped `git commit -- deepCab/models/ deepCab/training/` to avoid swallowing S4's then-staged work.
+
+**Lesson**: when dispatching parallel subagents that share a git index, each should snapshot the index (via `git stash --keep-index`) before staging or use scoped `git add <paths>` exclusively. Future audits should either serialize the commits or use git worktrees per lane.
+
+## Follow-ups identified (NOT actioned)
+
+These are real simplifications the audit found but the spec preserved:
+
+1. **`SlackProvider` Protocol + 2 impls** (`api/providers.py`) — has zero production consumers after S4 removed `PredictionService.slack`. The actual Slack notifier is `obs/slack.py`. The Protocol could be deleted in a future tightening pass.
+2. **`ModelHandleProvider.StateModelHandleProvider`** — only used by the Protocol's own tests. Same situation.
+3. **`graphql.py` resolvers** (142 LOC of Strawberry glue) — could route the `predict` resolver through `PredictionService` for full DRY. Plan E and S4 both deferred.
+4. **`cli/migrate.py`** — manipulates `sys.argv` to call `data/migrate.py:main`. Could be cleaner if `data/migrate.py` exposed a callable taking args directly. Cross-lane refactor; not done here.
+5. **`Batcher._run`** cyclomatic complexity (Radon C) — pre-existing deferral.
+
+## Cumulative LOC tally
+
+| Pass | Date | LOC Δ |
+|---|---|---|
+| Plan E audit | 2026-06-04 (yesterday) | -2 |
+| v1 polish (Lanes A/B/C) | 2026-06-04 | +930 (intentional growth) |
+| Simplification audit (Lanes S1–S5) | 2026-06-04 (today) | **-156** |
+| Net since v1 baseline | | +772 |
+
+Most of the post-polish growth is the new CLI surface (Lane C) + service classes (Lane B). Today's audit recovered 17% of that. Without major scope changes (collapsing the CLI to a single file, removing GraphQL, etc.) further LOC reductions would compromise clarity or violate the preserve list.

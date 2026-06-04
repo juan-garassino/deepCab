@@ -7,14 +7,11 @@ agent's `compare_runs` tool can answer "are these two runs comparable?"."""
 from __future__ import annotations
 
 import json
-import os
 import platform
 import subprocess
 import sys
 from dataclasses import asdict, dataclass
 from pathlib import Path
-
-from pydantic import BaseModel
 
 from deepCab.data.lineage import hash_obj
 from deepCab.models.onnx_export import OPSET
@@ -110,8 +107,3 @@ def _dep_versions() -> dict[str, str]:
         except Exception:
             out[pkg] = "absent"
     return out
-
-
-# Silence unused-arg linter (BaseModel only used for typing in callers)
-_ = BaseModel
-_ = os

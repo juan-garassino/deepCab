@@ -18,7 +18,6 @@ parity ≤ 1e-4 (deep) and exact (tree)."""
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any
 
 import numpy as np
 
@@ -34,9 +33,7 @@ def export_to_onnx(estimator: AbstractEstimator, sample: np.ndarray, path: Path)
 
     if kind == "tf_mlp":
         return _export_tf_mlp(estimator, sample, path)
-    if kind == "torch_mlp":
-        return _export_torch(estimator, sample, path)
-    if kind == "ft_transformer":
+    if kind in ("torch_mlp", "ft_transformer"):
         return _export_torch(estimator, sample, path)
     if kind == "xgb":
         return _export_xgb(estimator, sample, path)
@@ -143,5 +140,3 @@ def attach_onnx_method() -> None:
         return export_to_onnx(self, sample, path)
 
     AbstractEstimator.to_onnx = to_onnx  # type: ignore[assignment]
-    # silence unused
-    _ = Any

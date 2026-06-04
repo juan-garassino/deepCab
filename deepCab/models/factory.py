@@ -20,5 +20,4 @@ def build_estimator(cfg: BaseModel) -> AbstractEstimator:
             f"Unknown backend '{kind}'. Registered: {sorted(BACKENDS)}. "
             f"Add it to deepCab.models._kinds.BACKENDS."
         )
-    est_cls = BACKENDS[kind]
-    return est_cls(**cfg.model_dump())
+    return BACKENDS[kind](**cfg.model_dump())

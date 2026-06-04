@@ -6,7 +6,7 @@ from dataclasses import dataclass
 import numpy as np
 
 from deepCab.obs.log import get_logger
-from deepCab.schemas.config import BackendConfig, DataRef
+from deepCab.schemas.config import DataRef
 from deepCab.training.preprocess import preprocess
 
 log = get_logger(__name__)

@@ -105,12 +105,7 @@ class TorchMLPEstimator(AbstractEstimator):
             model.load_state_dict(best_state)
 
     def _eval(self, X: np.ndarray, y: np.ndarray) -> float:
-        import torch
-
-        self.model_.eval()
-        with torch.no_grad():
-            Xt = torch.tensor(np.asarray(X), dtype=torch.float32, device=self._device)
-            pred = self.model_(Xt).cpu().numpy().ravel()
+        pred = self._predict(X)
         return float(np.mean((pred - np.asarray(y).ravel()) ** 2))
 
     def _predict(self, X: np.ndarray) -> np.ndarray:

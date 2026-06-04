@@ -72,12 +72,11 @@ def _start_mlflow_run():
     context is a no-op so `run()` still works for tests."""
     settings = get_settings().mlflow
     try:
-        import mlflow  # noqa: F401
+        import mlflow
     except ImportError:
         return None, _NoopCtx()
     if not settings.tracking_uri:
         return None, _NoopCtx()
-    import mlflow
 
     mlflow.set_tracking_uri(settings.tracking_uri)
     if settings.experiment:

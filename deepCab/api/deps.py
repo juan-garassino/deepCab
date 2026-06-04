@@ -1,17 +1,45 @@
-"""FastAPI dependency providers. Single source of truth for what gets injected
-into route handlers.
+"""FastAPI dependency factory tray.
 
-Killing `app.state.model` global (legacy api/fast.py:26): the model now flows
-through Depends(get_model_handle), which 503s cleanly when none is loaded
-instead of crashing at import time."""
+After the services/providers refactor, this module's job is to:
+  1. Resolve singletons (`get_settings`, `get_model_handle`).
+  2. Pick a provider strategy based on settings (`get_slack_provider`, ...).
+  3. Compose a service out of (handle, providers) for each router endpoint.
+
+Tests override providers via `app.dependency_overrides[get_slack_provider]`,
+which makes per-test isolation trivial.
+
+Public surface for routers (unchanged names so existing imports keep working):
+  - SettingsDep              — alias for Annotated[Settings, Depends(...)]
+  - ModelDep                 — alias for Annotated[ModelHandle, Depends(...)]
+  - get_model_handle         — 503s when no model is loaded
+  - api_key_guard / ApiKeyDep — existing X-API-Key gate (unchanged)
+  - get_prediction_service / get_explanation_service / get_training_service
+    / get_agent_service       — new in P15 polish.
+"""
 from __future__ import annotations
 
 from typing import Annotated
 
 from fastapi import Depends, Header, HTTPException, status
 
+from deepCab.api.providers import (
+    JsonlTraceProvider,
+    NoopSlackProvider,
+    SlackProvider,
+    TraceProvider,
+    WebhookSlackProvider,
+)
+from deepCab.api.services.agent import AgentService
+from deepCab.api.services.explain import ExplanationService
+from deepCab.api.services.predict import PredictionService
+from deepCab.api.services.train import TrainingService
 from deepCab.api.state import STATE, ModelHandle
 from deepCab.schemas.settings import Settings, get_settings
+
+
+# ---------------------------------------------------------------------------
+# Settings + model handle (unchanged contracts)
+# ---------------------------------------------------------------------------
 
 
 def settings_dep() -> Settings:
@@ -22,6 +50,12 @@ SettingsDep = Annotated[Settings, Depends(settings_dep)]
 
 
 def get_model_handle() -> ModelHandle:
+    """503 when no model is loaded — POST /train first or run `make run_train`.
+
+    Reads STATE directly (rather than going through a ModelHandleProvider) so
+    the dependency override pattern in existing tests (`STATE.model = ...`)
+    keeps working. Tests that want to stub the handle can either set STATE.model
+    or override this dep with `app.dependency_overrides[get_model_handle]`."""
     if STATE.model is None:
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
@@ -33,6 +67,11 @@ def get_model_handle() -> ModelHandle:
 ModelDep = Annotated[ModelHandle, Depends(get_model_handle)]
 
 
+# ---------------------------------------------------------------------------
+# Auth
+# ---------------------------------------------------------------------------
+
+
 def api_key_guard(
     settings: SettingsDep,
     x_api_key: str | None = Header(default=None, alias="X-API-Key"),
@@ -41,13 +80,11 @@ def api_key_guard(
 
     Resolution order (P13):
       1. settings.deepcab.api_key — explicit deepCab key (preferred).
-      2. settings.openai.api_key  — legacy fallback for transitions; emits a
-         warning so the operator notices and sets DEEPCAB_API_KEY.
-      3. None of the above set — open access (dev convenience).
+      2. settings.openai.api_key  — legacy fallback; warns so the operator sees it.
+      3. Neither set — open access (dev convenience).
     """
     expected = settings.deepcab.api_key
     if not expected and settings.openai.api_key:
-        # Don't log the key itself; log only the fact we fell back.
         from deepCab.obs.log import get_logger
 
         get_logger(__name__).warning(
@@ -65,3 +102,50 @@ def api_key_guard(
 
 
 ApiKeyDep = Annotated[None, Depends(api_key_guard)]
+
+
+# ---------------------------------------------------------------------------
+# Provider factories (strategy selection happens here)
+# ---------------------------------------------------------------------------
+
+
+def get_slack_provider(settings: SettingsDep) -> SlackProvider:
+    """Pick `WebhookSlackProvider` when an URL is configured, else `NoopSlackProvider`."""
+    url = getattr(settings.obs, "slack_webhook_url", None)
+    if url:
+        return WebhookSlackProvider(url)
+    return NoopSlackProvider()
+
+
+def get_trace_provider() -> TraceProvider:
+    """JSONL on disk is the only production strategy today. Tests override to
+    `NullTraceProvider` so they don't write to ~/.lewagon/.../traces."""
+    return JsonlTraceProvider()
+
+
+# ---------------------------------------------------------------------------
+# Service factories
+# ---------------------------------------------------------------------------
+
+
+def get_prediction_service(
+    model: ModelHandle = Depends(get_model_handle),
+    slack: SlackProvider = Depends(get_slack_provider),
+) -> PredictionService:
+    return PredictionService(model=model, slack=slack)
+
+
+def get_explanation_service(
+    model: ModelHandle = Depends(get_model_handle),
+) -> ExplanationService:
+    return ExplanationService(model=model)
+
+
+def get_training_service() -> TrainingService:
+    return TrainingService()
+
+
+def get_agent_service(
+    trace: TraceProvider = Depends(get_trace_provider),
+) -> AgentService:
+    return AgentService(trace=trace)

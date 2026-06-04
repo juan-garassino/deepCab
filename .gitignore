@@ -22,3 +22,6 @@ traces/
 *.onnx
 *.onnx.cfg.json
 lineage.db
+
+# Ephemeral diagnostic logs (repo_status_puller, scripts)
+*.log

@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from datetime import datetime
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field
 
 
 # NYC bounding box (matches legacy clean_data filters)
@@ -27,10 +27,3 @@ class RawRow(FeatureRow):
 
     key: str
     fare_amount: float = Field(gt=0, le=400)
-
-    @field_validator("fare_amount")
-    @classmethod
-    def _positive_fare(cls, v: float) -> float:
-        if v <= 0:
-            raise ValueError("fare_amount must be > 0")
-        return v

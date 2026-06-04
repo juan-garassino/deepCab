@@ -53,7 +53,11 @@ dependencies = [
     "redis>=5.0",
     "strawberry-graphql[fastapi]>=0.240",
     "grpcio>=1.62",  # grpcio-tools deferred — regen stubs via uv run --with grpcio-tools when needed
+    "typer>=0.12.0",
 ]
+
+[project.scripts]
+deepcab = "deepCab.cli:app"
 
 [project.optional-dependencies]
 dev = [

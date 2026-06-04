@@ -76,6 +76,27 @@ actions_lint:
 run_train:
 	python -m deepCab.training.train backend=tf_mlp data=1k
 
+# CLI — unified Typer entry (Lane C). The `deepcab` script is installed by
+# `[project.scripts]` in pyproject.toml; these shortcuts wrap it.
+cli_help:
+	uv run deepcab --help
+
+cli_status:
+	uv run deepcab status
+
+cli_serve:
+	uv run deepcab serve --reload
+
+cli_train_1k:
+	uv run deepcab train backend=tf_mlp data=1k
+
+cli_migrate_1k:
+	uv run deepcab migrate --size 1k --split train
+	uv run deepcab migrate --size 1k --split val
+
+cli_agent:
+	uv run deepcab agent
+
 # PACKAGE RUNS
 run_api:
 	uvicorn deepCab.api.app:app --reload

@@ -13,7 +13,6 @@ import hashlib
 import json
 from collections import Counter
 from collections.abc import Iterator
-from dataclasses import dataclass
 
 from deepCab.agent.budget import Budget, BudgetExhausted
 from deepCab.agent.executor import run_one_turn
@@ -23,14 +22,6 @@ from deepCab.obs.log import get_logger
 from deepCab.schemas.agent import ImproveConfig
 
 log = get_logger(__name__)
-
-
-@dataclass
-class IterRecord:
-    iter: int
-    metric: float | None = None
-    plan_size: int = 0
-    aborted_reason: str | None = None
 
 
 def run_improve(

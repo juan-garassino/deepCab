@@ -345,7 +345,7 @@ def openai_tools() -> list[dict]:
     return out
 
 
-def dispatch(name: str, args: dict, tracer=None) -> dict:
+def dispatch(name: str, args: dict) -> dict:
     """Validate args → call → return `dict | {"error": "..."}`. Never raises
     to the caller — the LLM should see errors as data and self-correct."""
     if name not in _TOOLS:
@@ -357,14 +357,9 @@ def dispatch(name: str, args: dict, tracer=None) -> dict:
     except Exception as e:  # noqa: BLE001
         return {"error": f"args validation: {type(e).__name__}: {e}"}
     try:
-        if tracer is not None:
-            with tracer.span("tool", name, args=args):
-                result = fn(parsed)
-        else:
-            result = fn(parsed)
-        out = result.model_dump(mode="json")
+        result = fn(parsed)
         log.info("agent.tool.ok", tool=name, duration_s=time.time() - started)
-        return out
+        return result.model_dump(mode="json")
     except Exception as e:  # noqa: BLE001
         log.info("agent.tool.error", tool=name, error=str(e))
         return {"error": f"{type(e).__name__}: {e}"}

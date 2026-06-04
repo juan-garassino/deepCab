@@ -55,10 +55,3 @@ class AgentTrace:
             d = json.loads(line)
             out.append(AgentEvent(**d))
         return out
-
-    def completed_request_ids(self) -> set[str]:
-        return {
-            ev.request_id
-            for ev in self.replay()
-            if ev.kind == "tool_result" and ev.request_id and ev.payload.get("ok")
-        }

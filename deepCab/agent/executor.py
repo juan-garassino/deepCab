@@ -11,7 +11,6 @@ from __future__ import annotations
 
 import concurrent.futures
 import json
-import time
 import uuid
 from collections.abc import Iterator
 
@@ -35,13 +34,11 @@ Rules:
 - When the user goal is satisfied, stop calling tools and write a concise summary."""
 
 
-def _call_tool_with_timeout(
-    name: str, args: dict, timeout_s: float, tracer
-) -> dict:
+def _call_tool_with_timeout(name: str, args: dict, timeout_s: float) -> dict:
     """Run one tool with a wall-clock timeout. Returns {"error": ...} on timeout
     instead of hanging the executor."""
     with concurrent.futures.ThreadPoolExecutor(max_workers=1) as ex:
-        fut = ex.submit(dispatch, name, args, tracer)
+        fut = ex.submit(dispatch, name, args)
         try:
             return fut.result(timeout=timeout_s)
         except concurrent.futures.TimeoutError:
@@ -153,9 +150,7 @@ def run_one_turn(
                 result = completed_results[cache_key]
                 replayed = True
             else:
-                started = time.time()
-                result = _call_tool_with_timeout(name, args, per_tool_timeout_s, tracer=None)
-                _ = time.time() - started
+                result = _call_tool_with_timeout(name, args, per_tool_timeout_s)
                 budget.charge_tool_call()
 
             ok = "error" not in result

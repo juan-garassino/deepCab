@@ -5,7 +5,7 @@ from __future__ import annotations
 import os
 from functools import lru_cache
 from pathlib import Path
-from typing import Any, Literal
+from typing import Annotated, Any
 
 from pydantic import Field
 from pydantic.fields import FieldInfo
@@ -14,6 +14,8 @@ from pydantic_settings import (
     EnvSettingsSource,
     SettingsConfigDict,
 )
+
+from deepCab.schemas.enums import AppEnv, DataSource, ModelTarget
 
 
 def _env_file() -> str:
@@ -73,7 +75,7 @@ def _customise_sources(
 class DataSettings(BaseSettings):
     model_config = SettingsConfigDict(env_prefix="DATA_", env_file=_env_file(), extra="ignore")
 
-    source: Literal["local", "query", "cloud"] = "local"
+    source: DataSource = DataSource.LOCAL
     local_path: Path = Path.home() / ".lewagon" / "mlops" / "data"
     parquet_path: Path = Path.home() / ".lewagon" / "mlops" / "data" / "parquet"
     chunk_size: int = 2000
@@ -84,7 +86,7 @@ class DataSettings(BaseSettings):
 class RegistrySettings(BaseSettings):
     model_config = SettingsConfigDict(env_prefix="REGISTRY_", env_file=_env_file(), extra="ignore")
 
-    target: Literal["local", "gcs", "mlflow"] = "local"
+    target: ModelTarget = ModelTarget.LOCAL
     local_path: Path = Path.home() / ".lewagon" / "mlops" / "training_outputs"
     bucket_name: str | None = None
 
@@ -158,9 +160,7 @@ class Settings(BaseSettings):
 
     model_config = SettingsConfigDict(env_file=_env_file(), extra="ignore")
 
-    app_env: Literal["dev", "staging", "prod"] = Field(
-        default="dev", validation_alias="APP_ENV"
-    )
+    app_env: Annotated[AppEnv, Field(default=AppEnv.DEV, validation_alias="APP_ENV")]
     data: DataSettings = Field(default_factory=DataSettings)
     registry: RegistrySettings = Field(default_factory=RegistrySettings)
     gcp: GCPSettings = Field(default_factory=GCPSettings)

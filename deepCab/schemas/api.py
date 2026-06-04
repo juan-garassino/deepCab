@@ -2,12 +2,13 @@
 and the same TrainConfig the agent's `train` tool will accept — single source of truth."""
 from __future__ import annotations
 
-from typing import Literal
+from typing import Annotated
 
 from pydantic import BaseModel, ConfigDict, Field
 
 from deepCab.schemas.config import TrainConfig
 from deepCab.schemas.data import FeatureRow
+from deepCab.schemas.enums import ExplainMode, RunStatus
 
 
 class PredictRequest(BaseModel):
@@ -28,7 +29,7 @@ class PredictResponse(BaseModel):
 class BatchPredictRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    rows: list[FeatureRow] = Field(min_length=1, max_length=10_000)
+    rows: Annotated[list[FeatureRow], Field(min_length=1, max_length=10_000)]
 
 
 class BatchPredictResponse(BaseModel):
@@ -41,7 +42,7 @@ class ExplainRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     row: FeatureRow
-    mode: Literal["per_row", "summary"] = "per_row"
+    mode: ExplainMode = ExplainMode.PER_ROW
 
 
 class ExplainResponse(BaseModel):
@@ -68,6 +69,6 @@ class TrainStatusResponse(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     task_id: str
-    status: Literal["pending", "running", "succeeded", "failed"]
+    status: RunStatus
     run_id: str | None = None
     error: str | None = None

@@ -7,6 +7,14 @@ from typing import Annotated, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
+from deepCab.schemas.enums import (
+    CVKind,
+    DataSize,
+    OptunaDirection,
+    OptunaPruner,
+    OptunaSampler,
+)
+
 
 # ---------- Backend configs ----------
 # Per-backend config subclasses live here for now. As the zoo grows, follow
@@ -86,14 +94,14 @@ class DataRef(BaseModel):
 
     model_config = ConfigDict(extra="forbid")
 
-    size: Literal["1k", "10k", "100k", "500k"] = "1k"
-    validation_size: Literal["1k", "10k", "100k", "500k"] = "1k"
+    size: DataSize = DataSize.S1K
+    validation_size: DataSize = DataSize.S1K
 
 
 class CVConfig(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    kind: Literal["timeseries", "kfold"] = "timeseries"
+    kind: CVKind = CVKind.TIMESERIES
     n_splits: int = 5
 
 
@@ -101,9 +109,9 @@ class HPOConfig(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     n_trials: int = 50
-    sampler: Literal["tpe", "cmaes", "random"] = "tpe"
-    pruner: Literal["median", "hyperband", "none"] = "median"
-    direction: Literal["minimize", "maximize"] = "minimize"
+    sampler: OptunaSampler = OptunaSampler.TPE
+    pruner: OptunaPruner = OptunaPruner.MEDIAN
+    direction: OptunaDirection = OptunaDirection.MINIMIZE
     metric: str = "mae"
 
 

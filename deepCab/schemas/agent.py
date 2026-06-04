@@ -1,9 +1,9 @@
 """Agent + improve-loop schemas."""
 from __future__ import annotations
 
-from typing import Literal
-
 from pydantic import BaseModel, ConfigDict, Field
+
+from deepCab.schemas.enums import MessageRole
 
 
 class ToolCall(BaseModel):
@@ -31,7 +31,7 @@ class ToolResult(BaseModel):
 class AgentMessage(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    role: Literal["system", "user", "assistant", "tool"]
+    role: MessageRole
     content: str | None = None
     tool_call_id: str | None = None
     name: str | None = None

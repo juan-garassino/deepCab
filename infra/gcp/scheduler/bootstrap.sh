@@ -1,4 +1,14 @@
 #!/usr/bin/env bash
+# ⚠️ Deprecated as of 2026-06-04 (Plan G2)
+#
+# This bash bootstrap has been superseded by Terraform in the platform repo.
+# See ../../../../002-deepCab-platform/terraform/modules/scheduler/ for the
+# IaC equivalent, and ../../../../002-deepCab-platform/docs/RUNBOOK.md for
+# the bootstrap order.
+#
+# This script is retained for reference but should NOT be used for new
+# environments — let Terraform manage the Cloud Scheduler + scheduler SA.
+#
 # Bootstrap the Cloud Scheduler -> Cloud Run Job retrain trigger.
 #
 # Idempotent: each step is safe to re-run. Creates the deepcab-scheduler SA

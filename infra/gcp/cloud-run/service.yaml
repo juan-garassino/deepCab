@@ -1,3 +1,14 @@
+# ⚠️ Deprecated as of 2026-06-04 (Plan G2)
+#
+# This raw Cloud Run service spec has been superseded by Terraform in the
+# platform repo. See ../../../../002-deepCab-platform/terraform/modules/cloud_run/
+# for the IaC equivalent.
+#
+# The CI workflow .github/workflows/deploy-cloud-run.yml no longer renders
+# this file — it now does an image-only `gcloud run services update` against
+# the service that Terraform provisions. This YAML is kept as reference for
+# what Terraform produces, but should NOT be edited expecting deploy effect.
+---
 apiVersion: serving.knative.dev/v1
 kind: Service
 metadata:

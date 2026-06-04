@@ -1,8 +1,11 @@
 name: deploy
 
-# Mirrors the user's reference screenshot's structure (build → push →
-# render task → deploy → Slack ✓/✗) but with GCP-native step names so
-# readers don't have to mentally translate AWS → GCP each time.
+# Image-only Cloud Run deploy. As of Plan G2 (2026-06-04), the Cloud Run
+# service shape (CPU/memory/scale/env vars/IAM) is owned by Terraform in
+# the sibling repo 002-deepCab-platform/. This workflow builds + pushes
+# the image to Artifact Registry, then runs `gcloud run services update
+# --image=...` to point the existing service at the new image. Shape
+# changes go through a Terraform PR in 002, not here.
 #
 # Triggered by `v*` tags (default deploy) and manual dispatch.
 
@@ -16,7 +19,10 @@ on:
         required: true
         default: "latest"
       model_uri:
-        description: "Optional GCS URI of the model artifact"
+        # NOTE: Informational only. The runtime reads MODEL_URI from the
+        # Cloud Run env var, which is now set by Terraform in 002-deepCab-platform/.
+        # Changing this input does NOT update the service's env var.
+        description: "Optional GCS URI of the model artifact (informational; env var is owned by TF in 002)"
         required: false
         default: ""
 
@@ -64,21 +70,17 @@ jobs:
             .
           echo "image=$IMG" >> "$GITHUB_OUTPUT"
 
-      - name: Render Cloud Run service spec (inject new image)
+      - name: Update Cloud Run service image
+        # Image-only update. Service shape (CPU/memory/env vars/IAM) is
+        # owned by Terraform in 002-deepCab-platform/. If the service does
+        # not yet exist, this command will fail with a clear error and
+        # the Slack-failure step below will surface it.
         run: |
-          sed -e "s|__IMAGE__|${{ steps.build.outputs.image }}|g" \
-              -e "s|__GCP_PROJECT__|${{ vars.GCP_PROJECT }}|g" \
-              -e "s|__MLFLOW_URL__|${{ vars.MLFLOW_URL }}|g" \
-              -e "s|__MODEL_URI__|${{ inputs.model_uri }}|g" \
-              infra/gcp/cloud-run/service.yaml > service.rendered.yaml
-          cat service.rendered.yaml
-
-      - name: Deploy to Cloud Run
-        run: |
-          gcloud run services replace service.rendered.yaml \
+          gcloud run services update deepcab-api \
+            --image=${{ steps.build.outputs.image }} \
             --region=${{ vars.GCP_REGION }} \
-            --platform=managed \
-            --project=${{ vars.GCP_PROJECT }}
+            --project=${{ vars.GCP_PROJECT }} \
+            --quiet
 
       - name: Slack — deploy success
         if: success()

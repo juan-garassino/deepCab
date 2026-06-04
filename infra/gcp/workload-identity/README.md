@@ -1,5 +1,15 @@
 # Workload Identity Federation bootstrap
 
+> **⚠️ Deprecated as of 2026-06-04**
+>
+> This README's `gcloud` bootstrap procedure has been superseded by Terraform
+> in the platform repo. See `../../../002-deepCab-platform/terraform/modules/wif/`
+> for the IaC equivalent and `../../../002-deepCab-platform/docs/RUNBOOK.md`
+> for the bootstrap order.
+>
+> The bash script in this directory (`bootstrap.sh`) is retained for reference
+> but should NOT be used for new environments — let Terraform manage WIF.
+
 One-time setup so GitHub Actions can deploy to GCP **without long-lived JSON keys**.
 
 ## Prerequisites

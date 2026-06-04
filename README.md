@@ -149,9 +149,11 @@ docker compose -f infra/compose/docker-compose.yml -f infra/compose/docker-compo
 
 ## Deploy to GCP Cloud Run
 
-1. One-time WIF bootstrap: `make wif_bootstrap` (after setting `PROJECT`, `PROJECT_NUMBER`, `GH_OWNER`, `GH_REPO`, `REGION` env vars). See `infra/gcp/workload-identity/README.md` for details.
+Service shape is provisioned by Terraform in the sibling `002-deepCab-platform/` repo; this workflow only does image-only updates.
+
+1. One-time WIF bootstrap: see `../002-deepCab-platform/terraform/modules/wif/` and `../002-deepCab-platform/docs/RUNBOOK.md`. (The legacy `make wif_bootstrap` + `infra/gcp/workload-identity/README.md` path is deprecated as of 2026-06-04.)
 2. Set GitHub repo variables + secret: `GCP_PROJECT`, `GCP_PROJECT_NUMBER`, `GCP_REGION`, `GCP_WIF_PROVIDER`, `GCP_DEPLOYER_SA`, `MLFLOW_URL` (vars); `SLACK_WEBHOOK_URL` (secret). No long-lived GCP JSON keys — OIDC only.
-3. Push a tag: `git tag v0.1.0 && git push --tags`. The `deploy-cloud-run.yml` workflow builds + pushes the image, renders `infra/gcp/cloud-run/service.yaml`, and runs `gcloud run services replace`.
+3. Push a tag: `git tag v0.1.0 && git push --tags`. The `deploy-cloud-run.yml` workflow builds + pushes the image to Artifact Registry, then runs `gcloud run services update deepcab-api --image=...` against the service Terraform provisioned.
 4. Watch the Slack channel `#deepcab-ops` for `[ci] deploy → Cloud Run ✓`.
 
 GKE deploys are dispatch-only (avoids standing cluster cost):

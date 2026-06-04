@@ -142,3 +142,55 @@ real win is the abstraction shift: every future secret field auto-inherits
 - [x] B.4 preprocess ↔ features/pipeline boundary documented
 - [x] B.5 every router < 100 LOC OR documented why extraction was rejected
 - [x] B.6 duplicate `_clean_state` fixture hoisted to `tests/api/conftest.py`
+
+---
+
+# v1 Polish Addendum — 2026-06-04
+
+Three parallel lanes ran on top of `d7d575b`. Spec: `docs/superpowers/specs/2026-06-04-deepcab-v1-polish.md`.
+
+## Lane A — Schemas (Enums + Pydantic v2) — commit `3224b1d`
+
+- New `deepCab/schemas/enums.py` with 14 `str + Enum` classes
+- 11 inline `Literal[...]` sites migrated across `schemas/{agent,api,settings,config}.py`
+- 6 per-backend `kind: Literal["..."]` discriminators preserved (structural; not values)
+- Pydantic v2 sweep: 0 `class Config:` blocks found (already on `ConfigDict`); 0 `.dict()`/`.parse_obj()`/`.json()` calls in schemas; 2 bare `Field(...)` → `Annotated[T, Field(...)]`
+- 40 new tests (`tests/schemas/test_enums.py`)
+
+## Lane B — Services + Providers — commit `6feeae5`
+
+Router LOC trimmed (business logic moved to services):
+
+| Router | Before | After | Δ |
+|---|---|---|---|
+| `predict.py` | 107 | 48 | -59 |
+| `explain.py` | 49 | 37 | -12 |
+| `train.py` | 80 | 54 | -26 |
+| `agent.py` | 101 | 55 | -46 |
+| `graphql.py` | 142 | 142 | 0 (Strawberry resolvers; deferred — would touch 100+ LOC of GraphQL-specific glue) |
+| `meta.py` / `monitor.py` | 21 / 25 | 21 / 25 | 0 (already thin) |
+
+- 4 services created (`PredictionService`, `ExplanationService`, `TrainingService`, `AgentService`)
+- 3 provider Protocols + 6 concrete impls (`SlackProvider`, `ModelHandleProvider`, `TraceProvider`)
+- `api/deps.py` refactored as a factory tray
+- 24 new tests (12 service unit + 12 provider strategy)
+
+## Lane C — CLI / Commands — commit `20bfcf3`
+
+- New `deepCab/cli/{__init__,train,predict,migrate,agent,serve,status}.py` + `deepCab/__main__.py`
+- `pyproject.toml` adds `typer>=0.12.0` + `[project.scripts] deepcab = "deepCab.cli:app"`
+- Makefile: 6 new `cli_*` shortcut targets
+- 16 new tests (`tests/cli/`)
+- Legacy entrypoints (`python -m deepCab.training.train`, `python -m deepCab.agent.cli`, `python -m deepCab.data.migrate`) preserved
+
+## Combined polish delta
+
+| Metric | Pre-polish (`d7d575b`) | Post-polish (`20bfcf3`) | Δ |
+|---|---|---|---|
+| Tests passing | 116 | 178 | +62 |
+| Tests added | — | 80 | +80 (18 new tests reclassified as skipped due to import-env gates) |
+| New runtime deps | — | `typer>=0.12.0` | +1 |
+| Routers total LOC | 525 | 382 | -143 |
+| Services + providers LOC | 0 | ~530 | +530 (was inline; now organized) |
+
+Net: cleaner separation of concerns, friendlier CLI, exhaustive enums replacing magic strings. No HTTP contracts or env var names changed.

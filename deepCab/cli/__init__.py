@@ -18,6 +18,7 @@ Layout:
     deepcab status                       # prints settings + recent runs
     deepcab --version                    # prints deepCab.__version__ then exits
 """
+
 from __future__ import annotations
 
 import typer

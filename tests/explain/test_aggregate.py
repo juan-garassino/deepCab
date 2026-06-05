@@ -1,5 +1,6 @@
 """SHAP aggregation: column groups cover the full 65-d, sums are exact,
 shape validation refuses anything but 65 columns."""
+
 from __future__ import annotations
 
 import numpy as np

@@ -6,9 +6,8 @@ Lesson: REST vs GraphQL trade-offs side-by-side. The Query type exposes
 predict + listRuns + version; Mutation exposes train. Same `FeatureRow`
 Pydantic model drives both, so adding a field updates REST + GraphQL + agent
 tools in one place."""
-from __future__ import annotations
 
-from typing import List, Optional
+from __future__ import annotations
 
 import strawberry
 from strawberry.fastapi import GraphQLRouter
@@ -27,8 +26,8 @@ class FeatureRowInput:
 @strawberry.type
 class PredictionType:
     fare: float
-    interval_lower: Optional[float] = None
-    interval_upper: Optional[float] = None
+    interval_lower: float | None = None
+    interval_upper: float | None = None
     backend_kind: str
 
 
@@ -69,7 +68,7 @@ class Query:
         return PredictionType(fare=fare, backend_kind=STATE.model.backend_kind)
 
     @strawberry.field
-    def list_runs(self, top_k: int = 10, metric: str = "val_mae") -> List[RunSummary]:
+    def list_runs(self, top_k: int = 10, metric: str = "val_mae") -> list[RunSummary]:
         from deepCab.agent.memory import list_runs as mem_list_runs
 
         return [
@@ -85,7 +84,7 @@ class Query:
 
 @strawberry.type
 class TrainResultType:
-    run_id: Optional[str]
+    run_id: str | None
     backend_kind: str
     val_mae: float
 

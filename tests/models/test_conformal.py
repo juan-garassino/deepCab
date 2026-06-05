@@ -1,4 +1,5 @@
 """ACI math: alpha update direction, clamping, residual quantile interval."""
+
 from __future__ import annotations
 
 import numpy as np

@@ -3,6 +3,7 @@
 Pandera's Polars backend is feature-light compared to pandas (no Hypothesis
 checks, etc.), but covers the dtype + range + nullability checks we need. If
 we hit a gap, fall back to Patito — same DSL, native Polars."""
+
 from __future__ import annotations
 
 import pandera.polars as pa

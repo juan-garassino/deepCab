@@ -1,6 +1,7 @@
 """Training-config schemas. BackendConfig is a Pydantic discriminated union — same
 shape used by Hydra (via OmegaConf -> Pydantic bridge), MLflow param logging, and
 the agent's OpenAI tool params."""
+
 from __future__ import annotations
 
 from typing import Annotated, Literal
@@ -14,7 +15,6 @@ from deepCab.schemas.enums import (
     OptunaPruner,
     OptunaSampler,
 )
-
 
 # ---------- Backend configs ----------
 # Per-backend config subclasses live here for now. As the zoo grows, follow

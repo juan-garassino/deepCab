@@ -5,6 +5,7 @@
 
 Order matters: routers register their routes BEFORE PromMiddleware computes
 `request.scope['route']`."""
+
 from __future__ import annotations
 
 import traceback

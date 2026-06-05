@@ -4,6 +4,7 @@ input data hash, config hash, seed, MLflow run id.
 
 The Phase 10 lineage SQLite tags each MLflow run with the manifest hash so the
 agent's `compare_runs` tool can answer "are these two runs comparable?"."""
+
 from __future__ import annotations
 
 import json
@@ -67,9 +68,11 @@ def emit_provenance(
 
 def _git_sha() -> str | None:
     try:
-        return subprocess.check_output(
-            ["git", "rev-parse", "HEAD"], stderr=subprocess.DEVNULL
-        ).decode().strip()
+        return (
+            subprocess.check_output(["git", "rev-parse", "HEAD"], stderr=subprocess.DEVNULL)
+            .decode()
+            .strip()
+        )
     except Exception:
         return None
 
@@ -97,8 +100,17 @@ def _dep_versions() -> dict[str, str]:
     recorded as 'absent' (not an error)."""
     out: dict[str, str] = {}
     for pkg in (
-        "numpy", "pandas", "polars", "scikit-learn", "tensorflow",
-        "torch", "xgboost", "lightgbm", "catboost", "mlflow", "onnx",
+        "numpy",
+        "pandas",
+        "polars",
+        "scikit-learn",
+        "tensorflow",
+        "torch",
+        "xgboost",
+        "lightgbm",
+        "catboost",
+        "mlflow",
+        "onnx",
         "onnxruntime",
     ):
         try:

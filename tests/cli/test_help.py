@@ -1,6 +1,7 @@
 """Smoke tests: every subcommand's `--help` exits 0 and prints the command
 name + the top-level help lists every subcommand. Catches typer wiring bugs
 (missing app.command() registration, broken callback) cheaply."""
+
 from __future__ import annotations
 
 from typer.testing import CliRunner

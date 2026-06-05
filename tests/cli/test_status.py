@@ -1,6 +1,7 @@
 """`status` must print settings + recent runs and exit 0 even when MLflow
 is unreachable. The conftest fixture clears the settings cache between
 tests so env overrides take effect."""
+
 from __future__ import annotations
 
 from typer.testing import CliRunner

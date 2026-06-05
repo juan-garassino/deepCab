@@ -10,6 +10,7 @@ two classes of subtle drift:
   3. The ``BackendConfig`` discriminated union breaking when its structural
      ``Literal[...]`` discriminators get accidentally swapped to ``BackendKind``
 """
+
 from __future__ import annotations
 
 import json
@@ -23,13 +24,12 @@ from deepCab.schemas.api import (
     TrainStatusResponse,
 )
 from deepCab.schemas.config import (
-    BackendConfig,
     CVConfig,
     DataRef,
     HPOConfig,
     TFMLPConfig,
-    TrainConfig,
     TorchMLPConfig,
+    TrainConfig,
 )
 from deepCab.schemas.enums import (
     AppEnv,
@@ -51,7 +51,6 @@ from deepCab.schemas.settings import (
     DataSettings,
     RegistrySettings,
 )
-
 
 # ---------------------------------------------------------------------------
 # Bare-enum invariants
@@ -234,7 +233,7 @@ def test_backend_discriminated_union_still_routes_by_kind_string() -> None:
     # is the right caller-facing alias even though the discriminator stays
     # Literal).
     assert BackendKind.TF_MLP == "tf_mlp"
-    assert BackendKind.TORCH_MLP == tc2.backend.kind
+    assert tc2.backend.kind == BackendKind.TORCH_MLP
 
 
 # ---------------------------------------------------------------------------

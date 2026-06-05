@@ -1,5 +1,6 @@
 """CV runs N folds, rebuilds estimator per fold (spec-as-factory), returns
 per-fold MAE list."""
+
 from __future__ import annotations
 
 import importlib.util

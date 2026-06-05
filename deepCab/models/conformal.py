@@ -17,10 +17,11 @@ Notes:
     - Calibration residuals are a fixed pool (no append) — keeps the quantile
       computation O(1) amortized; ACI does the drift handling instead.
     - alpha is clamped to [eps, 1-eps] each step to avoid degenerate intervals."""
+
 from __future__ import annotations
 
+from collections.abc import Iterable
 from dataclasses import dataclass
-from typing import Iterable
 
 import numpy as np
 
@@ -30,12 +31,12 @@ from deepCab.models.base import AbstractEstimator
 @dataclass
 class ACIRegressor:
     base: AbstractEstimator
-    alpha: float = 0.1        # nominal miscoverage (1 - alpha = nominal coverage)
-    gamma: float = 0.005      # online learning rate
+    alpha: float = 0.1  # nominal miscoverage (1 - alpha = nominal coverage)
+    gamma: float = 0.005  # online learning rate
     _residuals: np.ndarray | None = None
     _alpha_t: float = 0.0
 
-    def fit(self, X: np.ndarray, y: np.ndarray, calibration_idx: Iterable[int]) -> "ACIRegressor":
+    def fit(self, X: np.ndarray, y: np.ndarray, calibration_idx: Iterable[int]) -> ACIRegressor:
         """Fit base on the non-calibration rows, then compute residuals on calibration_idx."""
         idx = np.asarray(list(calibration_idx))
         mask = np.ones(len(X), dtype=bool)
@@ -54,7 +55,7 @@ class ACIRegressor:
         y_calib: np.ndarray,
         alpha: float = 0.1,
         gamma: float = 0.005,
-    ) -> "ACIRegressor":
+    ) -> ACIRegressor:
         """Calibrate from an already-fitted base + a disjoint calibration set.
 
         Use this from `training.train.run()` where the estimator has already

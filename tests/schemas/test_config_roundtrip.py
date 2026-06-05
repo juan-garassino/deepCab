@@ -1,6 +1,7 @@
 """BackendConfig discriminated union must round-trip JSON cleanly. Catches the
 Pydantic v2 'discriminator-as-Literal' gotcha that bites when MLflow re-loads
 logged configs."""
+
 from __future__ import annotations
 
 import pytest

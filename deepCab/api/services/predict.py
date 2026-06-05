@@ -4,12 +4,13 @@ dispatch, batch + streaming variants.
 All business logic that used to live inline in `routers/predict.py` lives here
 now. The router becomes a 3-line adapter per endpoint. HTTP contracts are
 unchanged."""
+
 from __future__ import annotations
 
 import asyncio
 import json
+from collections.abc import AsyncIterator
 from dataclasses import dataclass
-from typing import AsyncIterator
 
 import numpy as np
 import pandas as pd
@@ -81,9 +82,7 @@ class PredictionService:
         return resp
 
     async def predict_many(self, req: BatchPredictRequest) -> BatchPredictResponse:
-        X = preprocess_features(
-            pd.DataFrame([r.model_dump() for r in req.rows])
-        ).astype(np.float32)
+        X = preprocess_features(pd.DataFrame([r.model_dump() for r in req.rows])).astype(np.float32)
         point = self._point_predict(X)
 
         if self.model.aci is not None:

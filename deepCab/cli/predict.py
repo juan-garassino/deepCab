@@ -4,18 +4,18 @@ Reads one FeatureRow JSON (from a file via `--input`, or stdin if not
 provided), validates with Pydantic, fetches the currently-active model
 handle from the in-process registry, and prints the predicted fare.
 """
+
 from __future__ import annotations
 
 import json
 import sys
 from pathlib import Path
-from typing import Optional
 
 import typer
 
 
 def predict(
-    input: Optional[Path] = typer.Option(
+    input: Path | None = typer.Option(
         None,
         "--input",
         "-i",

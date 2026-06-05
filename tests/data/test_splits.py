@@ -1,5 +1,6 @@
 """TimeSeriesSplit must refuse unsorted input and never let test indices precede
 train indices."""
+
 from __future__ import annotations
 
 from datetime import datetime, timedelta

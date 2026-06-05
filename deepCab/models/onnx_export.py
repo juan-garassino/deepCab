@@ -15,6 +15,7 @@ uses the canonical converter:
 INT8 quantization (Phase 7) applies only to {tf_mlp, torch_mlp, ft_transformer}
 — tree leaves are already integer-friendly. The matrix in PHASE-7 verifies
 parity ≤ 1e-4 (deep) and exact (tree)."""
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -98,9 +99,7 @@ def _export_lgbm(est: AbstractEstimator, sample: np.ndarray, path: Path) -> Path
     from onnxmltools.convert import convert_lightgbm
 
     initial_type = [("input", FloatTensorType([None, sample.shape[1]]))]
-    onnx_model = convert_lightgbm(
-        est.model_, initial_types=initial_type, zipmap=False
-    )
+    onnx_model = convert_lightgbm(est.model_, initial_types=initial_type, zipmap=False)
     path.write_bytes(onnx_model.SerializeToString())
     return path
 
@@ -111,7 +110,9 @@ def _export_lgbm(est: AbstractEstimator, sample: np.ndarray, path: Path) -> Path
 def _export_catboost(est: AbstractEstimator, path: Path) -> Path:
     # CatBoost has built-in ONNX export. Preprocessing (CTR/target enc) is NOT
     # captured in the graph — document this in the model card.
-    est.model_.save_model(str(path), format="onnx", export_parameters={"onnx_domain": "ai.catboost"})
+    est.model_.save_model(
+        str(path), format="onnx", export_parameters={"onnx_domain": "ai.catboost"}
+    )
     return path
 
 

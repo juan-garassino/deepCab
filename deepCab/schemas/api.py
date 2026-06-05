@@ -1,5 +1,6 @@
 """FastAPI request/response models. Share the same FeatureRow as the training pipeline,
 and the same TrainConfig the agent's `train` tool will accept — single source of truth."""
+
 from __future__ import annotations
 
 from typing import Annotated

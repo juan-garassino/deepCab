@@ -1,9 +1,8 @@
 """Model card renders required sections + backend YAML + metric table."""
+
 from __future__ import annotations
 
 from pathlib import Path
-
-import pytest
 
 from deepCab.registry.model_card import write_model_card
 from deepCab.schemas.config import TrainConfig, XGBConfig
@@ -33,7 +32,7 @@ def test_write_model_card_emits_required_sections(tmp_path: Path) -> None:
     for needle in (
         "# Model Card — deepcab v3",
         "## Backend",
-        "kind: xgb",                  # rendered inside the yaml code block
+        "kind: xgb",  # rendered inside the yaml code block
         "n_estimators: 200",
         "| val_mae  | 3.1400 |",
         "**pickup_datetime**: 1.2000",

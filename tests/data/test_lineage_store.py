@@ -1,5 +1,6 @@
 """Lineage SQLite: edges persist, query_by_run round-trips, runs_sharing_input
 groups correctly."""
+
 from __future__ import annotations
 
 import os

@@ -1,4 +1,5 @@
 """P13 security: api-key precedence, file: secrets resolution, CORS allowlist."""
+
 from __future__ import annotations
 
 from pathlib import Path

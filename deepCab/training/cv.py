@@ -7,6 +7,7 @@ sorted index. KFold is available for IID benchmarks only.
 
 Per-fold MLflow nested runs let the agent's `compare_runs` tool see fold-level
 breakdowns instead of an averaged metric."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -48,8 +49,11 @@ def run_cv(
         import polars as pl
 
         toy = pl.DataFrame(
-            {"pickup_datetime": pickup_datetime_sorted if pickup_datetime_sorted is not None
-             else np.arange(n)}
+            {
+                "pickup_datetime": pickup_datetime_sorted
+                if pickup_datetime_sorted is not None
+                else np.arange(n)
+            }
         )
         splits = list(time_series_splits(toy, n_splits=cfg.cv.n_splits))
     else:

@@ -1,5 +1,6 @@
 """Tree SHAP must satisfy additivity: f(x) ≈ base + sum(shap_values).
 Gated behind LightGBM + shap availability."""
+
 from __future__ import annotations
 
 import importlib.util
@@ -58,9 +59,7 @@ def test_explanation_aggregated_keys() -> None:
         "dropoff_location",
     }
     # Sum of aggregated groups equals sum of raw SHAP (group partition covers all 65)
-    assert sum(expl.aggregated.values()) == pytest.approx(
-        float(expl.values.sum()), abs=1e-6
-    )
+    assert sum(expl.aggregated.values()) == pytest.approx(float(expl.values.sum()), abs=1e-6)
 
 
 @SKIP

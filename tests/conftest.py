@@ -5,6 +5,7 @@ went away with the legacy ml_logic/params.py import. New tests use the Pydantic
 Settings model directly; monkeypatch env vars and call get_settings.cache_clear()
 in your fixture if you need to override (see tests/security/test_secrets_and_auth.py
 for the pattern)."""
+
 from __future__ import annotations
 
 import pytest

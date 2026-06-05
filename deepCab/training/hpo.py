@@ -12,10 +12,12 @@ Trial flow:
 
 Determinism: TPESampler(seed=cfg.seed). Per-trial torch/tf seed flows through
 training.seed.set_all called by train.run()."""
+
 from __future__ import annotations
 
+from collections.abc import Callable
 from dataclasses import dataclass
-from typing import Any, Callable
+from typing import Any
 
 from pydantic import BaseModel
 
@@ -156,9 +158,7 @@ def tune(
 
     study.optimize(_trial, n_trials=hpo.n_trials, show_progress_bar=False)
     best = study.best_trial
-    best_backend = cfg_cls.model_validate(
-        {**base_cfg.backend.model_dump(), **best.params}
-    )
+    best_backend = cfg_cls.model_validate({**base_cfg.backend.model_dump(), **best.params})
     log.info("hpo.done", best_value=best.value, best_params=best.params, kind=kind)
     return HPOResult(
         best_value=float(best.value),

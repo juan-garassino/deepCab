@@ -3,6 +3,7 @@
 Covers the two behaviors that matter at the service level:
   - happy path: returns ExplainResponse with the aggregated SHAP dict
   - missing background: raises MissingBackgroundError (router → 409)"""
+
 from __future__ import annotations
 
 import asyncio

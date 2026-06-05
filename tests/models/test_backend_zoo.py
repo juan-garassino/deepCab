@@ -1,5 +1,6 @@
 """Each registered backend fits + predicts on synthetic data. Gated behind
 dep availability so a partial install still runs the others."""
+
 from __future__ import annotations
 
 import importlib.util

@@ -7,6 +7,7 @@ GET  /train/{id}    — current task status + result/error
 never wrote per-epoch events, so the endpoint was unconditionally empty.
 Per-backend epoch callbacks would be ~150 LOC across 4 modules; scoped out of
 the MVP. Use status polling.)"""
+
 from __future__ import annotations
 
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, status
@@ -43,9 +44,7 @@ async def get_train_status(
     try:
         return await svc.status(task_id)
     except UnknownTaskError as e:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="unknown task_id"
-        ) from e
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="unknown task_id") from e
 
 
 # WebSocket /train/stream was removed in P14: no backend training loop ever

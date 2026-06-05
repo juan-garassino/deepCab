@@ -6,6 +6,7 @@ The autoloader closes the Phase 10 gap: without it, every API restart left
 last-promoted @champion alias rehydrates STATE.model at startup; if MLflow
 isn't configured or no @champion exists, we no-op cleanly and the route stays
 503 until the agent's `train` tool or `make run_train` populates STATE."""
+
 from __future__ import annotations
 
 from contextlib import asynccontextmanager

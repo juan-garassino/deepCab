@@ -5,6 +5,7 @@ Two responsibilities:
    flat string-keyed dicts and caps values at 500 chars). Nested dicts become
    dotted keys; the original config gets logged as a YAML artifact alongside.
 2. Optuna param-suggesting from a backend cfg's classmethod search_space."""
+
 from __future__ import annotations
 
 import json

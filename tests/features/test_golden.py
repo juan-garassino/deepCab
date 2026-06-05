@@ -1,5 +1,6 @@
 """Golden-vector regression: the Polars port in features/transformers.py must
 match the legacy numpy reference in features/golden.py element-wise."""
+
 from __future__ import annotations
 
 import numpy as np

@@ -7,6 +7,7 @@ with three additions:
 
 The executor emits AgentEvent records to the AgentTrace so the improve loop +
 SSE endpoints + CLI viewer all read from one source."""
+
 from __future__ import annotations
 
 import concurrent.futures
@@ -98,7 +99,11 @@ def run_one_turn(
             tool_choice="auto",
         )
         if getattr(resp, "usage", None) is not None:
-            budget.charge_llm_usage(model, resp.usage.model_dump() if hasattr(resp.usage, "model_dump") else dict(resp.usage), trace)
+            budget.charge_llm_usage(
+                model,
+                resp.usage.model_dump() if hasattr(resp.usage, "model_dump") else dict(resp.usage),
+                trace,
+            )
 
         msg = resp.choices[0].message
         messages.append(
@@ -154,9 +159,7 @@ def run_one_turn(
                 budget.charge_tool_call()
 
             ok = "error" not in result
-            agent_tool_call_total.labels(
-                tool=name, status="ok" if ok else "error"
-            ).inc()
+            agent_tool_call_total.labels(tool=name, status="ok" if ok else "error").inc()
             trace.append(
                 AgentEvent(
                     iter=budget.iters,

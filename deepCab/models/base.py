@@ -8,6 +8,7 @@ clone()-and-set semantics keep working.
 For backends sklearn.clone() can't handle (TF, Torch, FT-T mixed state), use the
 spec-as-factory pattern in deepCab.training.cv (mirrors 017's cv.py:14-48): rebuild
 from cfg each fold instead of cloning."""
+
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
@@ -39,7 +40,7 @@ class AbstractEstimator(BaseEstimator, RegressorMixin, ABC):
     def get_params(self, deep: bool = True) -> dict[str, Any]:
         return dict(self._cfg_kwargs)
 
-    def set_params(self, **params: Any) -> "AbstractEstimator":
+    def set_params(self, **params: Any) -> AbstractEstimator:
         self._cfg_kwargs.update(params)
         for k, v in params.items():
             setattr(self, k, v)
@@ -51,7 +52,7 @@ class AbstractEstimator(BaseEstimator, RegressorMixin, ABC):
         access so set_params changes are honored."""
         return self.cfg_cls.model_validate(self._cfg_kwargs)
 
-    def fit(self, X: np.ndarray, y: np.ndarray, **kw: Any) -> "AbstractEstimator":
+    def fit(self, X: np.ndarray, y: np.ndarray, **kw: Any) -> AbstractEstimator:
         self._fit(np.asarray(X), np.asarray(y).ravel(), **kw)
         return self
 
@@ -71,7 +72,7 @@ class AbstractEstimator(BaseEstimator, RegressorMixin, ABC):
 
     @classmethod
     @abstractmethod
-    def load(cls, path: Path) -> "AbstractEstimator": ...
+    def load(cls, path: Path) -> AbstractEstimator: ...
 
     def to_onnx(self, path: Path, sample: np.ndarray) -> Path:
         """Per-backend ONNX export lands in Phase 3 (deepCab/models/onnx_export.py)."""

@@ -7,6 +7,7 @@ warmup matches the Optuna search space we'll add in Phase 4.
 
 ONNX export lives in models/onnx_export.py (Phase 3 also). Tested against
 onnxruntime parity with rtol 1e-4."""
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -132,7 +133,7 @@ class TorchMLPEstimator(AbstractEstimator):
         cfg_path.write_text(json.dumps(self.cfg.model_dump()))
 
     @classmethod
-    def load(cls, path: Path) -> "TorchMLPEstimator":
+    def load(cls, path: Path) -> TorchMLPEstimator:
         import json
 
         import torch

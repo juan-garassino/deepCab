@@ -1,5 +1,6 @@
 """Polars + DuckDB I/O. Hive-partitioned Parquet is the canonical on-disk format;
 the chunked-CSV path is reserved for migration only (deepCab/data/migrate.py)."""
+
 from __future__ import annotations
 
 from pathlib import Path

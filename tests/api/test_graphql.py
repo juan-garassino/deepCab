@@ -1,4 +1,5 @@
 """GraphQL endpoint: version query, schema introspection, predict respects STATE."""
+
 from __future__ import annotations
 
 import importlib.util

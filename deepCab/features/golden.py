@@ -10,6 +10,7 @@ fixed set of hand-picked rows that exercise the tricky cases:
 
 The test in tests/features/test_golden.py asserts that the Polars port in
 features/transformers.py produces identical output."""
+
 from __future__ import annotations
 
 import math

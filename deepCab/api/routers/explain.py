@@ -5,6 +5,7 @@ GET  /explain/summary — global mean(|SHAP|) per group (cached).
 
 The 409-on-missing-background contract is preserved: the service raises
 `MissingBackgroundError`, we translate it to HTTPException(409)."""
+
 from __future__ import annotations
 
 from fastapi import APIRouter, Depends, HTTPException, status

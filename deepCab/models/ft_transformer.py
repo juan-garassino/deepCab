@@ -19,6 +19,7 @@ will be exported to ONNX in Phase 7. Architecture:
 Hardcoded n_heads=8, ffn_hidden = d_token * 2 — cfg keeps the four levers
 (d_token, n_blocks, attention_dropout, ffn_dropout) that matter for HPO. Torch
 ≥ 2.1 needed for clean SDPA -> ONNX opset 17+ export."""
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -117,9 +118,7 @@ class FTTransformerEstimator(AbstractEstimator):
 
         Xt = torch.tensor(np.asarray(X), dtype=torch.float32)
         yt = torch.tensor(np.asarray(y).ravel(), dtype=torch.float32)
-        loader = DataLoader(
-            TensorDataset(Xt, yt), batch_size=c.batch_size, shuffle=True
-        )
+        loader = DataLoader(TensorDataset(Xt, yt), batch_size=c.batch_size, shuffle=True)
 
         opt = AdamW(self.model_.parameters(), lr=c.learning_rate)
         loss_fn = torch.nn.MSELoss()
@@ -157,7 +156,7 @@ class FTTransformerEstimator(AbstractEstimator):
         )
 
     @classmethod
-    def load(cls, path: Path) -> "FTTransformerEstimator":
+    def load(cls, path: Path) -> FTTransformerEstimator:
         import json
 
         import torch
@@ -172,7 +171,5 @@ class FTTransformerEstimator(AbstractEstimator):
         est._input_dim = blob["input_dim"]  # type: ignore[attr-defined]
         est._device = torch.device("cpu")  # type: ignore[attr-defined]
         est.model_ = _build_module(est._input_dim, est.cfg)
-        est.model_.load_state_dict(
-            torch.load(path, map_location="cpu", weights_only=True)
-        )
+        est.model_.load_state_dict(torch.load(path, map_location="cpu", weights_only=True))
         return est

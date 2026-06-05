@@ -6,6 +6,7 @@ POST /predict/stream — SSE: stream predictions row-by-row.
 
 All business logic (ONNX dispatch, ACI bracket, Prometheus observation, SSE
 framing) lives in `services/predict.py`. This file is the FastAPI seam."""
+
 from __future__ import annotations
 
 from fastapi import APIRouter, Depends

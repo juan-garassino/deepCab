@@ -7,18 +7,19 @@ The OpenAI client is created per-request (matches the old router behavior) so
 the dep stays optional — without OPENAI_API_KEY both methods raise
 `OpenAIUnavailableError` and the router translates that to 503 BEFORE the SSE
 response starts streaming."""
+
 from __future__ import annotations
 
 import json
 import uuid
+from collections.abc import Iterator
 from dataclasses import dataclass
-from typing import Any, Iterator
+from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field
 
 from deepCab.api.providers import TraceProvider
 from deepCab.schemas.agent import BudgetCap, ImproveConfig
-
 
 # ---------------------------------------------------------------------------
 # Request models live here (kept identical to the old router models so HTTP
@@ -76,9 +77,7 @@ class AgentService:
 
         settings = get_settings().openai
         if not settings.api_key:
-            raise OpenAIUnavailableError(
-                "OPENAI_API_KEY not set — agent endpoints disabled"
-            )
+            raise OpenAIUnavailableError("OPENAI_API_KEY not set — agent endpoints disabled")
         try:
             from openai import OpenAI
         except ImportError as e:

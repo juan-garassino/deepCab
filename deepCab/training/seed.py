@@ -1,4 +1,5 @@
 """Single entry point for deterministic seeding. Called by every training entry."""
+
 from __future__ import annotations
 
 import os

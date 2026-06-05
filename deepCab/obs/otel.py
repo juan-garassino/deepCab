@@ -1,6 +1,7 @@
 """OpenTelemetry tracer initialization. Real OTLP exporter pointing at the
 otel-collector service in docker-compose.obs.yml. Span context propagates
 automatically across FastAPI requests + the training pipeline + the agent loop."""
+
 from __future__ import annotations
 
 from functools import lru_cache

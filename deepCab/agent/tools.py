@@ -8,10 +8,12 @@ data (not exceptions) so the LLM can self-correct.
 Whitelist-only. No `eval`, no arbitrary `config_yaml=...` passthrough. Every
 tool param is a Pydantic-validated field.
 """
+
 from __future__ import annotations
 
 import time
-from typing import Any, Callable, Literal
+from collections.abc import Callable
+from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -173,9 +175,7 @@ def _train(args: TrainIn) -> TrainOut:
     cfg = TrainConfig(backend=args.backend, data=args.data, seed=args.seed)
     result = run_train(cfg)
 
-    return TrainOut(
-        run_id=result.run_id, backend_kind=result.backend_kind, val_mae=result.val_mae
-    )
+    return TrainOut(run_id=result.run_id, backend_kind=result.backend_kind, val_mae=result.val_mae)
 
 
 def _evaluate(args: EvaluateIn) -> EvaluateOut:

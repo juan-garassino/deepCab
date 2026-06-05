@@ -1,10 +1,10 @@
 """Row-level data contracts. Validated at every IO boundary."""
+
 from __future__ import annotations
 
 from datetime import datetime
 
 from pydantic import BaseModel, Field
-
 
 # NYC bounding box (matches legacy clean_data filters)
 NYC_LAT = (40.5, 40.9)

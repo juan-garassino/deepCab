@@ -1,4 +1,5 @@
 """Lineage hashes must be stable and content-sensitive."""
+
 from __future__ import annotations
 
 from pathlib import Path

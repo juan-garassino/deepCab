@@ -9,6 +9,7 @@ This file just maps the AgentService request models + the
 
 The request models (`AgentTurnRequest`, `AgentImproveRequest`) live in the
 service module so they're inspectable from tests without importing FastAPI."""
+
 from __future__ import annotations
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -33,9 +34,7 @@ async def agent_turn(
     try:
         stream = svc.turn(req)
     except OpenAIUnavailableError as e:
-        raise HTTPException(
-            status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail=str(e)
-        ) from e
+        raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail=str(e)) from e
     return EventSourceResponse(stream)
 
 
@@ -47,7 +46,5 @@ async def agent_improve(
     try:
         stream = svc.improve(req)
     except OpenAIUnavailableError as e:
-        raise HTTPException(
-            status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail=str(e)
-        ) from e
+        raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail=str(e)) from e
     return EventSourceResponse(stream)

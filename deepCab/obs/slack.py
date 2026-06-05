@@ -14,10 +14,12 @@ training/inference path.
 For Prometheus → Slack routing, see `infra/compose/conf/alertmanager.yml` —
 that's a separate channel (Alertmanager posts directly to the same webhook).
 """
+
 from __future__ import annotations
 
 import logging
-from typing import Any, Mapping
+from collections.abc import Mapping
+from typing import Any
 
 import requests
 

@@ -6,6 +6,7 @@ Strategy: stub training.preprocess.preprocess to return synthetic 65-d arrays
 so the test doesn't depend on the data layer's parquet conventions. The
 audit-finding gaps we care about (model card, lineage, ONNX register, STATE)
 all live downstream of preprocess and are exercised by the stub path."""
+
 from __future__ import annotations
 
 import importlib.util
@@ -103,7 +104,9 @@ def test_train_run_wires_state_lineage_modelcard_onnx(pipeline_env, monkeypatch)
 
         db = get_settings().registry.local_path.expanduser() / "lineage.db"
         with sqlite3.connect(db) as conn:
-            rows = conn.execute("SELECT input_hash, preprocessor_hash, split_hash FROM lineage_edges").fetchall()
+            rows = conn.execute(
+                "SELECT input_hash, preprocessor_hash, split_hash FROM lineage_edges"
+            ).fetchall()
     assert rows, "no lineage edge written"
 
     # P12c: ONNX exported AND registered in REGISTRY (when converter deps present)

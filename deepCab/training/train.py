@@ -21,6 +21,7 @@ local run directory to `gs://<bucket>/runs/<run_id>/` after `_run_training`
 returns. The push is a thin `gsutil` shell-out, so the unit tests stub the
 helper out and never touch the cloud. The default cloud training trigger
 (Cloud Scheduler -> Cloud Run Job) sets this env on the Job container."""
+
 from __future__ import annotations
 
 import os
@@ -124,9 +125,7 @@ def _publish_to_state(
 
     background = X_val[: min(200, len(X_val))]
     STATE.set_model(
-        ModelHandle(
-            estimator=estimator, backend_kind=backend_kind, background=background, aci=aci
-        )
+        ModelHandle(estimator=estimator, backend_kind=backend_kind, background=background, aci=aci)
     )
 
 
@@ -179,13 +178,17 @@ def _run_training(cfg: TrainConfig) -> TrainResult:
         if mlflow_mod is not None and model_path is not None:
             mlflow_mod.log_artifacts(str(model_path.parent), artifact_path="model")
 
-        provenance_path = emit_provenance(
-            cfg, run_id=run_id, metrics={"val_mae": val_mae}
-        )
+        provenance_path = emit_provenance(cfg, run_id=run_id, metrics={"val_mae": val_mae})
 
         # P12 wire-ups: model card + lineage + ONNX export, each independently
         # try/except so a failure in one doesn't kill the run.
-        _emit_model_card(cfg, run_id=run_id, val_mae=val_mae, provenance_path=provenance_path, mlflow_mod=mlflow_mod)
+        _emit_model_card(
+            cfg,
+            run_id=run_id,
+            val_mae=val_mae,
+            provenance_path=provenance_path,
+            mlflow_mod=mlflow_mod,
+        )
         _emit_lineage(cfg, run_id=run_id)
         if model_path is not None:
             _export_and_register_onnx(estimator, cfg, X_val[:1], model_path.parent)
@@ -278,7 +281,9 @@ def _emit_lineage(cfg: TrainConfig, run_id: str | None) -> None:
 
         edge = LineageEdge(
             input_hash=hash_obj({"data": cfg.data.model_dump()}),
-            preprocessor_hash=hash_obj({"feature_pipeline": "features.pipeline.preprocess_features:v1"}),
+            preprocessor_hash=hash_obj(
+                {"feature_pipeline": "features.pipeline.preprocess_features:v1"}
+            ),
             split_hash=hash_obj({"strategy": "tail_30pct_for_aci", "seed": cfg.seed}),
             run_id=run_id,
         )

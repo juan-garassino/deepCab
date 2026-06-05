@@ -14,6 +14,7 @@ Two correctness invariants worth knowing:
     1. TreeExplainer: f(x) ≡ base + sum(values[i])  to fp tolerance — tested.
     2. DeepExplainer / Gradient: approximate — additivity holds only at
        background-sample expectation. Test asserts the property only for trees."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -33,8 +34,8 @@ TREE_KINDS = {"xgb", "lgbm", "catboost"}
 class Explanation:
     prediction: float
     base_value: float
-    values: np.ndarray              # raw 65-d SHAP for the queried row
-    aggregated: dict[str, float]    # 5-group summary keyed by FEATURE_ORDER
+    values: np.ndarray  # raw 65-d SHAP for the queried row
+    aggregated: dict[str, float]  # 5-group summary keyed by FEATURE_ORDER
 
 
 def make_explainer(estimator: AbstractEstimator, background: np.ndarray):

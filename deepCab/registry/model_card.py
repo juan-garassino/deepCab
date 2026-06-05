@@ -7,6 +7,7 @@ data, evaluation, ethical considerations, provenance.
 
 Phase 10's training/train.py hook will call `write_model_card(...)` after a
 successful run and log it as an MLflow artifact alongside provenance.json."""
+
 from __future__ import annotations
 
 from pathlib import Path

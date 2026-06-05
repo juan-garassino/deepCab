@@ -7,6 +7,7 @@ events to stdout. Two slash commands:
 
 The CLI doesn't require FastAPI to be running. It does require an OpenAI API
 key in settings (OPENAI_API_KEY in .env.dev)."""
+
 from __future__ import annotations
 
 import json
@@ -40,7 +41,9 @@ def _client():
 
 def repl() -> None:
     client, model = _client()
-    print(f"deepCab agent REPL — model={model}. Type /improve <goal> or a free goal. /quit to exit.")
+    print(
+        f"deepCab agent REPL — model={model}. Type /improve <goal> or a free goal. /quit to exit."
+    )
     while True:
         try:
             line = input("> ").strip()
@@ -52,7 +55,7 @@ def repl() -> None:
         if line == "/quit":
             return
         if line.startswith("/improve "):
-            goal = line[len("/improve "):]
+            goal = line[len("/improve ") :]
             cfg = ImproveConfig(
                 goal=goal,
                 budget=BudgetCap(max_iters=4, max_tool_calls=30, max_usd=2.0),

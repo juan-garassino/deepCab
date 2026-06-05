@@ -3,6 +3,7 @@ The key is the BackendConfig.kind discriminator string; the value is the
 AbstractEstimator subclass that consumes that config.
 
 Add a new backend by appending one line. No decorators."""
+
 from __future__ import annotations
 
 from deepCab.models.base import AbstractEstimator

@@ -2,6 +2,7 @@
 `deepCab.training.train.run`. We mock `_run` so the test doesn't actually
 fit a model — we only verify the override list reaches the underlying
 entry as a TrainConfig and that the CLI completes successfully."""
+
 from __future__ import annotations
 
 from typer.testing import CliRunner

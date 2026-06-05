@@ -1,7 +1,6 @@
 """flatten() collapses nested Pydantic dumps to dotted keys + caps to 500 chars."""
-from __future__ import annotations
 
-from pydantic import BaseModel
+from __future__ import annotations
 
 from deepCab.schemas.config import TrainConfig, XGBConfig
 from deepCab.training._mlflow import MLFLOW_PARAM_MAX, flatten

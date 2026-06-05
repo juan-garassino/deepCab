@@ -6,6 +6,7 @@ The planner LLM call is a regular Chat Completions request with tools=[...]
 attached — but the system prompt instructs it to *propose* tool calls rather
 than execute them. We then extract the `tool_calls` field from the response and
 materialize them as ToolCall objects without dispatching."""
+
 from __future__ import annotations
 
 import json

@@ -3,6 +3,7 @@
 B.6 consolidation: `_clean_state` was duplicated between `test_routers.py`
 (reset model + tasks) and `test_graphql.py` (reset model only). Hoisted here
 in its strictest form so both files inherit the same isolation."""
+
 from __future__ import annotations
 
 import pytest

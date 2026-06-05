@@ -1,4 +1,5 @@
 """Eval a registered model on a held-out partition. Pure function."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass

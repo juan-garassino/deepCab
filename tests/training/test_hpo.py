@@ -1,5 +1,6 @@
 """Optuna study runs N trials, returns the best config validated against the
 backend's Pydantic schema. Determinism: same seed -> same best params."""
+
 from __future__ import annotations
 
 import importlib.util
@@ -27,6 +28,7 @@ def test_tune_returns_validated_best_cfg() -> None:
         hpo=HPOConfig(n_trials=4, sampler="random"),
         seed=1,
     )
+
     # Synthetic objective: minimize the suggested num_leaves
     def objective(cfg: TrainConfig) -> float:
         return float(cfg.backend.num_leaves)  # type: ignore[union-attr]

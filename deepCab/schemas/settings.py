@@ -1,5 +1,6 @@
 """Single source of truth for runtime settings. Replaces every os.environ.get site
 in the legacy package atomically. Per-env loading via APP_ENV={dev,staging,prod}."""
+
 from __future__ import annotations
 
 import os
@@ -43,12 +44,10 @@ class FileUriEnvSettingsSource(EnvSettingsSource):
     boilerplate.
     """
 
-    def get_field_value(
-        self, field: FieldInfo, field_name: str
-    ) -> tuple[Any, str, bool]:
+    def get_field_value(self, field: FieldInfo, field_name: str) -> tuple[Any, str, bool]:
         value, key, is_complex = super().get_field_value(field, field_name)
         if isinstance(value, str) and value.startswith("file:"):
-            path = Path(value[len("file:"):]).expanduser()
+            path = Path(value[len("file:") :]).expanduser()
             if not path.exists():
                 raise FileNotFoundError(f"secret file not found: {path}")
             value = path.read_text().strip()
@@ -126,8 +125,12 @@ class ObsSettings(BaseSettings):
     slack_webhook_url: str | None = None
 
     @classmethod
-    def settings_customise_sources(cls, settings_cls, init_settings, env_settings, dotenv_settings, file_secret_settings):
-        return _customise_sources(settings_cls, init_settings, env_settings, dotenv_settings, file_secret_settings)
+    def settings_customise_sources(
+        cls, settings_cls, init_settings, env_settings, dotenv_settings, file_secret_settings
+    ):
+        return _customise_sources(
+            settings_cls, init_settings, env_settings, dotenv_settings, file_secret_settings
+        )
 
 
 class OpenAISettings(BaseSettings):
@@ -137,8 +140,12 @@ class OpenAISettings(BaseSettings):
     model: str = "gpt-4o-mini"
 
     @classmethod
-    def settings_customise_sources(cls, settings_cls, init_settings, env_settings, dotenv_settings, file_secret_settings):
-        return _customise_sources(settings_cls, init_settings, env_settings, dotenv_settings, file_secret_settings)
+    def settings_customise_sources(
+        cls, settings_cls, init_settings, env_settings, dotenv_settings, file_secret_settings
+    ):
+        return _customise_sources(
+            settings_cls, init_settings, env_settings, dotenv_settings, file_secret_settings
+        )
 
 
 class DeepCabSettings(BaseSettings):
@@ -151,8 +158,12 @@ class DeepCabSettings(BaseSettings):
     api_key: str | None = None
 
     @classmethod
-    def settings_customise_sources(cls, settings_cls, init_settings, env_settings, dotenv_settings, file_secret_settings):
-        return _customise_sources(settings_cls, init_settings, env_settings, dotenv_settings, file_secret_settings)
+    def settings_customise_sources(
+        cls, settings_cls, init_settings, env_settings, dotenv_settings, file_secret_settings
+    ):
+        return _customise_sources(
+            settings_cls, init_settings, env_settings, dotenv_settings, file_secret_settings
+        )
 
 
 class Settings(BaseSettings):

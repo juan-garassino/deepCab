@@ -1,5 +1,6 @@
 """Tool registry: schema generation matches Pydantic, unknown tools come back
 as {"error": ...} (never raise), args validation surfaces as error data."""
+
 from __future__ import annotations
 
 from deepCab.agent.tools import dispatch, openai_tools, tool_names

@@ -8,6 +8,7 @@ an MLflow run_id and a timestamp. Answers questions like:
 
 Pure SQLite — no extra service. The DB file lives under
 REGISTRY_LOCAL_PATH/lineage.db so it co-locates with model artifacts."""
+
 from __future__ import annotations
 
 import sqlite3

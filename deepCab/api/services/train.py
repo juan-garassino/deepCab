@@ -7,6 +7,7 @@ router only knows about HTTP shapes.
 State note: the task table still lives in `api.state.STATE.tasks`. We keep that
 location because the lifespan + tests already key off it; the service is a
 caller, not the owner."""
+
 from __future__ import annotations
 
 import uuid
@@ -57,9 +58,7 @@ class TrainingService:
         except Exception as e:  # noqa: BLE001
             rec.status = "failed"
             rec.error = f"{type(e).__name__}: {e}"
-            training_run_total.labels(
-                backend_kind=req.config.backend.kind, status="failed"
-            ).inc()
+            training_run_total.labels(backend_kind=req.config.backend.kind, status="failed").inc()
             log.error("train.background.failed", task_id=task_id, error=rec.error)
 
     async def start(

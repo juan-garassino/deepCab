@@ -14,6 +14,7 @@ unions is brittle around Enum members and the structural form is the
 recommended pattern for ``Field(discriminator=...)``. ``BackendKind`` here
 exists for caller-facing references to "which backend is active".
 """
+
 from __future__ import annotations
 
 from enum import Enum

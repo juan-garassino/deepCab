@@ -17,6 +17,7 @@ groups by summing component attributions:
 Note the asymmetry: pickup_lat and pickup_lon don't separate cleanly — the
 geohash encoding fuses them into one categorical, and the haversine/manhattan
 fuses all four. Splitting further would be misleading."""
+
 from __future__ import annotations
 
 import numpy as np

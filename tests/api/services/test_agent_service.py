@@ -3,6 +3,7 @@
 We don't make real OpenAI calls — we just verify the OPENAI_API_KEY contract:
 when the key is missing, `turn` and `improve` raise OpenAIUnavailableError
 *before* returning a generator (so the router can map to 503)."""
+
 from __future__ import annotations
 
 import pytest
@@ -26,7 +27,9 @@ def test_turn_raises_when_openai_key_missing(monkeypatch) -> None:
     get_settings.cache_clear()
 
     svc = AgentService(trace=NullTraceProvider())
-    req = AgentTurnRequest(message="hello", budget=BudgetCap(max_iters=1, max_tool_calls=4, max_usd=0.5))
+    req = AgentTurnRequest(
+        message="hello", budget=BudgetCap(max_iters=1, max_tool_calls=4, max_usd=0.5)
+    )
     with pytest.raises(OpenAIUnavailableError):
         svc.turn(req)
 

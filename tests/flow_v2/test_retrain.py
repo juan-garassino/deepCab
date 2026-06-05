@@ -7,6 +7,7 @@ shape (task order, return type, propagation of arguments).
 Env preamble: blank out any inherited Prefect Cloud credentials before the
 prefect client gets a chance to read them. Tests run against an ephemeral
 local SQLite via PREFECT_HOME."""
+
 from __future__ import annotations
 
 import importlib.util

@@ -6,6 +6,7 @@ Used by:
   `request_id`).
 - The viewer (Phase 10) to render plan→execute trees.
 - The audit trail when the agent's budget cap fires."""
+
 from __future__ import annotations
 
 import json
@@ -23,7 +24,7 @@ class AgentEvent:
     ts: float = field(default_factory=time.time)
     loop_run_id: str = ""
     iter: int = 0
-    kind: str = "note"     # plan | tool_call | tool_result | llm | budget | error | done
+    kind: str = "note"  # plan | tool_call | tool_result | llm | budget | error | done
     name: str = ""
     request_id: str | None = None
     payload: dict[str, Any] = field(default_factory=dict)

@@ -1,5 +1,6 @@
 """Single-row + batch predict. The agent's `predict` tool calls these; the
 FastAPI `/predict` router (Phase 6) calls these too."""
+
 from __future__ import annotations
 
 import numpy as np

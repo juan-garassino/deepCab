@@ -3,6 +3,7 @@
 Verifies the Protocol → concrete-impl conformance and the side-effect
 behavior of each strategy. No FastAPI involved — these are pure-Python
 tests."""
+
 from __future__ import annotations
 
 from deepCab.api.providers import (
@@ -17,7 +18,6 @@ from deepCab.api.providers import (
     WebhookSlackProvider,
 )
 from deepCab.api.state import STATE, ModelHandle
-
 
 # ---------------------------------------------------------------------------
 # Protocol conformance

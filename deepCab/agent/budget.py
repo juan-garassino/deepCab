@@ -8,6 +8,7 @@ double-counting.
 
 USD pricing is hardcoded for the small set of supported models — extend the
 dict when adding a new one. Stale prices fall back to 0 and log a warning."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -73,18 +74,13 @@ class Budget:
 
     def check_or_raise(self) -> None:
         if self.iters >= self.cap.max_iters:
-            raise BudgetExhausted(
-                f"max_iters={self.cap.max_iters} reached (iters={self.iters})"
-            )
+            raise BudgetExhausted(f"max_iters={self.cap.max_iters} reached (iters={self.iters})")
         if self.tool_calls >= self.cap.max_tool_calls:
             raise BudgetExhausted(
-                f"max_tool_calls={self.cap.max_tool_calls} reached"
-                f" (tool_calls={self.tool_calls})"
+                f"max_tool_calls={self.cap.max_tool_calls} reached (tool_calls={self.tool_calls})"
             )
         if self.usd >= self.cap.max_usd:
-            raise BudgetExhausted(
-                f"max_usd={self.cap.max_usd} reached (usd={self.usd:.4f})"
-            )
+            raise BudgetExhausted(f"max_usd={self.cap.max_usd} reached (usd={self.usd:.4f})")
 
 
 class BudgetExhausted(Exception):

@@ -4,6 +4,7 @@ The 409-on-missing-background contract is preserved exactly: services raise a
 domain-specific error that the router translates to HTTPException. We use a
 local exception class rather than HTTPException so this module stays
 FastAPI-free."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass

@@ -1,4 +1,5 @@
 """Liveness + readiness probes for Cloud Run / Kubernetes."""
+
 from __future__ import annotations
 
 from fastapi import APIRouter

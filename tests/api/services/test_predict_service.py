@@ -2,6 +2,7 @@
 
 The service is plain Python — we can instantiate it directly with a stub
 estimator, no FastAPI or TestClient involved."""
+
 from __future__ import annotations
 
 import asyncio

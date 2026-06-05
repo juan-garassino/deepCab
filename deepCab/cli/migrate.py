@@ -4,10 +4,10 @@ Calls the underlying `migrate()` function directly (not via argv-rewrite)
 so we get clean error propagation and avoid sys.argv mutation in tests.
 The `python -m deepCab.data.migrate` entrypoint is preserved.
 """
+
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Optional
 
 import typer
 
@@ -23,7 +23,7 @@ def migrate(
         "--split",
         help="Split: train / val.",
     ),
-    source: Optional[Path] = typer.Option(
+    source: Path | None = typer.Option(
         None,
         "--source",
         "--src",

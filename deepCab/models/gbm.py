@@ -8,6 +8,7 @@ CatBoost asymmetry: the model itself exports to ONNX but its categorical
 preprocessing (CTR / target encoding) does NOT. For the current pipeline that's
 fine — preprocessing happens upstream in features/pipeline.py — but document
 this clearly so a future "ship CatBoost end-to-end" attempt doesn't surprise."""
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -44,7 +45,7 @@ class XGBEstimator(AbstractEstimator):
         self.model_.save_model(str(path))
 
     @classmethod
-    def load(cls, path: Path) -> "XGBEstimator":
+    def load(cls, path: Path) -> XGBEstimator:
         from xgboost import XGBRegressor
 
         est = cls(**XGBConfig().model_dump())
@@ -77,7 +78,7 @@ class LGBMEstimator(AbstractEstimator):
         self.model_.booster_.save_model(str(path))
 
     @classmethod
-    def load(cls, path: Path) -> "LGBMEstimator":
+    def load(cls, path: Path) -> LGBMEstimator:
         import lightgbm as lgb
 
         est = cls(**LGBMConfig().model_dump())
@@ -111,7 +112,7 @@ class CatBoostEstimator(AbstractEstimator):
         self.model_.save_model(str(path))
 
     @classmethod
-    def load(cls, path: Path) -> "CatBoostEstimator":
+    def load(cls, path: Path) -> CatBoostEstimator:
         from catboost import CatBoostRegressor
 
         est = cls(**CatBoostConfig().model_dump())

@@ -3,6 +3,7 @@
 We don't actually train here — that's covered by tests/training/. We just
 verify the task-table contract: start mints a 12-char id and registers a
 task; status returns the record; unknown id raises."""
+
 from __future__ import annotations
 
 import asyncio

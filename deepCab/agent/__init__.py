@@ -5,6 +5,7 @@ Entry points:
     deepCab.agent.cli              — REPL
     deepCab.api.routers.agent      — POST /agent and POST /agent/improve (SSE)
 """
+
 from deepCab.agent.budget import Budget, BudgetExhausted  # noqa: F401
 from deepCab.agent.executor import run_one_turn  # noqa: F401
 from deepCab.agent.improve import run_improve  # noqa: F401

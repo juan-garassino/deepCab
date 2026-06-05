@@ -7,6 +7,7 @@ Sklearn fit_transform is stateless here — all transformers either are stateles
 themselves or have explicit `categories=` so no vocab learning happens — but
 calling `fit_transform` per call is the safe contract. Phase 6+ will swap this
 for a fully Polars assembly that caches a fitted state on disk."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -25,10 +26,26 @@ from deepCab.features.transformers import (
 # legacy notebook analysis. Hard-coded for now — Phase 6 can re-derive
 # per-dataset if needed.
 GEOHASH_DISTRICTS = [
-    "dr5ru", "dr5rs", "dr5rv", "dr72h", "dr72j",
-    "dr5re", "dr5rk", "dr5rz", "dr5ry", "dr5rt",
-    "dr5rg", "dr5x1", "dr5x0", "dr72m", "dr5rm",
-    "dr5rx", "dr5x2", "dr5rw", "dr5rh", "dr5x8",
+    "dr5ru",
+    "dr5rs",
+    "dr5rv",
+    "dr72h",
+    "dr72j",
+    "dr5re",
+    "dr5rk",
+    "dr5rz",
+    "dr5ry",
+    "dr5rt",
+    "dr5rg",
+    "dr5x1",
+    "dr5x0",
+    "dr72m",
+    "dr5rm",
+    "dr5rx",
+    "dr5x2",
+    "dr5rw",
+    "dr5rh",
+    "dr5x8",
 ]
 
 YEAR_MIN, YEAR_MAX = 2009, 2019
@@ -66,9 +83,7 @@ def _make_preprocessor() -> ColumnTransformer:
                 [2, 3],
             ),
             (
-                FunctionTransformer(
-                    lambda y: (y - YEAR_MIN) / (YEAR_MAX - YEAR_MIN)
-                ),
+                FunctionTransformer(lambda y: (y - YEAR_MIN) / (YEAR_MAX - YEAR_MIN)),
                 [4],
             ),
             remainder="passthrough",

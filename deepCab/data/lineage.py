@@ -1,6 +1,7 @@
 """Content-hash lineage. Every training run emits one LineageEdge that ties
 (input parquet bytes, preprocessor config, split definition) -> MLflow run_id.
 Used by the agent's `compare_runs` tool and the Phase 10 lineage SQLite store."""
+
 from __future__ import annotations
 
 import hashlib

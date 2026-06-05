@@ -5,15 +5,14 @@ the same `backend=tf_mlp data=1k seed=7` syntax works under the unified CLI
 as under the legacy Hydra entry (`python -m deepCab.training.train ...`).
 The Hydra entry is preserved — this is additive surface.
 """
-from __future__ import annotations
 
-from typing import Optional
+from __future__ import annotations
 
 import typer
 
 
 def train(
-    overrides: Optional[list[str]] = typer.Argument(
+    overrides: list[str] | None = typer.Argument(
         None,
         help="Hydra-style overrides, e.g. backend=tf_mlp data=1k seed=7",
         show_default=False,

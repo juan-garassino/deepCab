@@ -9,6 +9,7 @@ image runs every model.
 Multi-model swap: `RuntimeRegistry` keys sessions by (backend_kind, version)
 so the @champion alias flip in MLflow (Phase -1) takes effect by hot-swapping
 the active session — no process restart needed."""
+
 from __future__ import annotations
 
 import threading
@@ -20,14 +21,16 @@ import numpy as np
 
 @dataclass
 class ONNXRuntime:
-    session: "object"  # onnxruntime.InferenceSession (avoid eager import)
+    session: object  # onnxruntime.InferenceSession (avoid eager import)
     input_name: str
     output_name: str
     backend_kind: str
     onnx_path: Path
 
     @classmethod
-    def from_path(cls, path: Path, backend_kind: str, providers: list[str] | None = None) -> "ONNXRuntime":
+    def from_path(
+        cls, path: Path, backend_kind: str, providers: list[str] | None = None
+    ) -> ONNXRuntime:
         import onnxruntime as ort
 
         sess = ort.InferenceSession(

@@ -8,6 +8,7 @@ Covers every Phase 6 surface:
 - train (X-API-Key gate; task lifecycle; status 404 on unknown id)
 - agent (501 stub)
 """
+
 from __future__ import annotations
 
 import importlib.util

@@ -7,6 +7,7 @@ benefit applies only to `{tf_mlp, torch_mlp, ft_transformer}`.
 The CalibrationDataReader feeds a representative sample of preprocessed inputs
 (typically rows from the time-series holdout fold) into the quantizer so
 activation ranges are observed empirically rather than assumed."""
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -55,7 +56,7 @@ def quantize(
             if self.cursor >= len(self.X):
                 return None
             end = min(self.cursor + self.batch, len(self.X))
-            sample = {input_name: self.X[self.cursor:end]}
+            sample = {input_name: self.X[self.cursor : end]}
             self.cursor = end
             return sample
 

@@ -19,6 +19,7 @@ Runs in three modes:
   2. Server-attached deployment:  `prefect deploy ...`       — visible in UI, cron-scheduled
   3. Compose-managed:             `make flow_run`            — talks to prefect-server in docker-compose
 """
+
 from __future__ import annotations
 
 import uuid
@@ -111,7 +112,9 @@ def retrain_flow(cfg: TrainConfig | None = None) -> RetrainResult:
     slack.notify_flow_event(flow="retrain", state="running", run_id=run_id)
     try:
         sizes = _preprocess(cfg)
-        log.info("flow.start", backend=cfg.backend.kind, **(sizes if isinstance(sizes, dict) else {}))
+        log.info(
+            "flow.start", backend=cfg.backend.kind, **(sizes if isinstance(sizes, dict) else {})
+        )
         trained = _train(cfg)
         # eval task is *informational*: training/train.run already computed val_mae
         # internally. The flow re-runs the eval to assert the persisted model + state

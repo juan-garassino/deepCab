@@ -1,5 +1,6 @@
 """Backend interface contract: factory dispatch, sklearn get_params/set_params,
 unknown-kind errors. TF MLP smoke fit is gated behind tensorflow availability."""
+
 from __future__ import annotations
 
 import importlib.util

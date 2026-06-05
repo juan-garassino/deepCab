@@ -5,6 +5,7 @@ retrain progress in the same Slack channel as MLflow alias changes.
 
 We patch the per-step helpers + slack.notify_flow_event so the test runs
 without a dataset or MLflow."""
+
 from __future__ import annotations
 
 from unittest.mock import MagicMock, patch
@@ -13,12 +14,11 @@ from unittest.mock import MagicMock, patch
 def test_retrain_flow_emits_slack_on_success() -> None:
     from deepCab.flow_v2 import retrain
 
-    with patch("deepCab.obs.slack.notify_flow_event") as mock_notify, patch.object(
-        retrain, "_preprocess", return_value=MagicMock()
-    ), patch.object(
-        retrain, "_train", return_value=MagicMock(run_id="r-9")
-    ), patch.object(
-        retrain, "_evaluate", return_value={"val_mae": 3.4}
+    with (
+        patch("deepCab.obs.slack.notify_flow_event") as mock_notify,
+        patch.object(retrain, "_preprocess", return_value=MagicMock()),
+        patch.object(retrain, "_train", return_value=MagicMock(run_id="r-9")),
+        patch.object(retrain, "_evaluate", return_value={"val_mae": 3.4}),
     ):
         result = retrain.retrain_flow.fn()
     assert result is not None
@@ -30,8 +30,9 @@ def test_retrain_flow_emits_slack_on_success() -> None:
 def test_retrain_flow_emits_slack_on_failure() -> None:
     from deepCab.flow_v2 import retrain
 
-    with patch("deepCab.obs.slack.notify_flow_event") as mock_notify, patch.object(
-        retrain, "_preprocess", side_effect=RuntimeError("boom")
+    with (
+        patch("deepCab.obs.slack.notify_flow_event") as mock_notify,
+        patch.object(retrain, "_preprocess", side_effect=RuntimeError("boom")),
     ):
         try:
             retrain.retrain_flow.fn()

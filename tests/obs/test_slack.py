@@ -5,6 +5,7 @@ short-circuits when no webhook is configured and swallows network errors so a
 flaky Slack never breaks training/inference. Two named wrappers — for the two
 in-process call sites (registry alias change + flow lifecycle) — fix the tag
 on each message so downstream filters/routing in Slack work."""
+
 from __future__ import annotations
 
 from unittest.mock import MagicMock, patch

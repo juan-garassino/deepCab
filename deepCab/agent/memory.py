@@ -5,6 +5,7 @@
 
 No-op cleanly when MLflow tracking_uri is unset — returns empty lists / stub
 proposals — so the agent still works on a fresh laptop without breakage."""
+
 from __future__ import annotations
 
 from typing import Any

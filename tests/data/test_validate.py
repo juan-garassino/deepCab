@@ -1,4 +1,5 @@
 """Pandera-Polars schemas reject out-of-range rows."""
+
 from __future__ import annotations
 
 import polars as pl

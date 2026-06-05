@@ -1,5 +1,6 @@
 """Plateau detector: monotonic-trend check (P11 fix). The previous spread-only
 check (`max - min < eps`) was fooled by oscillation."""
+
 from __future__ import annotations
 
 
@@ -30,7 +31,7 @@ def test_plateau_fires_on_oscillation() -> None:
 
 
 def test_plateau_does_not_fire_when_improving() -> None:
-    improving = [10.0, 9.0, 8.0, 7.0]   # MAE going down -> improvement > 0
+    improving = [10.0, 9.0, 8.0, 7.0]  # MAE going down -> improvement > 0
     fires, improvement = _detect_plateau(improving, eps=0.1)
     assert not fires
     assert improvement > 0

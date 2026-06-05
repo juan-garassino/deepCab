@@ -1,6 +1,7 @@
 """Train/val splits. TimeSeriesSplit on temporally-sorted indices — taxi fares
 have a clear non-stationary structure (fares trend up, seasonal patterns, NYC
 fleet composition shifts), so KFold leaks the future."""
+
 from __future__ import annotations
 
 from collections.abc import Iterator

@@ -11,6 +11,7 @@ ONNX runtime, especially for tree models where per-call overhead dominates.
 
 Lifecycle: `await batcher.start()` from FastAPI lifespan, `await batcher.stop()`
 on shutdown. The worker drains in-flight items on stop."""
+
 from __future__ import annotations
 
 import asyncio
@@ -53,7 +54,9 @@ class Batcher:
         self._closed = True
         if self._task is not None:
             # Wake the worker so it sees `_closed`
-            await self._queue.put(_Item(fut=asyncio.get_running_loop().create_future(), row=np.zeros(0)))
+            await self._queue.put(
+                _Item(fut=asyncio.get_running_loop().create_future(), row=np.zeros(0))
+            )
             await self._task
 
     async def submit(self, row: np.ndarray) -> float:
@@ -96,9 +99,7 @@ class Batcher:
             if remaining <= 0:
                 break
             try:
-                items.append(
-                    await asyncio.wait_for(self._queue.get(), timeout=remaining)
-                )
+                items.append(await asyncio.wait_for(self._queue.get(), timeout=remaining))
             except asyncio.TimeoutError:
                 break
         return items

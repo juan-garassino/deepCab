@@ -1,5 +1,6 @@
 """Quantize: tree backends return the source path unchanged (no-op + log);
 deep backends produce an INT8 ONNX whose predictions stay within tolerance."""
+
 from __future__ import annotations
 
 import importlib.util

@@ -8,6 +8,7 @@ Usage:
     python -m deepCab.data.migrate --size 10k --split train
     python -m deepCab.data.migrate --size 1k --src ~/somewhere/else/data
 """
+
 from __future__ import annotations
 
 import argparse

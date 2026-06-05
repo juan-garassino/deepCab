@@ -10,6 +10,7 @@ pipelines and drop the pandas/numpy round-trip.
 
 Gotcha (caught by features/golden.py): polars `dt.weekday()` is 1=Monday, pandas
 `dt.dayofweek` is 0=Monday. We subtract 1 to preserve legacy semantics."""
+
 from __future__ import annotations
 
 import math
@@ -42,9 +43,7 @@ def transform_time_features(X: pd.DataFrame) -> np.ndarray:
     elif dtype.time_zone is None:
         df = df.with_columns(pl.col("pickup_datetime").dt.replace_time_zone("UTC"))
 
-    df = df.with_columns(
-        pl.col("pickup_datetime").dt.convert_time_zone(NYC_TZ).alias("local")
-    )
+    df = df.with_columns(pl.col("pickup_datetime").dt.convert_time_zone(NYC_TZ).alias("local"))
     df = df.with_columns(
         pl.col("local").dt.hour().alias("h"),
         (pl.col("local").dt.weekday() - 1).alias("dow"),  # polars 1=Mon -> 0=Mon
@@ -93,9 +92,7 @@ def transform_lonlat_features(X: pd.DataFrame) -> pd.DataFrame:
         .mul(2 * EARTH_RADIUS_KM)
         .alias("haversine_km"),
         # manhattan
-        (pl.col("dlat").abs() + pl.col("dlon").abs())
-        .mul(EARTH_RADIUS_KM)
-        .alias("manhattan_km"),
+        (pl.col("dlat").abs() + pl.col("dlon").abs()).mul(EARTH_RADIUS_KM).alias("manhattan_km"),
     )
     return df.select("haversine_km", "manhattan_km").to_pandas()
 
@@ -111,9 +108,7 @@ def compute_geohash(X: pd.DataFrame, precision: int = 5) -> pd.DataFrame:
         return gh.encode(row["lat"], row["lon"], precision=precision)
 
     df = df.with_columns(
-        pl.struct(
-            [pl.col("pickup_latitude").alias("lat"), pl.col("pickup_longitude").alias("lon")]
-        )
+        pl.struct([pl.col("pickup_latitude").alias("lat"), pl.col("pickup_longitude").alias("lon")])
         .map_elements(_enc, return_dtype=pl.Utf8)
         .alias("geohash_pickup"),
         pl.struct(

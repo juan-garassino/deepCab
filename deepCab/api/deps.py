@@ -15,6 +15,7 @@ Public surface for routers (unchanged names so existing imports keep working):
   - get_prediction_service / get_explanation_service / get_training_service
     / get_agent_service       — per-router service factories.
 """
+
 from __future__ import annotations
 
 from typing import Annotated
@@ -28,7 +29,6 @@ from deepCab.api.services.predict import PredictionService
 from deepCab.api.services.train import TrainingService
 from deepCab.api.state import STATE, ModelHandle
 from deepCab.schemas.settings import Settings, get_settings
-
 
 # ---------------------------------------------------------------------------
 # Settings + model handle (unchanged contracts)

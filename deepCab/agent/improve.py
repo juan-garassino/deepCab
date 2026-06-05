@@ -7,6 +7,7 @@ Resumable: every action is logged to the AgentTrace by request_id. Re-running
 with the same `loop_run_id` replays completed actions from disk rather than
 re-running them. Budget is restored from the same log so dollars don't get
 double-counted across restarts."""
+
 from __future__ import annotations
 
 import hashlib
@@ -30,13 +31,13 @@ def run_improve(
     cfg: ImproveConfig,
 ) -> Iterator[dict]:
     """Drive the full loop, streaming SSE-shaped events to the caller. Yields:
-        {"event": "iter_start", "iter": i}
-        {"event": "plan", "iter": i, "n_steps": k}
-        ... executor events ...
-        {"event": "iter_end", "iter": i, "metric": x}
-        {"event": "plateau", "metric_window": [...]}
-        {"event": "budget_exhausted", "reason": "..."}
-        {"event": "circuit_breaker", "tool": "...", "n_repeats": k}
+    {"event": "iter_start", "iter": i}
+    {"event": "plan", "iter": i, "n_steps": k}
+    ... executor events ...
+    {"event": "iter_end", "iter": i, "metric": x}
+    {"event": "plateau", "metric_window": [...]}
+    {"event": "budget_exhausted", "reason": "..."}
+    {"event": "circuit_breaker", "tool": "...", "n_repeats": k}
     """
     trace = AgentTrace(loop_run_id=cfg.loop_run_id)
     budget = Budget(cap=cfg.budget)
@@ -61,7 +62,9 @@ def run_improve(
         plan = make_plan(client, model, cfg.goal)
         trace.append(
             AgentEvent(
-                iter=i, kind="plan", name="planner",
+                iter=i,
+                kind="plan",
+                name="planner",
                 payload={"steps": [s.model_dump() for s in plan.steps]},
             )
         )
@@ -72,7 +75,7 @@ def run_improve(
         user_msg = (
             f"GOAL: {cfg.goal}\n\nPLAN:\n"
             + "\n".join(f"- {s.name}({json.dumps(s.args, sort_keys=True)})" for s in plan.steps)
-            + "\n\nExecute the plan tool-by-tool. If a tool returns {\"error\":...}, "
+            + '\n\nExecute the plan tool-by-tool. If a tool returns {"error":...}, '
             "do NOT retry the same args."
         )
 
@@ -89,13 +92,19 @@ def run_improve(
             yield ev
 
             # Circuit breaker: repeated identical errors.
-            if ev["event"] == "tool_result" and isinstance(ev["result"], dict) and "error" in ev["result"]:
+            if (
+                ev["event"] == "tool_result"
+                and isinstance(ev["result"], dict)
+                and "error" in ev["result"]
+            ):
                 err_key = _err_key(ev["name"], ev["result"].get("args"), ev["result"]["error"])
                 error_counts[err_key] += 1
                 if error_counts[err_key] >= cfg.circuit_breaker_n:
                     trace.append(
                         AgentEvent(
-                            iter=i, kind="error", name="circuit_breaker",
+                            iter=i,
+                            kind="error",
+                            name="circuit_breaker",
                             payload={"tool": ev["name"], "n_repeats": error_counts[err_key]},
                         )
                     )
@@ -126,13 +135,18 @@ def run_improve(
             metric_window.append(iter_metric)
             trace.append(
                 AgentEvent(
-                    iter=i, kind="note", name="iter_metric",
-                    payload={"metric": iter_metric, "window": list(metric_window[-cfg.plateau_window:])},
+                    iter=i,
+                    kind="note",
+                    name="iter_metric",
+                    payload={
+                        "metric": iter_metric,
+                        "window": list(metric_window[-cfg.plateau_window :]),
+                    },
                 )
             )
             yield {"event": "iter_end", "iter": i, "metric": iter_metric}
             if len(metric_window) >= cfg.plateau_window:
-                window = metric_window[-cfg.plateau_window:]
+                window = metric_window[-cfg.plateau_window :]
                 # Monotonic-trend check: split the window in half and compare
                 # the averages. If the recent half didn't improve on the older
                 # half (within eps), call it a plateau. Pure spread (max-min)
@@ -148,7 +162,9 @@ def run_improve(
                 if improvement < cfg.plateau_eps:
                     trace.append(
                         AgentEvent(
-                            iter=i, kind="done", name="plateau",
+                            iter=i,
+                            kind="done",
+                            name="plateau",
                             payload={
                                 "window": window,
                                 "old_mean": old_mean,

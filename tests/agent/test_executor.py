@@ -1,14 +1,13 @@
 """Executor + improve loop with a stubbed OpenAI client. The stub doesn't talk
 to the network — it yields deterministic tool-call sequences encoded in test
 data so we can assert routing, idempotency, and circuit-breaker."""
+
 from __future__ import annotations
 
 import json
 import os
 from dataclasses import dataclass, field
 from typing import Any
-
-import pytest
 
 # Pin the agent trace dir to a fresh tmp before importing the agent so its
 # AgentTrace files don't pollute the repo.
@@ -19,7 +18,6 @@ from deepCab.agent.executor import run_one_turn  # noqa: E402
 from deepCab.agent.improve import run_improve  # noqa: E402
 from deepCab.agent.trace import AgentTrace  # noqa: E402
 from deepCab.schemas.agent import BudgetCap, ImproveConfig  # noqa: E402
-
 
 # ---- Stub OpenAI client --------------------------------------------------
 
@@ -146,9 +144,11 @@ def test_improve_loop_circuit_breaker_trips() -> None:
     bad_tc = _tc("preprocess", {"data": "not-a-dataref"})  # validation error
     script = []
     for _ in range(5):
-        script.append(_StubMessage(tool_calls=[bad_tc]))   # planner output (we'll treat content fallback in planner)
-        script.append(_StubMessage(tool_calls=[bad_tc]))   # executor turn first call
-        script.append(_StubMessage(content="give up"))      # executor turn finalizer
+        script.append(
+            _StubMessage(tool_calls=[bad_tc])
+        )  # planner output (we'll treat content fallback in planner)
+        script.append(_StubMessage(tool_calls=[bad_tc]))  # executor turn first call
+        script.append(_StubMessage(content="give up"))  # executor turn finalizer
     client = _StubClient(script)
 
     cfg = ImproveConfig(

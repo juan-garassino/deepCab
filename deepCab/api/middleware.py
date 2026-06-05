@@ -4,6 +4,7 @@
 
 OTel auto-instrumentation and the unhandled-exception JSON handler are wired
 in `app.create_app()`."""
+
 from __future__ import annotations
 
 import time

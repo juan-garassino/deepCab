@@ -13,10 +13,12 @@ Pattern matches the user's instruction in CLAUDE.md: keep things low-level and
 explicit. Each Protocol is `runtime_checkable` so `isinstance(x, Foo)` works in
 tests; the concrete classes hold zero business logic — they're shims around
 the existing helpers in `obs/slack.py`, `api/state.py`, and `agent/trace.py`."""
+
 from __future__ import annotations
 
 import logging
-from typing import Any, Mapping, Protocol, runtime_checkable
+from collections.abc import Mapping
+from typing import Any, Protocol, runtime_checkable
 
 from deepCab.api.state import STATE, ModelHandle
 
@@ -40,8 +42,7 @@ class SlackProvider(Protocol):
         *,
         tag: str,
         extra: Mapping[str, Any] | None = None,
-    ) -> None:
-        ...
+    ) -> None: ...
 
 
 class WebhookSlackProvider:
@@ -107,8 +108,7 @@ class ModelHandleProvider(Protocol):
     Services depend on this rather than directly poking `STATE.model` so tests
     can inject a `StubModelHandleProvider` without resetting global state."""
 
-    def get(self) -> ModelHandle | None:
-        ...
+    def get(self) -> ModelHandle | None: ...
 
 
 class StateModelHandleProvider:
@@ -141,8 +141,7 @@ class TraceProvider(Protocol):
     """Persists agent trace events. Implementations differ in storage backend;
     the contract is one append-only stream identified by `loop_run_id`."""
 
-    def new_trace(self, loop_run_id: str | None = None) -> Any:
-        ...
+    def new_trace(self, loop_run_id: str | None = None) -> Any: ...
 
 
 class JsonlTraceProvider:

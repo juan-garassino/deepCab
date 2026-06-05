@@ -14,6 +14,7 @@ The on-disk layout:
         aci.json           — residuals + alpha/alpha_t/gamma (absent when no ACI)
     <REGISTRY_LOCAL_PATH>/runs/LATEST  — text file with the latest run_id
 """
+
 from __future__ import annotations
 
 import base64
@@ -50,7 +51,7 @@ def latest_pointer() -> Path:
 # ---- persistent state (FR-1) -------------------------------------------
 
 
-def save_full_state(handle: "ModelHandle", run_id: str | None = None) -> Path:
+def save_full_state(handle: ModelHandle, run_id: str | None = None) -> Path:
     """Persist a fitted ModelHandle to <runs_root>/<run_id>/. Updates the
     LATEST pointer atomically (write-then-rename). Returns the run directory."""
     rid = run_id or f"local-{uuid.uuid4().hex[:8]}"
@@ -103,7 +104,7 @@ def save_full_state(handle: "ModelHandle", run_id: str | None = None) -> Path:
     return run_dir
 
 
-def load_state_from_disk(run_id: str) -> "ModelHandle":
+def load_state_from_disk(run_id: str) -> ModelHandle:
     """Inverse of save_full_state. Rebuilds the full ModelHandle including
     estimator + background + ACI."""
     from deepCab.api.state import ModelHandle  # local import to avoid cycle
@@ -129,16 +130,14 @@ def load_state_from_disk(run_id: str) -> "ModelHandle":
     aci_path = run_dir / "aci.json"
     if aci_path.exists():
         blob = json.loads(aci_path.read_text())
-        residuals = np.frombuffer(
-            base64.b64decode(blob["residuals_b64"]), dtype="float32"
-        ).reshape(blob["residuals_shape"])
+        residuals = np.frombuffer(base64.b64decode(blob["residuals_b64"]), dtype="float32").reshape(
+            blob["residuals_shape"]
+        )
         aci = ACIRegressor(base=est, alpha=blob["alpha"], gamma=blob["gamma"])
         aci._residuals = residuals
         aci._alpha_t = blob["alpha_t"]
 
-    handle = ModelHandle(
-        estimator=est, backend_kind=backend_kind, background=background, aci=aci
-    )
+    handle = ModelHandle(estimator=est, backend_kind=backend_kind, background=background, aci=aci)
     log.info(
         "registry.full_state_loaded",
         run_id=run_id,

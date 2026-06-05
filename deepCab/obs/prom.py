@@ -1,5 +1,6 @@
 """Prometheus metrics registry. Histograms for API latency + prediction values,
 counters for agent tool calls + training epochs. Exposed at /metrics on the FastAPI app."""
+
 from __future__ import annotations
 
 from prometheus_client import CollectorRegistry, Counter, Histogram

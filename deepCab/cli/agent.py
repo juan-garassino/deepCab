@@ -3,9 +3,8 @@
 Thin shim over `deepCab.agent.cli.repl`. The legacy
 `python -m deepCab.agent.cli` entry is preserved.
 """
-from __future__ import annotations
 
-import typer
+from __future__ import annotations
 
 
 def agent() -> None:

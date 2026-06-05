@@ -4,6 +4,7 @@ Must NOT crash when MLflow is unreachable; recent-runs lookup is wrapped
 in try/except so a fresh laptop with no tracking URI still gets a useful
 status output.
 """
+
 from __future__ import annotations
 
 import typer
@@ -32,8 +33,7 @@ def status() -> None:
         typer.echo(f"recent runs ({len(recent)}):")
         for r in recent:
             typer.echo(
-                f"  - {r.run_id} backend={r.backend_kind} "
-                f"{r.metric_name}={r.metric_value:.4f}"
+                f"  - {r.run_id} backend={r.backend_kind} {r.metric_name}={r.metric_value:.4f}"
             )
     except Exception as e:  # noqa: BLE001
         typer.echo(f"(recent runs unavailable: {type(e).__name__}: {e})")

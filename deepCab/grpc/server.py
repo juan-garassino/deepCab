@@ -3,6 +3,7 @@
 Service impl reuses the same `training.predict.predict_one` that powers REST
 and the agent's `predict` tool — single source of inference truth across
 three transports."""
+
 from __future__ import annotations
 
 import asyncio
@@ -23,9 +24,7 @@ def _build_servicer():
     try:
         from deepCab.grpc import deepcab_pb2, deepcab_pb2_grpc
     except ImportError as e:
-        raise RuntimeError(
-            "gRPC stubs not generated yet. Run `make grpc_gen` first."
-        ) from e
+        raise RuntimeError("gRPC stubs not generated yet. Run `make grpc_gen` first.") from e
 
     class PredictServicer(deepcab_pb2_grpc.PredictServiceServicer):
         def Predict(self, request, context):

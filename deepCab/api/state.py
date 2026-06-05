@@ -1,6 +1,7 @@
 """In-process state stores. Holds the active model, the background sample for
 SHAP, and the train-task table. Multi-worker deployments swap these for Redis
 (deferred to post-MVP); for single-worker dev they're enough."""
+
 from __future__ import annotations
 
 import threading
@@ -13,14 +14,14 @@ import numpy as np
 @dataclass
 class TaskRecord:
     task_id: str
-    status: str = "pending"   # pending | running | succeeded | failed
+    status: str = "pending"  # pending | running | succeeded | failed
     run_id: str | None = None
     error: str | None = None
 
 
 @dataclass
 class ModelHandle:
-    estimator: Any   # AbstractEstimator-like; kept Any to avoid eager import
+    estimator: Any  # AbstractEstimator-like; kept Any to avoid eager import
     backend_kind: str
     background: np.ndarray | None = None
     aci: Any = None  # ACIRegressor when calibration succeeded; None otherwise

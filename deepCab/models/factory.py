@@ -3,6 +3,7 @@
 Spec-as-factory pattern from 017 (sklearn_agent/pipeline.py:24-29): the config IS
 the spec. CV folds, HPO trials, and resumable agent runs all rebuild estimators
 through this function rather than relying on sklearn.clone()."""
+
 from __future__ import annotations
 
 from pydantic import BaseModel

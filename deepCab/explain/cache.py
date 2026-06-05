@@ -9,6 +9,7 @@ Two backends, transparent to callers:
 - Redis (opt-in via `OBS_REDIS_URL`). Cross-worker; survives restarts. Falls
   back silently to in-process when the URL is set but Redis is unreachable —
   the cache is a perf optimization, not a correctness boundary."""
+
 from __future__ import annotations
 
 import hashlib
@@ -40,9 +41,7 @@ _REDIS_KEY_PREFIX = "deepcab:shap:summary:"
 def fingerprint(estimator: AbstractEstimator, background: np.ndarray) -> str:
     cfg_digest = estimator.cfg.model_dump_json()  # type: ignore[attr-defined]
     bg_hash = hashlib.blake2b(background.tobytes(), digest_size=8).hexdigest()
-    return hashlib.blake2b(
-        f"{cfg_digest}|{bg_hash}".encode(), digest_size=16
-    ).hexdigest()
+    return hashlib.blake2b(f"{cfg_digest}|{bg_hash}".encode(), digest_size=16).hexdigest()
 
 
 def compute_global_summary(

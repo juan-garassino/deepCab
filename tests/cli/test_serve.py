@@ -1,6 +1,7 @@
 """`serve --dry-run` must print the resolved uvicorn cmd and exit 0
 without exec'ing anything. Sanity-checks flag plumbing (--host / --port /
 --reload / --workers) so a typo doesn't silently get past CI."""
+
 from __future__ import annotations
 
 from typer.testing import CliRunner

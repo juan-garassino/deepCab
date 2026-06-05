@@ -5,6 +5,7 @@ shell hanging around the running uvicorn (no zombie processes, clean Ctrl-C
 in containers). Use `--dry-run` in tests / scripts to print the resolved
 command without launching.
 """
+
 from __future__ import annotations
 
 import os

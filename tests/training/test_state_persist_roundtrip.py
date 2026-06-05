@@ -5,6 +5,7 @@ helper reads it back so `/predict` works after API restart without a prior
 Closes the last audit gap: pre-FR, lifespan looked up `@champion`, logged the
 version, and walked away. Now the local LATEST pointer (or MLflow alias when
 configured) actually rehydrates STATE.model."""
+
 from __future__ import annotations
 
 import importlib.util
@@ -58,7 +59,7 @@ def test_train_writes_latest_and_lifespan_rehydrates(isolated_registry, monkeypa
         data=DataRef(size="1k", validation_size="1k"),
         seed=1,
     )
-    result = train_mod.run(cfg)
+    train_mod.run(cfg)
 
     # train.run() must populate STATE in-process (P11 contract).
     assert STATE.model is not None
@@ -92,7 +93,6 @@ def test_train_writes_latest_and_lifespan_rehydrates(isolated_registry, monkeypa
         assert STATE.model.aci is not None
         # Bracket should produce the same interval width
         point = np.array([0.0])
-        lo_before = -result.aci._residuals.max()  # crude sanity
         lo_after, hi_after = STATE.model.aci.bracket(point)
         assert lo_after[0] <= 0.0 <= hi_after[0]
 

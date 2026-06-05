@@ -1,5 +1,6 @@
 """Budget: caps fire atomically; charge_llm_usage books dollars per the price
 table; restore() rebuilds counters from a fresh trace."""
+
 from __future__ import annotations
 
 import pytest

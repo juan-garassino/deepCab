@@ -1,5 +1,6 @@
 """Batcher: concurrent submits collapse to a single batched predict call;
 each future gets its row's result; closed batcher refuses new submits."""
+
 from __future__ import annotations
 
 import asyncio

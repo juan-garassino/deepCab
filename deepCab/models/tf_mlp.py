@@ -6,6 +6,7 @@ val_loss with restore_best_weights.
 
 Phase 3 will add ONNX export here via tf2onnx (opset 17). Phase 7 wires the
 exported model into the ONNX runtime for serving."""
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -87,7 +88,7 @@ class TFMLPEstimator(AbstractEstimator):
         self.model_.save(str(path))
 
     @classmethod
-    def load(cls, path: Path) -> "TFMLPEstimator":
+    def load(cls, path: Path) -> TFMLPEstimator:
         from tensorflow.keras.models import load_model
 
         # Reconstruct an estimator with defaults; weights come from disk.

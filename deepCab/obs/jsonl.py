@@ -1,6 +1,7 @@
 """From-scratch JSONL tracer with contextvar span correlation. Vendored from
 017-sklearn-low-level/sklearn_agent/obs.py. Used as the agent-loop trace store
 and as the OTel collector-down fallback. Reads config from ObsSettings."""
+
 from __future__ import annotations
 
 import contextvars
@@ -8,14 +9,15 @@ import json
 import time
 import traceback
 import uuid
+from collections.abc import Iterator
 from contextlib import contextmanager
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
-from typing import Any, Iterator
+from typing import Any
 
 from deepCab.schemas.settings import get_settings
 
-_current_span: contextvars.ContextVar["Span | None"] = contextvars.ContextVar(
+_current_span: contextvars.ContextVar[Span | None] = contextvars.ContextVar(
     "_current_span", default=None
 )
 
@@ -26,9 +28,9 @@ class Event:
     run_id: str
     span_id: str
     parent_id: str | None
-    kind: str               # "tool" | "llm" | "note" | "training" | "api"
+    kind: str  # "tool" | "llm" | "note" | "training" | "api"
     name: str
-    phase: str              # "start" | "end"
+    phase: str  # "start" | "end"
     args: dict[str, Any] | None = None
     result: dict[str, Any] | None = None
     latency_ms: float | None = None

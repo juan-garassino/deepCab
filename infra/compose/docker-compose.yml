@@ -108,6 +108,22 @@ services:
       - "traefik.http.routers.mlflow.tls=true"
       - "traefik.http.services.mlflow.loadbalancer.server.port=5000"
 
+  # Uptime Kuma — local twin of the cloud `deepcab-status` Cloud Run service
+  # (terraform/modules/cloud_run_status). Same container image. SQLite + assets
+  # land in the kuma_data volume; in cloud they land in a gcsfuse-mounted GCS
+  # bucket. UI at https://status.deepcab.localhost; first visit walks you
+  # through account creation, then add monitors for the other services.
+  status:
+    image: louislam/uptime-kuma:1
+    restart: unless-stopped
+    volumes:
+      - kuma_data:/app/data
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.status.rule=Host(`status.deepcab.localhost`)"
+      - "traefik.http.routers.status.tls=true"
+      - "traefik.http.services.status.loadbalancer.server.port=3001"
+
   redis:
     image: redis:7-alpine
     restart: unless-stopped
@@ -151,7 +167,7 @@ services:
       - slack_webhook_url
     environment:
       PREFECT_API_URL: http://prefect:4200/api
-      APP_ENV: dev
+      DEEPCAB_ENV: ${DEEPCAB_ENV:-local}
       MLFLOW_TRACKING_URI: http://mlflow:5000
       OBS_SLACK_WEBHOOK_URL: file:/run/secrets/slack_webhook_url
     command: python -m deepCab.flow_v2.schedules
@@ -173,7 +189,7 @@ services:
       - openai_api_key
       - slack_webhook_url
     environment:
-      APP_ENV: dev
+      DEEPCAB_ENV: ${DEEPCAB_ENV:-local}
       MLFLOW_TRACKING_URI: http://mlflow:5000
       OBS_OTLP_ENDPOINT: otel-collector:4317
       OBS_SERVICE_NAME: deepcab-api
@@ -195,3 +211,4 @@ volumes:
   minio_data:
   prefect_data:
   traefik_acme:
+  kuma_data:

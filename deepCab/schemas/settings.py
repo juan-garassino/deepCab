@@ -1,5 +1,6 @@
 """Single source of truth for runtime settings. Replaces every os.environ.get site
-in the legacy package atomically. Per-env loading via APP_ENV={dev,staging,prod}."""
+in the legacy package atomically. Per-env loading via DEEPCAB_ENV (or its legacy
+alias APP_ENV) = {local,dev,staging,prod}."""
 
 from __future__ import annotations
 
@@ -8,7 +9,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Annotated, Any
 
-from pydantic import Field
+from pydantic import AliasChoices, Field
 from pydantic.fields import FieldInfo
 from pydantic_settings import (
     BaseSettings,
@@ -20,7 +21,9 @@ from deepCab.schemas.enums import AppEnv, DataSource, ModelTarget
 
 
 def _env_file() -> str:
-    env = os.environ.get("APP_ENV", "dev")
+    # DEEPCAB_ENV is the documented public name; APP_ENV remains as a legacy
+    # alias for any caller still setting it. First non-empty wins.
+    env = os.environ.get("DEEPCAB_ENV") or os.environ.get("APP_ENV") or "dev"
     return f".env.{env}"
 
 
@@ -171,7 +174,13 @@ class Settings(BaseSettings):
 
     model_config = SettingsConfigDict(env_file=_env_file(), extra="ignore")
 
-    app_env: Annotated[AppEnv, Field(default=AppEnv.DEV, validation_alias="APP_ENV")]
+    app_env: Annotated[
+        AppEnv,
+        Field(
+            default=AppEnv.DEV,
+            validation_alias=AliasChoices("DEEPCAB_ENV", "APP_ENV"),
+        ),
+    ]
     data: DataSettings = Field(default_factory=DataSettings)
     registry: RegistrySettings = Field(default_factory=RegistrySettings)
     gcp: GCPSettings = Field(default_factory=GCPSettings)

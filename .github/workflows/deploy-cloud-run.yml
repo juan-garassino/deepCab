@@ -37,6 +37,18 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Telegram — deploy starting
+        continue-on-error: true
+        env:
+          TG_BOT: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TG_CHAT: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          [ -z "$TG_BOT" ] && exit 0
+          curl -s -X POST "https://api.telegram.org/bot$TG_BOT/sendMessage" \
+            -d chat_id="$TG_CHAT" \
+            -d parse_mode=Markdown \
+            -d text="🚀 *deepcab-api* deploy starting · ref=\`${{ github.ref_name }}\` · sha=\`${GITHUB_SHA:0:7}\`"
+
       - name: Slack — deploy starting
         continue-on-error: true
         uses: rtcamp/action-slack-notify@v2.3.3
@@ -83,6 +95,20 @@ jobs:
             --project=${{ vars.GCP_PROJECT }} \
             --quiet
 
+      - name: Telegram — deploy success
+        if: success()
+        continue-on-error: true
+        env:
+          TG_BOT: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TG_CHAT: ${{ secrets.TELEGRAM_CHAT_ID }}
+          IMG: ${{ steps.build.outputs.image }}
+        run: |
+          [ -z "$TG_BOT" ] && exit 0
+          curl -s -X POST "https://api.telegram.org/bot$TG_BOT/sendMessage" \
+            -d chat_id="$TG_CHAT" \
+            -d parse_mode=Markdown \
+            -d text="✅ *deepcab-api* deployed · \`$IMG\`"
+
       - name: Slack — deploy success
         if: success()
         continue-on-error: true
@@ -92,6 +118,19 @@ jobs:
           SLACK_COLOR: good
           SLACK_TITLE: "[ci] deploy → Cloud Run ✓"
           SLACK_MESSAGE: "${{ steps.build.outputs.image }}"
+
+      - name: Telegram — deploy failure
+        if: failure()
+        continue-on-error: true
+        env:
+          TG_BOT: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TG_CHAT: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          [ -z "$TG_BOT" ] && exit 0
+          curl -s -X POST "https://api.telegram.org/bot$TG_BOT/sendMessage" \
+            -d chat_id="$TG_CHAT" \
+            -d parse_mode=Markdown \
+            -d text="❌ *deepcab-api* deploy FAILED · ref=\`${{ github.ref_name }}\` · [run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})"
 
       - name: Slack — deploy failure
         if: failure()

@@ -36,9 +36,10 @@ from __future__ import annotations
 import os
 import subprocess
 import time
+from contextlib import contextmanager
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
-from typing import Any, Callable, Protocol
+from typing import Any, Callable, Iterator, Protocol
 
 from prefect import flow, task
 
@@ -58,6 +59,41 @@ log = get_logger(__name__)
 # Default cadence: weekly chunks. Anything finer triggers near-identical models
 # on tiny slices (~50k rows) and bounces the champion alias on noise.
 _DEFAULT_CHUNK_PERIOD = timedelta(days=7)
+
+
+@contextmanager
+def _env_overlay(
+    overrides: dict[str, str | None], *, clear_settings_cache: bool = False
+) -> Iterator[None]:
+    """Apply env-var overrides for the duration of the block, restore on exit.
+
+    A value of ``None`` in ``overrides`` deletes the variable for the block.
+    On exit every key is restored to its prior value (also unset if it was
+    unset before).
+
+    When ``clear_settings_cache`` is True the in-process settings cache is
+    invalidated on entry and exit so callers reading ``get_settings()``
+    inside the block see the overrides. Used by simulate to inject
+    ``DATA_SOURCE`` / ``DATA_BQ_WHERE`` / ``MLFLOW_RUN_NAME`` per chunk.
+    """
+    previous: dict[str, str | None] = {k: os.environ.get(k) for k in overrides}
+    for k, v in overrides.items():
+        if v is None:
+            os.environ.pop(k, None)
+        else:
+            os.environ[k] = v
+    if clear_settings_cache:
+        get_settings.cache_clear()
+    try:
+        yield
+    finally:
+        for k, prev in previous.items():
+            if prev is None:
+                os.environ.pop(k, None)
+            else:
+                os.environ[k] = prev
+        if clear_settings_cache:
+            get_settings.cache_clear()
 
 
 # --------------------------- result schemas -----------------------------------
@@ -119,15 +155,8 @@ class LocalTrainExecutor:
         # current implementation doesn't honour it explicitly. Set the env var
         # so any future `mlflow.start_run(run_name=...)` change picks it up;
         # tests for now just assert run_id propagation.
-        prev = os.environ.get("MLFLOW_RUN_NAME")
-        os.environ["MLFLOW_RUN_NAME"] = run_name
-        try:
+        with _env_overlay({"MLFLOW_RUN_NAME": run_name}):
             return run_train(cfg)
-        finally:
-            if prev is None:
-                os.environ.pop("MLFLOW_RUN_NAME", None)
-            else:
-                os.environ["MLFLOW_RUN_NAME"] = prev
 
 
 @dataclass
@@ -233,24 +262,11 @@ def train_chunk_task(
     chunk slice. VmTrainExecutor forwards both via --extra-env to the
     in-VM docker run (separate channel — doesn't depend on this env).
     """
-    prev_source = os.environ.get("DATA_SOURCE")
-    prev_where = os.environ.get("DATA_BQ_WHERE")
-    os.environ["DATA_SOURCE"] = DataSource.QUERY.value
-    os.environ["DATA_BQ_WHERE"] = where
-    try:
-        get_settings.cache_clear()
-        result = executor(cfg, run_name, where)
-    finally:
-        if prev_source is None:
-            os.environ.pop("DATA_SOURCE", None)
-        else:
-            os.environ["DATA_SOURCE"] = prev_source
-        if prev_where is None:
-            os.environ.pop("DATA_BQ_WHERE", None)
-        else:
-            os.environ["DATA_BQ_WHERE"] = prev_where
-        get_settings.cache_clear()
-    return result
+    with _env_overlay(
+        {"DATA_SOURCE": DataSource.QUERY.value, "DATA_BQ_WHERE": where},
+        clear_settings_cache=True,
+    ):
+        return executor(cfg, run_name, where)
 
 
 @task(name="evaluate_chunk")

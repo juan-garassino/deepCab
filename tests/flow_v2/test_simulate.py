@@ -33,6 +33,34 @@ def _avail(mod: str) -> bool:
 
 
 @pytest.mark.skipif(not _avail("prefect"), reason="prefect not installed")
+def test_env_overlay_restores_prior_values(monkeypatch) -> None:
+    """Sets, deletes, and restores env vars. Settings cache is cleared at the
+    boundary when clear_settings_cache=True."""
+    from deepCab.flow_v2.simulate import _env_overlay
+
+    monkeypatch.setenv("DATA_SOURCE", "local")
+    monkeypatch.delenv("DATA_BQ_WHERE", raising=False)
+
+    with _env_overlay({"DATA_SOURCE": "query", "DATA_BQ_WHERE": "ts > 0"}):
+        assert os.environ["DATA_SOURCE"] == "query"
+        assert os.environ["DATA_BQ_WHERE"] == "ts > 0"
+
+    assert os.environ["DATA_SOURCE"] == "local"  # prior value
+    assert "DATA_BQ_WHERE" not in os.environ  # was unset before
+
+
+@pytest.mark.skipif(not _avail("prefect"), reason="prefect not installed")
+def test_env_overlay_supports_deletion(monkeypatch) -> None:
+    """Override value of None unsets the var for the block, restores on exit."""
+    from deepCab.flow_v2.simulate import _env_overlay
+
+    monkeypatch.setenv("DATA_SOURCE", "local")
+    with _env_overlay({"DATA_SOURCE": None}):
+        assert "DATA_SOURCE" not in os.environ
+    assert os.environ["DATA_SOURCE"] == "local"
+
+
+@pytest.mark.skipif(not _avail("prefect"), reason="prefect not installed")
 def test_chunks_splits_half_open() -> None:
     from deepCab.flow_v2.simulate import _chunks
 

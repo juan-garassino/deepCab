@@ -43,7 +43,7 @@ from typing import Any, Callable, Protocol
 from prefect import flow, task
 
 from deepCab.data.bigquery import chunk_where_clause
-from deepCab.obs import slack, telegram
+from deepCab.obs import notify
 from deepCab.obs.log import get_logger
 from deepCab.registry.promotion import PromotionInputs, PromotionResult, PromotionService
 from deepCab.schemas.config import DataRef, TrainConfig
@@ -290,8 +290,7 @@ def notify_chunk_task(chunk: ChunkResult, total_chunks: int) -> None:
         f"mae={chunk.challenger_metric:.3f} · "
         f"promoted={chunk.promotion.promoted} ({chunk.promotion.reason})"
     )
-    slack.post(msg, tag="simulate", extra={"run": chunk.train_run_id or "?"})
-    telegram.post(msg, tag="simulate", extra={"run": chunk.train_run_id or "?"})
+    notify.post(msg, tag="simulate", extra={"run": chunk.train_run_id or "?"})
 
 
 # --------------------------- plain-Python seams -------------------------------
@@ -360,7 +359,7 @@ def _simulate_impl(
     backend_kind = BackendKind(cfg.backend.kind)
     result = SimulateResult(backend=backend_kind)
 
-    slack.notify_flow_event(
+    notify.notify_flow_event(
         flow="simulate",
         state="running",
         run_id=f"{backend_kind.value}-{len(chunks)}chunks",
@@ -391,7 +390,7 @@ def _simulate_impl(
         if notify_every_chunk or promotion.promoted:
             _notify(chunk_result, total=len(chunks))
 
-    slack.notify_flow_event(
+    notify.notify_flow_event(
         flow="simulate",
         state="success",
         run_id=f"{backend_kind.value}-{len(chunks)}chunks",

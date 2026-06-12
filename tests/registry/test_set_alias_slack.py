@@ -14,7 +14,7 @@ from deepCab.registry import dispatcher
 
 def test_set_alias_posts_slack() -> None:
     with (
-        patch("deepCab.obs.slack.notify_alias_change") as mock_notify,
+        patch("deepCab.obs.notify.notify_alias_change") as mock_notify,
         patch("deepCab.registry.dispatcher._set_alias_backend") as mock_backend,
     ):
         dispatcher.set_alias(model="deepcab", alias="champion", version="7")

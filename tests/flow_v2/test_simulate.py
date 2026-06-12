@@ -118,9 +118,7 @@ def test_simulate_flow_aggregates_chunks_and_propagates_promotions() -> None:
     with patch.object(
         sim, "_evaluate",
         side_effect=lambda cfg, tr, ref: EvalResult(mae=2.5 - tr.run_id[-1:].__hash__() % 10 * 0.0, rmse=3.0, n=100),
-    ), patch.object(sim.slack, "notify_flow_event"), patch.object(sim.slack, "post"), patch.object(
-        sim.telegram, "post"
-    ):
+    ), patch.object(sim.notify, "notify_flow_event"), patch.object(sim.notify, "post"):
         result = sim._simulate_impl(
             cfg=cfg,
             reference_data=ref,

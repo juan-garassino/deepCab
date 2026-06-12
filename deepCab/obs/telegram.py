@@ -1,10 +1,8 @@
-"""In-process Telegram notifier.
+"""In-process Telegram notifier backend.
 
-Mirrors :mod:`deepCab.obs.slack` exactly — same ``post(text, *, tag, extra)``
-signature plus the two named wrappers (``notify_alias_change``,
-``notify_flow_event``). Resolution of bot token + chat id flows through
-``deepCab.schemas.settings``, which already understands the
-``file:/run/secrets/<name>`` Docker secret pattern.
+Single entry point — `post(text, *, tag, extra)` — registered with
+:mod:`deepCab.obs.notify`. The named wrappers live in `obs/notify` so adding
+a third backend doesn't require editing every call site.
 
 When either ``telegram_bot_token`` or ``telegram_chat_id`` is unset, ``post``
 is a no-op. Network failures are logged and swallowed — Telegram flakes must
@@ -57,19 +55,3 @@ def post(text: str, *, tag: str, extra: Mapping[str, Any] | None = None) -> None
         log.warning("telegram webhook failed: %s", exc)
 
 
-def notify_alias_change(*, model: str, alias: str, version: str) -> None:
-    """Fire on MLflow alias updates."""
-    post(
-        f"alias `@{alias}` -> {model} v{version}",
-        tag="mlflow",
-        extra={"model": model, "alias": alias, "version": version},
-    )
-
-
-def notify_flow_event(*, flow: str, state: str, run_id: str) -> None:
-    """Fire on Prefect flow lifecycle transitions."""
-    post(
-        f"flow `{flow}` -> {state}",
-        tag="flow",
-        extra={"run_id": run_id},
-    )

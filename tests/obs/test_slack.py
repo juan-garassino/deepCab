@@ -1,10 +1,10 @@
-"""Unit tests for the in-process Slack helper (deepCab.obs.slack).
+"""Unit tests for the in-process Slack backend (deepCab.obs.slack).
 
-The helper is intentionally tiny: a single `post(text, *, tag, extra)` that
+The backend is intentionally tiny: a single `post(text, *, tag, extra)` that
 short-circuits when no webhook is configured and swallows network errors so a
-flaky Slack never breaks training/inference. Two named wrappers — for the two
-in-process call sites (registry alias change + flow lifecycle) — fix the tag
-on each message so downstream filters/routing in Slack work."""
+flaky Slack never breaks training/inference. Named wrappers
+(`notify_alias_change`, `notify_flow_event`) live in `deepCab.obs.notify`
+and are tested separately in `tests/obs/test_notify.py`."""
 
 from __future__ import annotations
 
@@ -39,20 +39,3 @@ def test_post_swallows_network_errors(monkeypatch) -> None:
     monkeypatch.setattr(slack, "_webhook_url", lambda: "https://hooks.slack.com/abc")
     with patch("requests.post", side_effect=Exception("boom")):
         slack.post("x", tag="ci")  # must not raise
-
-
-def test_notify_alias_change_uses_mlflow_tag(monkeypatch) -> None:
-    monkeypatch.setattr(slack, "_webhook_url", lambda: "https://hooks.slack.com/abc")
-    with patch("deepCab.obs.slack.post") as mock_post:
-        slack.notify_alias_change(model="deepcab", alias="champion", version="3")
-    mock_post.assert_called_once()
-    kwargs = mock_post.call_args.kwargs
-    assert kwargs["tag"] == "mlflow"
-
-
-def test_notify_flow_event_uses_flow_tag(monkeypatch) -> None:
-    monkeypatch.setattr(slack, "_webhook_url", lambda: "https://hooks.slack.com/abc")
-    with patch("deepCab.obs.slack.post") as mock_post:
-        slack.notify_flow_event(flow="retrain", state="success", run_id="r-1")
-    kwargs = mock_post.call_args.kwargs
-    assert kwargs["tag"] == "flow"

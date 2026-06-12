@@ -85,6 +85,18 @@ BackendConfig = Annotated[
     Field(discriminator="kind"),
 ]
 
+# kind-string → config class. Single source of truth for everyone who needs to
+# construct a default BackendConfig from a kind name (agent tools, simulate CLI).
+# Keys match each class's `kind` Literal discriminator value.
+BACKEND_CONFIGS: dict[str, type[BackendBase]] = {
+    "tf_mlp": TFMLPConfig,
+    "torch_mlp": TorchMLPConfig,
+    "xgb": XGBConfig,
+    "lgbm": LGBMConfig,
+    "catboost": CatBoostConfig,
+    "ft_transformer": FTTransformerConfig,
+}
+
 
 # ---------- Cross-validation, HPO, training ----------
 

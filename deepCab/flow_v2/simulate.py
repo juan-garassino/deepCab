@@ -39,7 +39,7 @@ import time
 from contextlib import contextmanager
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
-from typing import Any, Callable, Iterator, Protocol
+from typing import Any, Iterator, Protocol
 
 from prefect import flow, task
 
@@ -447,27 +447,10 @@ def build_default_simulate_inputs(
     backend: BackendKind, reference_size: str = "10k"
 ) -> tuple[TrainConfig, DataRef]:
     """Convenience for CLI defaults. Mirrors flow_v2.retrain._default_cfg."""
-    from deepCab.schemas.config import (
-        CatBoostConfig,
-        DataRef,
-        FTTransformerConfig,
-        LGBMConfig,
-        TFMLPConfig,
-        TorchMLPConfig,
-        TrainConfig,
-        XGBConfig,
-    )
+    from deepCab.schemas.config import BACKEND_CONFIGS
     from deepCab.schemas.enums import DataSize
 
-    backend_cls: dict[BackendKind, Callable[[], object]] = {
-        BackendKind.TF_MLP: TFMLPConfig,
-        BackendKind.TORCH_MLP: TorchMLPConfig,
-        BackendKind.XGB: XGBConfig,
-        BackendKind.LGBM: LGBMConfig,
-        BackendKind.CATBOOST: CatBoostConfig,
-        BackendKind.FT_TRANSFORMER: FTTransformerConfig,
-    }
-    cfg = TrainConfig(backend=backend_cls[backend](), data=DataRef())
+    cfg = TrainConfig(backend=BACKEND_CONFIGS[backend.value](), data=DataRef())
     ref = DataRef(size=DataSize(reference_size), validation_size=DataSize(reference_size))
     return cfg, ref
 

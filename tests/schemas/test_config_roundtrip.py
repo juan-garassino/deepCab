@@ -39,6 +39,20 @@ def test_backend_config_roundtrip(cfg) -> None:
     assert rebuilt.model_dump() == payload
 
 
+def test_backend_configs_mapping_in_sync() -> None:
+    """BACKEND_CONFIGS (kind → config class) must cover exactly the kinds in
+    the BackendKind enum and the models BACKENDS estimator registry, and every
+    value's `kind` discriminator must equal its key."""
+    from deepCab.models._kinds import BACKENDS
+    from deepCab.schemas.config import BACKEND_CONFIGS
+    from deepCab.schemas.enums import BackendKind
+
+    assert set(BACKEND_CONFIGS) == {k.value for k in BackendKind}
+    assert set(BACKEND_CONFIGS) == set(BACKENDS)
+    for kind, cls in BACKEND_CONFIGS.items():
+        assert cls().kind == kind
+
+
 def test_backend_discriminator_rejects_unknown_kind() -> None:
     with pytest.raises(ValidationError):
         BACKEND_ADAPTER.validate_python({"kind": "nope"})

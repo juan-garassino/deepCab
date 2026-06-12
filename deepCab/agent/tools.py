@@ -19,16 +19,11 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from deepCab.obs.log import get_logger
 from deepCab.schemas.config import (
+    BACKEND_CONFIGS,
     BackendConfig,
-    CatBoostConfig,
     DataRef,
-    FTTransformerConfig,
     HPOConfig,
-    LGBMConfig,
-    TFMLPConfig,
-    TorchMLPConfig,
     TrainConfig,
-    XGBConfig,
 )
 from deepCab.schemas.data import FeatureRow
 
@@ -216,22 +211,12 @@ def _explain(args: ExplainIn) -> ExplainOut:
     )
 
 
-_BACKEND_CFG_CLS: dict[str, type[BackendConfig]] = {
-    "tf_mlp": TFMLPConfig,
-    "torch_mlp": TorchMLPConfig,
-    "xgb": XGBConfig,
-    "lgbm": LGBMConfig,
-    "catboost": CatBoostConfig,
-    "ft_transformer": FTTransformerConfig,
-}
-
-
 def _tune(args: TuneIn) -> TuneOut:
     from deepCab.training.hpo import tune
     from deepCab.training.preprocess import preprocess
 
     base_cfg = TrainConfig(
-        backend=_BACKEND_CFG_CLS[args.backend_kind](),
+        backend=BACKEND_CONFIGS[args.backend_kind](),
         data=args.data,
         hpo=HPOConfig(n_trials=args.n_trials, sampler="tpe"),
     )

@@ -4,6 +4,6 @@ namespace: deepcab-prod
 resources:
   - ../../base
 images:
-  - name: us-central1-docker.pkg.dev/PROJECT/deepcab/api
-    newName: us-central1-docker.pkg.dev/PROJECT/deepcab/api
+  - name: europe-west1-docker.pkg.dev/PROJECT/deepcab/api
+    newName: europe-west1-docker.pkg.dev/PROJECT/deepcab/api
     newTag: latest   # overridden by CI via `kustomize edit set image ...`

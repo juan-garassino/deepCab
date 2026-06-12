@@ -1,5 +1,7 @@
 # Cloud training trigger
 
+> **Pre-migration doc (2026-06-07):** GCP project `deepcab-dev` cold-deleted; canonical config is now `garassino-ml` / `europe-west1`. Project IDs and regions below describe pre-migration state.
+
 deepCab supports two managed paths for running the daily retrain in GCP:
 
 ## Default — Cloud Scheduler → Cloud Run Job

@@ -1,5 +1,7 @@
 # deepCab
 
+> **GCP migration note (2026-06-07):** Live GCP project `deepcab-dev` was cold-deleted; deepCab now deploys on demand to **`garassino-ml`** (region **`europe-west1`**) in show-and-destroy mode. Images live permanently on `ghcr.io/juan-garassino/deepcab-{api,website}`. Terraform state lives at `gs://garassino-op-tf-state/deepcab/`. Refs to `deepcab-dev` / `us-central1` elsewhere in this README and `docs/` describe **pre-migration state** — canonical config in workspace root `CLAUDE.md` § "GCP architecture".
+
 NYC taxi-fare MLOps **learning hub**. One repo demonstrating, end-to-end:
 
 - 6 model backends behind one sklearn-compatible interface (TF MLP · Torch MLP · XGBoost · LightGBM · CatBoost · FT-Transformer)

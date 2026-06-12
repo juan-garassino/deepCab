@@ -16,7 +16,7 @@ on:
       cluster_region:
         description: "GKE cluster region"
         required: true
-        default: "us-central1"
+        default: "europe-west1"
 
 permissions:
   id-token: write
@@ -71,7 +71,7 @@ jobs:
         run: |
           cd infra/gcp/gke/overlays/prod
           kustomize edit set image \
-            us-central1-docker.pkg.dev/PROJECT/deepcab/api=${{ steps.build.outputs.image }}
+            europe-west1-docker.pkg.dev/PROJECT/deepcab/api=${{ steps.build.outputs.image }}
 
       - name: kustomize build → kubectl apply
         run: |

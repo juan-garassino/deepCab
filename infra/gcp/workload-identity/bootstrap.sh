@@ -9,7 +9,7 @@
 #   PROJECT_NUMBER  e.g. 123456789012  (gcloud projects describe $PROJECT --format='value(projectNumber)')
 #   GH_OWNER        e.g. juan-garassino
 #   GH_REPO         e.g. deepCab
-#   REGION          e.g. us-central1
+#   REGION          e.g. europe-west1
 
 set -euo pipefail
 

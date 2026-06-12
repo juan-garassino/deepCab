@@ -18,7 +18,7 @@
 set -euo pipefail
 
 : "${GCP_PROJECT:?set GCP_PROJECT}"
-: "${GCP_REGION:?set GCP_REGION (e.g. us-central1)}"
+: "${GCP_REGION:?set GCP_REGION (e.g. europe-west1)}"
 
 SCHEDULER_SA="deepcab-scheduler@${GCP_PROJECT}.iam.gserviceaccount.com"
 JOB_NAME="deepcab-retrain"

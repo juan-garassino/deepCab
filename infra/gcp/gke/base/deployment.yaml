@@ -13,7 +13,7 @@ spec:
       serviceAccountName: deepcab-runtime
       containers:
         - name: api
-          image: us-central1-docker.pkg.dev/PROJECT/deepcab/api:latest   # overlay overrides
+          image: europe-west1-docker.pkg.dev/PROJECT/deepcab/api:latest   # overlay overrides
           ports:
             - containerPort: 8000
           envFrom:

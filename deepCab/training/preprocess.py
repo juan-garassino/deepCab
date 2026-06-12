@@ -15,9 +15,22 @@ import polars as pl
 from deepCab.data.io import scan
 from deepCab.features.pipeline import preprocess_features
 from deepCab.schemas.config import DataRef
+from deepCab.schemas.enums import DataSize, DataSource
+from deepCab.schemas.settings import get_settings
 
 NYC_LAT = (40.5, 40.9)
 NYC_LON = (-74.3, -73.7)
+
+# DataSize → row LIMIT for the BQ ingest path. Mirrors the rough partition
+# sizes the Parquet store carries so `DATA_SOURCE=query` produces a slice
+# comparable to `DATA_SOURCE=local` for the same DATASET_SIZE.
+_BQ_SIZE_LIMIT: dict[DataSize, int | None] = {
+    DataSize.S1K: 1_000,
+    DataSize.S10K: 10_000,
+    DataSize.S100K: 100_000,
+    DataSize.S500K: 500_000,
+    DataSize.FULL: None,
+}
 
 
 def clean(df: pl.DataFrame) -> pl.DataFrame:
@@ -41,8 +54,29 @@ def clean(df: pl.DataFrame) -> pl.DataFrame:
     )
 
 
+def _load_bigquery(data: DataRef, split: str) -> pl.DataFrame:
+    """BQ-backed analog of the Parquet scan path. Importing lazily so the
+    google-cloud-bigquery client isn't pulled in on the (default) local path."""
+    from deepCab.data.bigquery import scan_bigquery
+
+    s = get_settings()
+    size = data.size if split == "train" else data.validation_size
+    return scan_bigquery(
+        project_id=s.data.bq_project,
+        dataset=s.data.bq_dataset,
+        table=s.data.bq_table,
+        limit=_BQ_SIZE_LIMIT.get(size),
+    )
+
+
 def load(data: DataRef, split: str = "train") -> pl.DataFrame:
-    """Read the relevant partition from the Parquet store and apply `clean()`."""
+    """Read one split and apply `clean()`.
+
+    Routes to BigQuery when ``settings.data.source == DataSource.QUERY``;
+    otherwise scans the Hive-Parquet store via ``data.io.scan``.
+    """
+    if get_settings().data.source == DataSource.QUERY:
+        return clean(_load_bigquery(data, split))
     lf = scan(size=data.size if split == "train" else data.validation_size)
     if "split" in lf.columns:
         lf = lf.filter(pl.col("split") == split)

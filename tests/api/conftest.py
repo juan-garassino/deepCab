@@ -6,7 +6,26 @@ in its strictest form so both files inherit the same isolation."""
 
 from __future__ import annotations
 
+import os
+
 import pytest
+
+
+@pytest.fixture(autouse=True)
+def _scrub_auth_env(monkeypatch: pytest.MonkeyPatch):
+    """Strip auth env vars before the api package reads them.
+
+    A developer with OPENAI_API_KEY exported (e.g. for `secrets rotate`) would
+    otherwise trip `api_key_guard` into demanding a matching header on every
+    test request. Auth behaviour is exercised explicitly in `tests/security/`.
+    """
+    for var in ("DEEPCAB_API_KEY", "OPENAI_API_KEY"):
+        monkeypatch.delenv(var, raising=False)
+    from deepCab.schemas.settings import get_settings
+
+    get_settings.cache_clear()
+    yield
+    get_settings.cache_clear()
 
 
 @pytest.fixture(autouse=True)

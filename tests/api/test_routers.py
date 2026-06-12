@@ -81,10 +81,14 @@ def _row() -> dict:
     }
 
 
-def test_predict_503_without_model(client: TestClient) -> None:
+def test_predict_falls_back_to_random_stub_without_model(client: TestClient) -> None:
+    """When STATE.model is None, /predict returns a haversine-distance-based
+    stub fare tagged ``random-stub`` so demos work pre-training."""
     r = client.post("/predict", json={"row": _row()})
-    assert r.status_code == 503
-    assert "no model loaded" in r.json()["detail"]
+    assert r.status_code == 200
+    body = r.json()
+    assert body["backend_kind"] == "random-stub"
+    assert body["fare"] > 0
 
 
 @pytest.mark.skipif(not _avail("lightgbm"), reason="lightgbm not installed")

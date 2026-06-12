@@ -196,7 +196,8 @@ def set_alias(
 
     _set_alias_backend(model=model, alias=alias, version=version_str)
 
-    # Local import to avoid module-load-time circular imports (settings -> obs).
-    from deepCab.obs import slack
+    # Local imports to avoid module-load-time circular imports (settings -> obs).
+    from deepCab.obs import slack, telegram
 
     slack.notify_alias_change(model=model, alias=alias, version=version_str)
+    telegram.notify_alias_change(model=model, alias=alias, version=version_str)

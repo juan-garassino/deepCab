@@ -84,6 +84,12 @@ class DataSettings(BaseSettings):
     dataset_size: str = "1k"
     validation_dataset_size: str = "1k"
 
+    # BigQuery ingest target (only consumed when source == DataSource.QUERY).
+    # Defaults match the garassino-ml dev project; override per env.
+    bq_project: str = "garassino-ml"
+    bq_dataset: str = "taxi"
+    bq_table: str = "yellow_trips_raw"
+
 
 class RegistrySettings(BaseSettings):
     model_config = SettingsConfigDict(env_prefix="REGISTRY_", env_file=_env_file(), extra="ignore")
@@ -126,6 +132,10 @@ class ObsSettings(BaseSettings):
     # pattern (set OBS_SLACK_WEBHOOK_URL=file:/run/secrets/slack_webhook_url).
     # Empty/None means the in-process slack helper is a no-op.
     slack_webhook_url: str | None = None
+    # Optional Telegram bot credentials. Same `file:` URI convention as Slack.
+    # Both must be set for `obs.telegram.post()` to fire; either missing → no-op.
+    telegram_bot_token: str | None = None
+    telegram_chat_id: str | None = None
 
     @classmethod
     def settings_customise_sources(

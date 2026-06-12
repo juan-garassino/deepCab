@@ -65,6 +65,7 @@ def _load_bigquery(data: DataRef, split: str) -> pl.DataFrame:
         project_id=s.data.bq_project,
         dataset=s.data.bq_dataset,
         table=s.data.bq_table,
+        where=s.data.bq_where,
         limit=_BQ_SIZE_LIMIT.get(size),
     )
 

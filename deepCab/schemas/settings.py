@@ -89,6 +89,10 @@ class DataSettings(BaseSettings):
     bq_project: str = "garassino-ml"
     bq_dataset: str = "taxi"
     bq_table: str = "yellow_trips_raw"
+    # Optional WHERE clause applied to the BQ read; set per chunk by the
+    # simulate flow via the DATA_BQ_WHERE env var. None means "no filter"
+    # (preprocess.load falls back to LIMIT-only).
+    bq_where: str | None = None
 
 
 class RegistrySettings(BaseSettings):

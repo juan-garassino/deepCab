@@ -89,6 +89,7 @@ def test_preprocess_load_routes_on_data_source(source: str) -> None:
         gs.return_value.data.bq_project = "p"
         gs.return_value.data.bq_dataset = "d"
         gs.return_value.data.bq_table = "t"
+        gs.return_value.data.bq_where = None
         parquet_scan.return_value.collect.return_value = fake_df
         parquet_scan.return_value.columns = list(fake_df.columns)
 
@@ -100,3 +101,27 @@ def test_preprocess_load_routes_on_data_source(source: str) -> None:
         else:
             assert parquet_scan.called
             assert not bq_scan.called
+
+
+def test_preprocess_load_forwards_bq_where_to_scan() -> None:
+    """The chunk WHERE clause that simulate sets via DATA_BQ_WHERE must reach
+    the BQ read — without it every chunk would pull the full table slice."""
+    from deepCab.schemas.config import DataRef
+    from deepCab.schemas.enums import DataSize
+    from deepCab.training import preprocess
+
+    fake_df = pl.from_arrow(_fake_arrow())
+    chunk_where = "pickup_datetime >= TIMESTAMP('2014-01-01 00:00:00') AND pickup_datetime < TIMESTAMP('2014-01-08 00:00:00')"
+
+    with patch.object(preprocess, "get_settings") as gs, patch(
+        "deepCab.data.bigquery.scan_bigquery", return_value=fake_df
+    ) as bq_scan:
+        gs.return_value.data.source = "query"
+        gs.return_value.data.bq_project = "p"
+        gs.return_value.data.bq_dataset = "d"
+        gs.return_value.data.bq_table = "t"
+        gs.return_value.data.bq_where = chunk_where
+
+        preprocess.load(DataRef(size=DataSize.S1K, validation_size=DataSize.S1K), split="train")
+
+    assert bq_scan.call_args.kwargs["where"] == chunk_where

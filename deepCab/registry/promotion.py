@@ -73,13 +73,11 @@ class PromotionService:
     def _mlflow_client(self):
         if self._client is not None:
             return self._client
-        import mlflow
-        from mlflow.tracking import MlflowClient
+        from deepCab.obs.mlflow import get_mlflow_client
 
-        m = get_settings().mlflow
-        if m.tracking_uri:
-            mlflow.set_tracking_uri(m.tracking_uri)
-        self._client = MlflowClient()
+        # require_uri=False: keep building a client even with no tracking URI
+        # set (MLflow falls back to its own default), matching prior behaviour.
+        self._client = get_mlflow_client(require_uri=False)
         return self._client
 
     def _load_version(self, model_name: str, version: str):

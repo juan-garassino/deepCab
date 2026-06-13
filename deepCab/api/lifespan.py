@@ -85,11 +85,9 @@ def _try_load_champion() -> None:
     mlflow_ok = False
     if settings.tracking_uri and settings.model_name:
         try:
-            import mlflow
-            from mlflow.tracking import MlflowClient
+            from deepCab.obs.mlflow import get_mlflow_client
 
-            mlflow.set_tracking_uri(settings.tracking_uri)
-            client = MlflowClient()
+            client = get_mlflow_client()
             mv = client.get_model_version_by_alias(settings.model_name, settings.champion_alias)
             log.info(
                 "api.champion.found",

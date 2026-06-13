@@ -23,5 +23,10 @@ traces/
 *.onnx.cfg.json
 lineage.db
 
+# Hydra run dirs (created by `python -m deepCab.training.train`) + local MLflow stores
+outputs/
+mlruns/
+*.mlflow.db
+
 # Ephemeral diagnostic logs (repo_status_puller, scripts)
 *.log

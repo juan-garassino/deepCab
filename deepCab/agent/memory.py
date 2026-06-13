@@ -18,16 +18,9 @@ log = get_logger(__name__)
 
 
 def _client() -> Any | None:
-    settings = get_settings().mlflow
-    if not settings.tracking_uri:
-        return None
-    try:
-        import mlflow
-        from mlflow.tracking import MlflowClient
-    except ImportError:
-        return None
-    mlflow.set_tracking_uri(settings.tracking_uri)
-    return MlflowClient()
+    from deepCab.obs.mlflow import get_mlflow_client
+
+    return get_mlflow_client()
 
 
 def list_runs(top_k: int = 10, metric: str = "val_mae") -> list[MemoryEntry]:

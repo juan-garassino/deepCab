@@ -117,16 +117,48 @@ def _calibrate_aci(
 
 def _publish_to_state(
     estimator: Any, backend_kind: str, X_val: np.ndarray, aci: ACIRegressor | None
-) -> None:
-    """Set the active ModelHandle in api.state.STATE. The agent tool, Prefect
-    evaluate_task, and FastAPI /predict all read from here. Single source of
-    in-process truth."""
+) -> Any:
+    """Set the active ModelHandle in api.state.STATE and return it. The agent
+    tool, Prefect evaluate_task, and FastAPI /predict all read from here —
+    single source of in-process truth. Returning the handle lets the caller
+    persist it without re-reading the global."""
     from deepCab.api.state import STATE, ModelHandle
 
     background = X_val[: min(200, len(X_val))]
-    STATE.set_model(
-        ModelHandle(estimator=estimator, backend_kind=backend_kind, background=background, aci=aci)
+    handle = ModelHandle(
+        estimator=estimator, backend_kind=backend_kind, background=background, aci=aci
     )
+    STATE.set_model(handle)
+    return handle
+
+
+def _persist_and_emit_artifacts(
+    handle: Any, cfg: TrainConfig, run_id: str | None, val_mae: float, mlflow_mod: Any
+) -> tuple[Path | None, Path | None]:
+    """Persist the fitted handle to disk (FR-1 single source of truth) and emit
+    every run artifact: MLflow model upload, provenance.json, MODEL_CARD.md,
+    the lineage edge, and the ONNX export. Each artifact hook is independently
+    non-fatal. Returns ``(run_dir, model_path)``."""
+    from deepCab.registry.dispatcher import save_full_state
+
+    # The LATEST pointer is updated atomically inside save_full_state.
+    run_dir = save_full_state(handle, run_id=run_id)
+    # model_path is the backend-native weights dir under run_dir — reuse it for
+    # MLflow + ONNX so we don't double-write to a throwaway tempdir.
+    model_path = (run_dir / "model") if run_dir is not None else None
+    if mlflow_mod is not None and model_path is not None:
+        mlflow_mod.log_artifacts(str(model_path.parent), artifact_path="model")
+
+    provenance_path = emit_provenance(cfg, run_id=run_id, metrics={"val_mae": val_mae})
+
+    # P12 wire-ups: each independently try/except'd so one failure can't kill the run.
+    _emit_model_card(
+        cfg, run_id=run_id, val_mae=val_mae, provenance_path=provenance_path, mlflow_mod=mlflow_mod
+    )
+    _emit_lineage(cfg, run_id=run_id)
+    if model_path is not None:
+        _export_and_register_onnx(handle.estimator, cfg, handle.background[:1], model_path.parent)
+    return run_dir, model_path
 
 
 def _run_training(cfg: TrainConfig) -> TrainResult:
@@ -150,6 +182,7 @@ def _run_training(cfg: TrainConfig) -> TrainResult:
     mlflow_mod, run_ctx = _start_mlflow_run()
     run_id: str | None = None
     run_dir: Path | None = None
+    model_path: Path | None = None
     with run_ctx as r:
         if mlflow_mod is not None:
             log_params_flat(mlflow_mod, cfg)
@@ -159,39 +192,8 @@ def _run_training(cfg: TrainConfig) -> TrainResult:
 
         # P11: publish into STATE before any side-effects so the agent's
         # follow-up predict/explain tool calls see the fresh model + ACI.
-        _publish_to_state(estimator, cfg.backend.kind, X_val, aci)
-
-        from deepCab.api.state import STATE
-        from deepCab.registry.dispatcher import save_full_state
-
-        # FR-1: persistent on-disk state (single source of truth — used for the
-        # MLflow upload, the ONNX export target, and the API lifespan loader's
-        # cold-start rehydration). The LATEST pointer is updated atomically
-        # inside save_full_state.
-        if STATE.model is not None:
-            run_dir = save_full_state(STATE.model, run_id=run_id)
-
-        # model_path is the backend-native weights dir under the run_dir —
-        # written by save_full_state above. Use it for MLflow + ONNX so we
-        # don't double-write to a throwaway tempdir.
-        model_path = (run_dir / "model") if run_dir is not None else None
-        if mlflow_mod is not None and model_path is not None:
-            mlflow_mod.log_artifacts(str(model_path.parent), artifact_path="model")
-
-        provenance_path = emit_provenance(cfg, run_id=run_id, metrics={"val_mae": val_mae})
-
-        # P12 wire-ups: model card + lineage + ONNX export, each independently
-        # try/except so a failure in one doesn't kill the run.
-        _emit_model_card(
-            cfg,
-            run_id=run_id,
-            val_mae=val_mae,
-            provenance_path=provenance_path,
-            mlflow_mod=mlflow_mod,
-        )
-        _emit_lineage(cfg, run_id=run_id)
-        if model_path is not None:
-            _export_and_register_onnx(estimator, cfg, X_val[:1], model_path.parent)
+        handle = _publish_to_state(estimator, cfg.backend.kind, X_val, aci)
+        run_dir, model_path = _persist_and_emit_artifacts(handle, cfg, run_id, val_mae, mlflow_mod)
 
     return TrainResult(
         run_id=run_id,
@@ -199,7 +201,7 @@ def _run_training(cfg: TrainConfig) -> TrainResult:
         val_mae=val_mae,
         model_path=str(model_path) if model_path is not None else "",
         estimator=estimator,
-        background=X_val[: min(200, len(X_val))],
+        background=handle.background,
         aci=aci,
         run_dir=run_dir,
     )

@@ -224,13 +224,11 @@ class VmTrainExecutor:
         )
 
     def _poll_mlflow(self, run_name: str) -> str:
-        import mlflow
-        from mlflow.tracking import MlflowClient
+        from deepCab.obs.mlflow import get_mlflow_client
 
         m = get_settings().mlflow
-        if m.tracking_uri:
-            mlflow.set_tracking_uri(m.tracking_uri)
-        client = MlflowClient()
+        # require_uri=False: poll against MLflow's default if no URI is set.
+        client = get_mlflow_client(require_uri=False)
         deadline = time.monotonic() + self.timeout_seconds
         while time.monotonic() < deadline:
             runs = client.search_runs(

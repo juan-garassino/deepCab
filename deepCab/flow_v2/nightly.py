@@ -91,14 +91,9 @@ def _read_last_window_end(client, experiment_name: str | None) -> datetime | Non
 
 def _mlflow_client():
     """MlflowClient bound to the configured tracking URI, or None when unset."""
-    m = get_settings().mlflow
-    if not m.tracking_uri:
-        return None
-    import mlflow
-    from mlflow.tracking import MlflowClient
+    from deepCab.obs.mlflow import get_mlflow_client
 
-    mlflow.set_tracking_uri(m.tracking_uri)
-    return MlflowClient()
+    return get_mlflow_client()
 
 
 def run_nightly(period_days: int = 14, *, client=None) -> int:

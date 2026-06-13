@@ -162,15 +162,12 @@ def _set_alias_backend(*, model: str, alias: str, version: str) -> None:
     """The MLflow-backed implementation of `set_alias`. Kept separate so the
     public `set_alias` can layer side-effects (Slack) on top without the test
     needing a real MLflow server."""
-    import mlflow
-    from mlflow.tracking import MlflowClient
+    from deepCab.obs.mlflow import get_mlflow_client
 
-    m = get_settings().mlflow
-    if not m.tracking_uri:
-        log.warning("registry.alias.skipped", reason="mlflow tracking_uri unset")
+    client = get_mlflow_client()
+    if client is None:
+        log.warning("registry.alias.skipped", reason="mlflow unavailable or tracking_uri unset")
         return
-    mlflow.set_tracking_uri(m.tracking_uri)
-    client = MlflowClient()
     client.set_registered_model_alias(name=model, alias=alias, version=version)
     log.info("registry.alias.set", alias=alias, version=version, model=model)
 

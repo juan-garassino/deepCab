@@ -83,9 +83,11 @@ class TFMLPEstimator(AbstractEstimator):
         return self.model_.predict(X, verbose=0).ravel()
 
     def save(self, path: Path) -> None:
-        # Keras SavedModel directory format (same as legacy)
+        # Keras 3 requires an explicit `.keras` (or `.h5`) extension — the old
+        # SavedModel-directory form (model.save(dir)) now raises. Write the
+        # native-format file inside the run dir the dispatcher hands us.
         path.mkdir(parents=True, exist_ok=True)
-        self.model_.save(str(path))
+        self.model_.save(str(path / "model.keras"))
 
     @classmethod
     def load(cls, path: Path) -> TFMLPEstimator:
@@ -93,5 +95,5 @@ class TFMLPEstimator(AbstractEstimator):
 
         # Reconstruct an estimator with defaults; weights come from disk.
         est = cls(**TFMLPConfig().model_dump())
-        est.model_ = load_model(str(path))
+        est.model_ = load_model(str(path / "model.keras"))
         return est

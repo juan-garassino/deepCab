@@ -82,7 +82,9 @@ def test_scan_bigquery_bills_to_separate_project() -> None:
     with patch("google.cloud.bigquery.Client") as ClientCls:
         ClientCls.return_value.query.return_value.to_arrow.return_value = _fake_arrow()
         scan_bigquery(
-            "bigquery-public-data", "new_york", "tlc_yellow_trips_2014",
+            "bigquery-public-data",
+            "new_york",
+            "tlc_yellow_trips_2014",
             billing_project="garassino-ml",
         )
     assert ClientCls.call_args.kwargs["project"] == "garassino-ml"
@@ -111,9 +113,11 @@ def test_preprocess_load_routes_on_data_source(source: str) -> None:
 
     fake_df = pl.from_arrow(_fake_arrow())
 
-    with patch.object(preprocess, "get_settings") as gs, patch(
-        "deepCab.data.bigquery.scan_bigquery", return_value=fake_df
-    ) as bq_scan, patch.object(preprocess, "scan") as parquet_scan:
+    with (
+        patch.object(preprocess, "get_settings") as gs,
+        patch("deepCab.data.bigquery.scan_bigquery", return_value=fake_df) as bq_scan,
+        patch.object(preprocess, "scan") as parquet_scan,
+    ):
         gs.return_value.data.source = source
         gs.return_value.data.bq_project = "p"
         gs.return_value.data.bq_dataset = "d"
@@ -142,9 +146,10 @@ def test_preprocess_load_forwards_bq_where_to_scan() -> None:
     fake_df = pl.from_arrow(_fake_arrow())
     chunk_where = "pickup_datetime >= TIMESTAMP('2014-01-01 00:00:00') AND pickup_datetime < TIMESTAMP('2014-01-08 00:00:00')"
 
-    with patch.object(preprocess, "get_settings") as gs, patch(
-        "deepCab.data.bigquery.scan_bigquery", return_value=fake_df
-    ) as bq_scan:
+    with (
+        patch.object(preprocess, "get_settings") as gs,
+        patch("deepCab.data.bigquery.scan_bigquery", return_value=fake_df) as bq_scan,
+    ):
         gs.return_value.data.source = "query"
         gs.return_value.data.bq_project = "p"
         gs.return_value.data.bq_dataset = "d"

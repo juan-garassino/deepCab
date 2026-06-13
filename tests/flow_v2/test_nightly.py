@@ -39,8 +39,10 @@ def test_next_window_wraps_to_floor_past_horizon() -> None:
 
 def _stub_client(window_ends: list[str | None]):
     """MlflowClient stub whose search_runs returns one run per tag value."""
-    runs = [SimpleNamespace(data=SimpleNamespace(tags={nightly._WINDOW_END_TAG: w} if w else {}))
-            for w in window_ends]
+    runs = [
+        SimpleNamespace(data=SimpleNamespace(tags={nightly._WINDOW_END_TAG: w} if w else {}))
+        for w in window_ends
+    ]
     return SimpleNamespace(
         get_experiment_by_name=lambda name: SimpleNamespace(experiment_id="1"),
         search_runs=lambda **kw: runs,

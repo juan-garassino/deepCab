@@ -94,7 +94,9 @@ class PromotionService:
             mv = self._mlflow_client().get_model_version_by_alias(model_name, alias)
             return str(mv.version)
         except Exception as exc:  # noqa: BLE001 — MLflow raises RestException; no live champion is fine
-            log.info("promotion.no_existing_champion", model=model_name, alias=alias, reason=str(exc))
+            log.info(
+                "promotion.no_existing_champion", model=model_name, alias=alias, reason=str(exc)
+            )
             return None
 
     def _score(self, model_name: str, version: str, data: DataRef) -> EvalResult:

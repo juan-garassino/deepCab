@@ -118,21 +118,30 @@ def test_simulate_flow_aggregates_chunks_and_propagates_promotions() -> None:
     promote_results = iter(
         [
             PromotionResult(
-                promoted=True, reason="no-existing-champion",
-                challenger_version="run-1", challenger_metric=2.5,
-                old_champion_version=None, champion_metric=None,
+                promoted=True,
+                reason="no-existing-champion",
+                challenger_version="run-1",
+                challenger_metric=2.5,
+                old_champion_version=None,
+                champion_metric=None,
                 new_champion_version="run-1",
             ),
             PromotionResult(
-                promoted=False, reason="below-threshold",
-                challenger_version="run-2", challenger_metric=2.7,
-                old_champion_version="run-1", champion_metric=2.5,
+                promoted=False,
+                reason="below-threshold",
+                challenger_version="run-2",
+                challenger_metric=2.7,
+                old_champion_version="run-1",
+                champion_metric=2.5,
                 new_champion_version="run-1",
             ),
             PromotionResult(
-                promoted=True, reason="beats-threshold",
-                challenger_version="run-3", challenger_metric=2.0,
-                old_champion_version="run-1", champion_metric=2.5,
+                promoted=True,
+                reason="beats-threshold",
+                challenger_version="run-3",
+                challenger_metric=2.0,
+                old_champion_version="run-1",
+                champion_metric=2.5,
                 new_champion_version="run-3",
             ),
         ]
@@ -143,10 +152,17 @@ def test_simulate_flow_aggregates_chunks_and_propagates_promotions() -> None:
             return next(promote_results)
 
     # evaluate must not need a real STATE.model
-    with patch.object(
-        sim, "_evaluate",
-        side_effect=lambda cfg, tr, ref: EvalResult(mae=2.5 - tr.run_id[-1:].__hash__() % 10 * 0.0, rmse=3.0, n=100),
-    ), patch.object(sim.notify, "notify_flow_event"), patch.object(sim.notify, "post"):
+    with (
+        patch.object(
+            sim,
+            "_evaluate",
+            side_effect=lambda cfg, tr, ref: EvalResult(
+                mae=2.5 - tr.run_id[-1:].__hash__() % 10 * 0.0, rmse=3.0, n=100
+            ),
+        ),
+        patch.object(sim.notify, "notify_flow_event"),
+        patch.object(sim.notify, "post"),
+    ):
         result = sim._simulate_impl(
             cfg=cfg,
             reference_data=ref,

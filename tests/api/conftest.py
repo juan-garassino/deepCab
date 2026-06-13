@@ -6,8 +6,6 @@ in its strictest form so both files inherit the same isolation."""
 
 from __future__ import annotations
 
-import os
-
 import pytest
 
 

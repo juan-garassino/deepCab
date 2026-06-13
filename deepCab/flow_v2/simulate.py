@@ -36,10 +36,11 @@ from __future__ import annotations
 import os
 import subprocess
 import time
+from collections.abc import Iterator
 from contextlib import contextmanager
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
-from typing import Any, Iterator, Protocol
+from typing import Any, Protocol
 
 from prefect import flow, task
 
@@ -182,19 +183,32 @@ class VmTrainExecutor:
         # against just this chunk's rows.
         s = get_settings()
         bq_extras = [
-            "--extra-env", "DATA_SOURCE=query",
-            "--extra-env", f"DATA_BQ_PROJECT={s.data.bq_project}",
-            "--extra-env", f"DATA_BQ_DATASET={s.data.bq_dataset}",
-            "--extra-env", f"DATA_BQ_TABLE={s.data.bq_table}",
-            "--extra-env", f"DATA_BQ_WHERE={where}",
-            "--extra-env", f"MLFLOW_RUN_NAME={run_name}",
-            "--extra-env", "MLFLOW_EXPERIMENT=deepcab-simulate",
+            "--extra-env",
+            "DATA_SOURCE=query",
+            "--extra-env",
+            f"DATA_BQ_PROJECT={s.data.bq_project}",
+            "--extra-env",
+            f"DATA_BQ_DATASET={s.data.bq_dataset}",
+            "--extra-env",
+            f"DATA_BQ_TABLE={s.data.bq_table}",
+            "--extra-env",
+            f"DATA_BQ_WHERE={where}",
+            "--extra-env",
+            f"MLFLOW_RUN_NAME={run_name}",
+            "--extra-env",
+            "MLFLOW_EXPERIMENT=deepcab-simulate",
         ]
         args = [
-            "uv", "run", "deepcab-platform", "train-on-vm",
-            "--env", self.env,
-            "--backend", self.backend.value,
-            "--data", self.data_size,
+            "uv",
+            "run",
+            "deepcab-platform",
+            "train-on-vm",
+            "--env",
+            self.env,
+            "--backend",
+            self.backend.value,
+            "--data",
+            self.data_size,
             *bq_extras,
         ]
         log.info("simulate.vm_executor.launching", run_name=run_name, args=args)
@@ -225,10 +239,16 @@ class VmTrainExecutor:
                 max_results=1,
             )
             if runs and runs[0].info.status == "FINISHED":
-                log.info("simulate.vm_executor.run_finished", run_name=run_name, run_id=runs[0].info.run_id)
+                log.info(
+                    "simulate.vm_executor.run_finished",
+                    run_name=run_name,
+                    run_id=runs[0].info.run_id,
+                )
                 return runs[0].info.run_id
             time.sleep(self.poll_interval_seconds)
-        raise TimeoutError(f"VM training run {run_name!r} not FINISHED after {self.timeout_seconds}s")
+        raise TimeoutError(
+            f"VM training run {run_name!r} not FINISHED after {self.timeout_seconds}s"
+        )
 
     @staticmethod
     def _experiment_ids(client, name: str | None) -> list[str]:
@@ -462,7 +482,6 @@ def build_default_simulate_inputs(
 
 def _main() -> None:
     import argparse
-    import dataclasses
     import json
 
     parser = argparse.ArgumentParser("deepcab-simulate")

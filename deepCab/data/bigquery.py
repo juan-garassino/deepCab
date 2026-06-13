@@ -43,7 +43,7 @@ def scan_bigquery(
     where: str | None = None,
     order_by: str = "pickup_datetime",
     billing_project: str | None = None,
-    client: "Client | None" = None,
+    client: Client | None = None,
 ) -> pl.DataFrame:
     """Read rows from ``<project_id>.<dataset>.<table>`` into a Polars DataFrame.
 
@@ -89,7 +89,4 @@ def chunk_where_clause(
     between adjacent chunks. Inputs must already be ISO-8601 timestamps; the
     caller (``simulate_flow``) formats them from ``datetime`` objects.
     """
-    return (
-        f"{column} >= TIMESTAMP('{chunk_start}') "
-        f"AND {column} < TIMESTAMP('{chunk_end}')"
-    )
+    return f"{column} >= TIMESTAMP('{chunk_start}') AND {column} < TIMESTAMP('{chunk_end}')"

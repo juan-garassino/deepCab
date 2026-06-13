@@ -53,5 +53,3 @@ def post(text: str, *, tag: str, extra: Mapping[str, Any] | None = None) -> None
             log.warning("telegram webhook returned %s: %s", r.status_code, r.text[:200])
     except Exception as exc:  # noqa: BLE001 — third-party I/O; we never re-raise
         log.warning("telegram webhook failed: %s", exc)
-
-

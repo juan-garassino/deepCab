@@ -4,7 +4,6 @@ no MLflow server. Injects a fake client + loader."""
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any
 from unittest.mock import patch
 
 import numpy as np
@@ -62,11 +61,11 @@ def _eval_returning(mae: float):
 
 
 def test_bootstrap_no_existing_champion_promotes(ref_data: DataRef) -> None:
-    svc = PromotionService(client=_StubClient(champion_version=None), loader=lambda *_: _StubEstimator(0.0))
+    svc = PromotionService(
+        client=_StubClient(champion_version=None), loader=lambda *_: _StubEstimator(0.0)
+    )
     with _patch_set_alias() as set_alias_mock, _eval_returning(5.0):
-        with patch.dict(
-            "os.environ", {"MLFLOW_MODEL_NAME": "deepcab"}, clear=False
-        ):
+        with patch.dict("os.environ", {"MLFLOW_MODEL_NAME": "deepcab"}, clear=False):
             from deepCab.schemas.settings import get_settings
 
             get_settings.cache_clear()
@@ -84,14 +83,19 @@ def test_bootstrap_no_existing_champion_promotes(ref_data: DataRef) -> None:
 
 
 def test_below_threshold_does_not_promote(ref_data: DataRef) -> None:
-    svc = PromotionService(client=_StubClient(champion_version="1"), loader=lambda *_: _StubEstimator(0.0))
+    svc = PromotionService(
+        client=_StubClient(champion_version="1"), loader=lambda *_: _StubEstimator(0.0)
+    )
     # champion: 5.0, challenger: 4.9 → 2% improvement; threshold 5% → no promote.
-    with _patch_set_alias() as set_alias_mock, patch(
-        "deepCab.registry.promotion.evaluate",
-        side_effect=[
-            EvalResult(mae=4.9, rmse=4.9, n=100),  # challenger first
-            EvalResult(mae=5.0, rmse=5.0, n=100),  # champion second
-        ],
+    with (
+        _patch_set_alias() as set_alias_mock,
+        patch(
+            "deepCab.registry.promotion.evaluate",
+            side_effect=[
+                EvalResult(mae=4.9, rmse=4.9, n=100),  # challenger first
+                EvalResult(mae=5.0, rmse=5.0, n=100),  # champion second
+            ],
+        ),
     ):
         from deepCab.schemas.settings import get_settings
 
@@ -113,14 +117,19 @@ def test_below_threshold_does_not_promote(ref_data: DataRef) -> None:
 
 
 def test_beats_threshold_promotes_and_legacies_old(ref_data: DataRef) -> None:
-    svc = PromotionService(client=_StubClient(champion_version="1"), loader=lambda *_: _StubEstimator(0.0))
+    svc = PromotionService(
+        client=_StubClient(champion_version="1"), loader=lambda *_: _StubEstimator(0.0)
+    )
     # champion: 5.0, challenger: 4.0 → 20% improvement; threshold 5% → promote.
-    with _patch_set_alias() as set_alias_mock, patch(
-        "deepCab.registry.promotion.evaluate",
-        side_effect=[
-            EvalResult(mae=4.0, rmse=4.0, n=100),  # challenger
-            EvalResult(mae=5.0, rmse=5.0, n=100),  # champion
-        ],
+    with (
+        _patch_set_alias() as set_alias_mock,
+        patch(
+            "deepCab.registry.promotion.evaluate",
+            side_effect=[
+                EvalResult(mae=4.0, rmse=4.0, n=100),  # challenger
+                EvalResult(mae=5.0, rmse=5.0, n=100),  # champion
+            ],
+        ),
     ):
         from deepCab.schemas.settings import get_settings
 
@@ -152,13 +161,18 @@ def test_beats_threshold_promotes_and_legacies_old(ref_data: DataRef) -> None:
 
 def test_exact_threshold_does_not_promote(ref_data: DataRef) -> None:
     """5% champion-relative improvement at exactly 5% threshold → strictly-less-than fails."""
-    svc = PromotionService(client=_StubClient(champion_version="1"), loader=lambda *_: _StubEstimator(0.0))
-    with _patch_set_alias(), patch(
-        "deepCab.registry.promotion.evaluate",
-        side_effect=[
-            EvalResult(mae=4.75, rmse=4.75, n=100),  # challenger: 5.0 * 0.95
-            EvalResult(mae=5.0, rmse=5.0, n=100),  # champion
-        ],
+    svc = PromotionService(
+        client=_StubClient(champion_version="1"), loader=lambda *_: _StubEstimator(0.0)
+    )
+    with (
+        _patch_set_alias(),
+        patch(
+            "deepCab.registry.promotion.evaluate",
+            side_effect=[
+                EvalResult(mae=4.75, rmse=4.75, n=100),  # challenger: 5.0 * 0.95
+                EvalResult(mae=5.0, rmse=5.0, n=100),  # champion
+            ],
+        ),
     ):
         from deepCab.schemas.settings import get_settings
 
@@ -176,7 +190,9 @@ def test_exact_threshold_does_not_promote(ref_data: DataRef) -> None:
 
 
 def test_same_version_already_champion_is_noop(ref_data: DataRef) -> None:
-    svc = PromotionService(client=_StubClient(champion_version="7"), loader=lambda *_: _StubEstimator(0.0))
+    svc = PromotionService(
+        client=_StubClient(champion_version="7"), loader=lambda *_: _StubEstimator(0.0)
+    )
     with _patch_set_alias() as set_alias_mock, _eval_returning(3.0):
         from deepCab.schemas.settings import get_settings
 

@@ -20,8 +20,8 @@ notifier outages must not break the training/inference path.
 
 from __future__ import annotations
 
-from collections.abc import Mapping
-from typing import Any, Callable
+from collections.abc import Callable, Mapping
+from typing import Any
 
 from deepCab.obs import slack, telegram
 

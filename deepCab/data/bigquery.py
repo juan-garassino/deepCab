@@ -42,6 +42,7 @@ def scan_bigquery(
     limit: int | None = None,
     where: str | None = None,
     order_by: str = "pickup_datetime",
+    billing_project: str | None = None,
     client: "Client | None" = None,
 ) -> pl.DataFrame:
     """Read rows from ``<project_id>.<dataset>.<table>`` into a Polars DataFrame.
@@ -50,6 +51,11 @@ def scan_bigquery(
     user input; ``where`` and ``order_by`` are caller-controlled trusted
     fragments (the only callers are ``preprocess.load()`` and the simulation
     flow's ``ingest_chunk_task``).
+
+    ``project_id`` is the *data* project (where the table lives);
+    ``billing_project`` is who the query job bills to. They differ when reading
+    a public dataset — e.g. ``project_id="bigquery-public-data"`` but the job
+    bills to our own project. Defaults to ``project_id`` (same-project read).
 
     Returns a DataFrame with exactly the columns in ``_RAW_COLUMNS``.
     """
@@ -65,7 +71,7 @@ def scan_bigquery(
     if client is None:
         from google.cloud import bigquery
 
-        client = bigquery.Client(project=project_id)
+        client = bigquery.Client(project=billing_project or project_id)
     arrow_table = client.query(sql).to_arrow()
     return pl.from_arrow(arrow_table)
 

@@ -67,6 +67,35 @@ def test_scan_bigquery_no_where_no_limit() -> None:
     assert "LIMIT" not in sent_sql
 
 
+def test_scan_bigquery_reads_public_data_project_in_from() -> None:
+    """The data project lands in the FROM clause (public dataset path)."""
+    client = _client_returning(_fake_arrow())
+    scan_bigquery("bigquery-public-data", "new_york", "tlc_yellow_trips_2014", client=client)
+    sent_sql = client.query.call_args.args[0]
+    assert "`bigquery-public-data.new_york.tlc_yellow_trips_2014`" in sent_sql
+
+
+def test_scan_bigquery_bills_to_separate_project() -> None:
+    """When no client is injected, the job bills to billing_project (our own),
+    not the data project — required to query bigquery-public-data."""
+    pytest.importorskip("google.cloud.bigquery")  # only present in CI/prod env
+    with patch("google.cloud.bigquery.Client") as ClientCls:
+        ClientCls.return_value.query.return_value.to_arrow.return_value = _fake_arrow()
+        scan_bigquery(
+            "bigquery-public-data", "new_york", "tlc_yellow_trips_2014",
+            billing_project="garassino-ml",
+        )
+    assert ClientCls.call_args.kwargs["project"] == "garassino-ml"
+
+
+def test_scan_bigquery_billing_defaults_to_data_project() -> None:
+    pytest.importorskip("google.cloud.bigquery")
+    with patch("google.cloud.bigquery.Client") as ClientCls:
+        ClientCls.return_value.query.return_value.to_arrow.return_value = _fake_arrow()
+        scan_bigquery("garassino-ml", "taxi", "yellow_trips_raw")
+    assert ClientCls.call_args.kwargs["project"] == "garassino-ml"
+
+
 def test_chunk_where_clause_is_half_open() -> None:
     clause = chunk_where_clause("2014-01-01 00:00:00", "2014-01-08 00:00:00")
     assert ">=" in clause and "<" in clause and "<=" not in clause

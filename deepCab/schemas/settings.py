@@ -89,6 +89,10 @@ class DataSettings(BaseSettings):
     bq_project: str = "garassino-ml"
     bq_dataset: str = "taxi"
     bq_table: str = "yellow_trips_raw"
+    # Project the BQ job bills to. Differs from bq_project when reading a public
+    # dataset (e.g. bq_project=bigquery-public-data, billed to our own project).
+    # None → bills to bq_project (same-project read). Env: DATA_BQ_BILLING_PROJECT.
+    bq_billing_project: str | None = None
     # Optional WHERE clause applied to the BQ read; set per chunk by the
     # simulate flow via the DATA_BQ_WHERE env var. None means "no filter"
     # (preprocess.load falls back to LIMIT-only).

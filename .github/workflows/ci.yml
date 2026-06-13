@@ -46,7 +46,18 @@ jobs:
       - name: Run unit + integration tests (no docker)
         # tests/all is the legacy bootcamp self-check; tests/api integration
         # tests use FastAPI TestClient, no docker required.
-        run: uv run pytest tests/ --ignore=tests/all -q
+        # TF_CPP_MIN_LOG_LEVEL=3 silences tf/absl stderr chatter that can
+        # corrupt pytest's capture at teardown. JUnit XML captures per-test
+        # failures even when stderr is lost.
+        env:
+          TF_CPP_MIN_LOG_LEVEL: "3"
+        run: uv run pytest tests/ --ignore=tests/all -q -ra --junitxml=pytest-report.xml
+      - name: Upload pytest report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pytest-report
+          path: pytest-report.xml
 
   compose-integration:
     runs-on: ubuntu-latest

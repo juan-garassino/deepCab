@@ -1,5 +1,6 @@
 """Single source of truth for runtime settings. Replaces every os.environ.get site
-in the legacy package atomically. Per-env loading via APP_ENV={dev,staging,prod}."""
+in the legacy package atomically. Per-env loading via DEEPCAB_ENV (or its legacy
+alias APP_ENV) = {local,dev,staging,prod}."""
 
 from __future__ import annotations
 
@@ -8,7 +9,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Annotated, Any
 
-from pydantic import Field
+from pydantic import AliasChoices, Field
 from pydantic.fields import FieldInfo
 from pydantic_settings import (
     BaseSettings,
@@ -20,7 +21,9 @@ from deepCab.schemas.enums import AppEnv, DataSource, ModelTarget
 
 
 def _env_file() -> str:
-    env = os.environ.get("APP_ENV", "dev")
+    # DEEPCAB_ENV is the documented public name; APP_ENV remains as a legacy
+    # alias for any caller still setting it. First non-empty wins.
+    env = os.environ.get("DEEPCAB_ENV") or os.environ.get("APP_ENV") or "dev"
     return f".env.{env}"
 
 
@@ -81,6 +84,20 @@ class DataSettings(BaseSettings):
     dataset_size: str = "1k"
     validation_dataset_size: str = "1k"
 
+    # BigQuery ingest target (only consumed when source == DataSource.QUERY).
+    # Defaults match the garassino-ml dev project; override per env.
+    bq_project: str = "garassino-ml"
+    bq_dataset: str = "taxi"
+    bq_table: str = "yellow_trips_raw"
+    # Project the BQ job bills to. Differs from bq_project when reading a public
+    # dataset (e.g. bq_project=bigquery-public-data, billed to our own project).
+    # None → bills to bq_project (same-project read). Env: DATA_BQ_BILLING_PROJECT.
+    bq_billing_project: str | None = None
+    # Optional WHERE clause applied to the BQ read; set per chunk by the
+    # simulate flow via the DATA_BQ_WHERE env var. None means "no filter"
+    # (preprocess.load falls back to LIMIT-only).
+    bq_where: str | None = None
+
 
 class RegistrySettings(BaseSettings):
     model_config = SettingsConfigDict(env_prefix="REGISTRY_", env_file=_env_file(), extra="ignore")
@@ -115,6 +132,12 @@ class ObsSettings(BaseSettings):
     prom_port: int = 9090
     trace_dir: Path = Path("traces")
     trace_enabled: bool = True
+    # OTLP span export (BatchSpanProcessor → otlp_endpoint). Off by default:
+    # it starts a background thread that retries the collector forever, and in
+    # dev/test (no collector) that thread logs to a stream pytest tears down,
+    # cascading "I/O operation on closed file". Always on in prod (see
+    # api/lifespan._try_init_otel). Env: OBS_OTEL_ENABLED.
+    otel_enabled: bool = False
     redis_url: str | None = None  # opt-in Redis for SHAP cache + future state share
     # Comma-separated origins, e.g. "http://localhost:3000,https://app.example.com".
     # Empty in prod forces explicit allowlist; "*" allowed in dev only.
@@ -123,6 +146,10 @@ class ObsSettings(BaseSettings):
     # pattern (set OBS_SLACK_WEBHOOK_URL=file:/run/secrets/slack_webhook_url).
     # Empty/None means the in-process slack helper is a no-op.
     slack_webhook_url: str | None = None
+    # Optional Telegram bot credentials. Same `file:` URI convention as Slack.
+    # Both must be set for `obs.telegram.post()` to fire; either missing → no-op.
+    telegram_bot_token: str | None = None
+    telegram_chat_id: str | None = None
 
     @classmethod
     def settings_customise_sources(
@@ -171,7 +198,13 @@ class Settings(BaseSettings):
 
     model_config = SettingsConfigDict(env_file=_env_file(), extra="ignore")
 
-    app_env: Annotated[AppEnv, Field(default=AppEnv.DEV, validation_alias="APP_ENV")]
+    app_env: Annotated[
+        AppEnv,
+        Field(
+            default=AppEnv.DEV,
+            validation_alias=AliasChoices("DEEPCAB_ENV", "APP_ENV"),
+        ),
+    ]
     data: DataSettings = Field(default_factory=DataSettings)
     registry: RegistrySettings = Field(default_factory=RegistrySettings)
     gcp: GCPSettings = Field(default_factory=GCPSettings)

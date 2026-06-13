@@ -27,7 +27,7 @@ from dataclasses import dataclass
 
 from prefect import flow, task
 
-from deepCab.obs import slack
+from deepCab.obs import notify
 from deepCab.obs.log import get_logger
 from deepCab.schemas.config import TrainConfig
 
@@ -109,7 +109,7 @@ def retrain_flow(cfg: TrainConfig | None = None) -> RetrainResult:
     if cfg is None:
         cfg = _default_cfg()
     run_id = f"flow-{uuid.uuid4().hex[:8]}"
-    slack.notify_flow_event(flow="retrain", state="running", run_id=run_id)
+    notify.notify_flow_event(flow="retrain", state="running", run_id=run_id)
     try:
         sizes = _preprocess(cfg)
         log.info(
@@ -128,7 +128,7 @@ def retrain_flow(cfg: TrainConfig | None = None) -> RetrainResult:
         val_mae = _get(trained, "val_mae", 0.0)
         eval_mae = _get(evald, "mae", _get(evald, "val_mae", 0.0))
 
-        slack.notify_flow_event(flow="retrain", state="success", run_id=str(trained_run_id))
+        notify.notify_flow_event(flow="retrain", state="success", run_id=str(trained_run_id))
         return RetrainResult(
             backend_kind=backend_kind,
             run_id=trained_run_id,
@@ -136,7 +136,7 @@ def retrain_flow(cfg: TrainConfig | None = None) -> RetrainResult:
             eval_mae=eval_mae,
         )
     except Exception:
-        slack.notify_flow_event(flow="retrain", state="failed", run_id=run_id)
+        notify.notify_flow_event(flow="retrain", state="failed", run_id=run_id)
         raise
 
 

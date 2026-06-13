@@ -4,6 +4,8 @@ name + the top-level help lists every subcommand. Catches typer wiring bugs
 
 from __future__ import annotations
 
+import click
+import typer.main
 from typer.testing import CliRunner
 
 from deepCab.cli import app
@@ -11,6 +13,18 @@ from deepCab.cli import app
 runner = CliRunner()
 
 SUBCOMMANDS = ("train", "predict", "migrate", "agent", "serve", "status")
+
+
+def _option_names(subcommand: str) -> set[str]:
+    """Registered ``--option`` flags for a subcommand, read from the click
+    command tree rather than the rendered help. rich truncates long option
+    names with an ellipsis at narrow widths (and renders differently across
+    rich versions / Python versions), so scraping ``--help`` text is brittle;
+    introspection tests the actual wiring, which is the point of these smokes."""
+    cmd = typer.main.get_command(app)
+    ctx = click.Context(cmd)
+    sub = cmd.get_command(ctx, subcommand)
+    return {opt for param in sub.params for opt in param.opts if opt.startswith("--")}
 
 
 def test_top_level_help_lists_every_subcommand():
@@ -45,14 +59,13 @@ def test_train_help():
 def test_predict_help():
     result = runner.invoke(app, ["predict", "--help"])
     assert result.exit_code == 0
-    assert "--input" in result.output
+    assert "--input" in _option_names("predict")
 
 
 def test_migrate_help():
     result = runner.invoke(app, ["migrate", "--help"])
     assert result.exit_code == 0
-    assert "--size" in result.output
-    assert "--split" in result.output
+    assert {"--size", "--split"} <= _option_names("migrate")
 
 
 def test_agent_help():
@@ -63,9 +76,7 @@ def test_agent_help():
 def test_serve_help():
     result = runner.invoke(app, ["serve", "--help"])
     assert result.exit_code == 0
-    assert "--host" in result.output
-    assert "--port" in result.output
-    assert "--dry-run" in result.output
+    assert {"--host", "--port", "--dry-run"} <= _option_names("serve")
 
 
 def test_status_help():

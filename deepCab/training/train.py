@@ -133,7 +133,7 @@ def _run_training(cfg: TrainConfig) -> TrainResult:
     """Core training body. Pure-ish: no env reads beyond what its dependencies
     already do (`get_settings()` reads `MLFLOW_*`, etc.). Returns the result
     with `run_dir` populated when the persistent state save succeeded."""
-    set_all(cfg.seed)
+    set_all(cfg.seed, backend=cfg.backend.kind)
     log.info("train.start", backend=cfg.backend.kind, data=cfg.data.size, seed=cfg.seed)
 
     X_train, y_train = preprocess(cfg.data, split="train")

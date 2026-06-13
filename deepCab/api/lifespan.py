@@ -21,14 +21,25 @@ log = get_logger(__name__)
 
 
 def _try_init_otel() -> None:
-    """Initialize the OTel tracer. In dev, missing SDK is logged + skipped;
-    in prod, it raises — production deployments must have telemetry."""
+    """Initialize the OTel tracer. Always on in prod (telemetry is required
+    there); elsewhere only when OBS_OTEL_ENABLED is set. In dev, missing SDK is
+    logged + skipped; in prod, init failure raises.
+
+    The gate matters: BatchSpanProcessor starts a daemon thread that retries
+    the OTLP collector forever. With no collector (the dev/test default) that
+    thread logs export failures to sys.stderr — which under pytest is a capture
+    buffer torn down between tests, cascading "I/O operation on closed file"
+    across the whole suite."""
+    settings = get_settings()
+    if settings.app_env != "prod" and not settings.obs.otel_enabled:
+        log.info("api.otel.skipped", reason="not prod and OBS_OTEL_ENABLED unset")
+        return
     try:
         from deepCab.obs.otel import init_tracing  # lazy: optional install
 
         init_tracing()
     except Exception as e:  # noqa: BLE001
-        if get_settings().app_env == "prod":
+        if settings.app_env == "prod":
             raise RuntimeError(
                 f"OTel tracing init failed in prod (APP_ENV=prod): {type(e).__name__}: {e}. "
                 "Install opentelemetry-sdk + opentelemetry-exporter-otlp."

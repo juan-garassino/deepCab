@@ -6,7 +6,14 @@ import os
 import random
 
 
-def set_all(seed: int) -> None:
+def set_all(seed: int, backend: str | None = None) -> None:
+    """Seed RNGs deterministically. ``backend`` gates the deep-learning
+    frameworks: tf/torch are seeded only for the backends that use them.
+
+    Importing tensorflow/torch eagerly for a tree backend (xgb/lgbm/catboost)
+    is wasteful, and tensorflow's import perturbs global stdio/absl state — when
+    that happens mid-test it corrupts pytest's stream capture for every later
+    test. So only touch them when the chosen backend actually needs them."""
     random.seed(seed)
     os.environ["PYTHONHASHSEED"] = str(seed)
 
@@ -17,19 +24,21 @@ def set_all(seed: int) -> None:
     except ImportError:
         pass
 
-    try:
-        import tensorflow as tf
+    if backend == "tf_mlp":
+        try:
+            import tensorflow as tf
 
-        tf.random.set_seed(seed)
-    except ImportError:
-        pass
+            tf.random.set_seed(seed)
+        except ImportError:
+            pass
 
-    try:
-        import torch
+    if backend in ("torch_mlp", "ft_transformer"):
+        try:
+            import torch
 
-        torch.manual_seed(seed)
-        torch.cuda.manual_seed_all(seed)
-        torch.backends.cudnn.deterministic = True
-        torch.backends.cudnn.benchmark = False
-    except ImportError:
-        pass
+            torch.manual_seed(seed)
+            torch.cuda.manual_seed_all(seed)
+            torch.backends.cudnn.deterministic = True
+            torch.backends.cudnn.benchmark = False
+        except ImportError:
+            pass

@@ -1,9 +1,8 @@
-"""In-process Slack notifier.
+"""In-process Slack notifier backend.
 
-Tiny by design: one `post(text, *, tag, extra)` plus two named wrappers for the
-two call sites we currently care about:
-  - `notify_alias_change` (registry/dispatcher.set_alias)
-  - `notify_flow_event`   (flow_v2/retrain)
+Single entry point — `post(text, *, tag, extra)` — registered with
+:mod:`deepCab.obs.notify`. The named wrappers (`notify_alias_change`,
+`notify_flow_event`) live in `obs/notify` so they fan out to every backend.
 
 Resolution of the webhook URL flows through `deepCab.schemas.settings`, which
 already understands the `file:/run/secrets/<name>` Docker pattern. When the
@@ -58,21 +57,3 @@ def post(text: str, *, tag: str, extra: Mapping[str, Any] | None = None) -> None
             log.warning("slack webhook returned %s: %s", r.status_code, r.text[:200])
     except Exception as exc:  # noqa: BLE001 — third-party I/O; we never re-raise
         log.warning("slack webhook failed: %s", exc)
-
-
-def notify_alias_change(*, model: str, alias: str, version: str) -> None:
-    """Fire on MLflow alias updates (e.g. set_alias(..., 'champion'))."""
-    post(
-        f"alias `@{alias}` -> {model} v{version}",
-        tag="mlflow",
-        extra={"model": model, "alias": alias, "version": version},
-    )
-
-
-def notify_flow_event(*, flow: str, state: str, run_id: str) -> None:
-    """Fire on Prefect flow lifecycle transitions: running / success / failed."""
-    post(
-        f"flow `{flow}` -> {state}",
-        tag="flow",
-        extra={"run_id": run_id},
-    )

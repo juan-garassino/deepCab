@@ -420,7 +420,7 @@ list:
 	@echo "            Run the tests."
 
 # LOCAL TLS + HOSTS (Sub-project B)
-HOSTS_LINE := 127.0.0.1 api.deepcab.localhost mlflow.deepcab.localhost prefect.deepcab.localhost grafana.deepcab.localhost jaeger.deepcab.localhost minio.deepcab.localhost traefik.deepcab.localhost pgadmin.deepcab.localhost app.deepcab.localhost alertmanager.deepcab.localhost
+HOSTS_LINE := 127.0.0.1 api.deepcab.localhost mlflow.deepcab.localhost prefect.deepcab.localhost grafana.deepcab.localhost jaeger.deepcab.localhost minio.deepcab.localhost traefik.deepcab.localhost pgadmin.deepcab.localhost app.deepcab.localhost alertmanager.deepcab.localhost status.deepcab.localhost
 
 hosts:
 	@if ! grep -q "deepcab.localhost" /etc/hosts; then \

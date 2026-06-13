@@ -9,6 +9,8 @@ from __future__ import annotations
 
 import asyncio
 import json
+import math
+import random
 from collections.abc import AsyncIterator
 from dataclasses import dataclass
 
@@ -26,6 +28,32 @@ from deepCab.schemas.api import (
 )
 from deepCab.schemas.data import FeatureRow
 
+# Fallback fare model when no trained estimator is loaded (cold-start demos):
+# loose approximation of NYC yellow-cab pricing — base + per-km + jitter.
+# Real model takes over the moment training completes.
+_RANDOM_BASE_USD = 3.0
+_RANDOM_USD_PER_KM = 1.85
+_RANDOM_JITTER_USD = 0.8
+_RANDOM_BACKEND = "random-stub"
+
+
+def _haversine_km(row: FeatureRow) -> float:
+    """Great-circle distance between pickup + dropoff lat/lon, in km."""
+    r = 6371.0
+    lat1, lat2 = math.radians(row.pickup_latitude), math.radians(row.dropoff_latitude)
+    dlat = lat2 - lat1
+    dlon = math.radians(row.dropoff_longitude - row.pickup_longitude)
+    a = math.sin(dlat / 2) ** 2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlon / 2) ** 2
+    return 2 * r * math.asin(math.sqrt(a))
+
+
+def _random_fare(row: FeatureRow) -> float:
+    """Distance-based plausible fare with a small +/- jitter."""
+    km = _haversine_km(row)
+    estimate = _RANDOM_BASE_USD + km * _RANDOM_USD_PER_KM
+    jitter = random.uniform(-_RANDOM_JITTER_USD, _RANDOM_JITTER_USD)
+    return round(max(_RANDOM_BASE_USD, estimate + jitter), 2)
+
 
 @dataclass
 class PredictionService:
@@ -33,9 +61,11 @@ class PredictionService:
 
     Constructed per-request by `deps.get_prediction_service`. The model handle
     is captured at construction time so the dependency override pattern works
-    cleanly in tests."""
+    cleanly in tests. ``model`` is optional — when ``None``, predictions fall
+    back to a haversine-distance-based random fare so demos work before the
+    first training run."""
 
-    model: ModelHandle
+    model: ModelHandle | None
 
     # ------------------------------------------------------------------
     # Internal helpers (preserved verbatim from the old router)
@@ -76,12 +106,26 @@ class PredictionService:
     # Public service API
     # ------------------------------------------------------------------
 
+    def _stub_response(self, row: FeatureRow) -> PredictResponse:
+        return PredictResponse(fare=_random_fare(row), backend_kind=_RANDOM_BACKEND)
+
     async def predict_one(self, req: PredictRequest) -> PredictResponse:
-        resp = self._predict_with_interval(req.row)
-        prediction_value.labels(backend_kind=self.model.backend_kind).observe(resp.fare)
+        if self.model is None:
+            resp = self._stub_response(req.row)
+        else:
+            resp = self._predict_with_interval(req.row)
+        prediction_value.labels(backend_kind=resp.backend_kind).observe(resp.fare)
         return resp
 
     async def predict_many(self, req: BatchPredictRequest) -> BatchPredictResponse:
+        if self.model is None:
+            out = []
+            for row in req.rows:
+                resp = self._stub_response(row)
+                prediction_value.labels(backend_kind=resp.backend_kind).observe(resp.fare)
+                out.append(resp)
+            return BatchPredictResponse(predictions=out)
+
         X = preprocess_features(pd.DataFrame([r.model_dump() for r in req.rows])).astype(np.float32)
         point = self._point_predict(X)
 
@@ -107,8 +151,11 @@ class PredictionService:
         """Yields SSE-shaped dicts (`{"event": ..., "data": ...}`) for the
         router to wrap in `EventSourceResponse`."""
         for row in req.rows:
-            resp = self._predict_with_interval(row)
-            prediction_value.labels(backend_kind=self.model.backend_kind).observe(resp.fare)
+            if self.model is None:
+                resp = self._stub_response(row)
+            else:
+                resp = self._predict_with_interval(row)
+            prediction_value.labels(backend_kind=resp.backend_kind).observe(resp.fare)
             yield {"event": "prediction", "data": resp.model_dump_json()}
             await asyncio.sleep(0)
         yield {"event": "done", "data": json.dumps({"count": len(req.rows)})}

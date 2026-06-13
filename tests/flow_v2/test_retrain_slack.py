@@ -15,7 +15,7 @@ def test_retrain_flow_emits_slack_on_success() -> None:
     from deepCab.flow_v2 import retrain
 
     with (
-        patch("deepCab.obs.slack.notify_flow_event") as mock_notify,
+        patch("deepCab.obs.notify.notify_flow_event") as mock_notify,
         patch.object(retrain, "_preprocess", return_value=MagicMock()),
         patch.object(retrain, "_train", return_value=MagicMock(run_id="r-9")),
         patch.object(retrain, "_evaluate", return_value={"val_mae": 3.4}),
@@ -31,7 +31,7 @@ def test_retrain_flow_emits_slack_on_failure() -> None:
     from deepCab.flow_v2 import retrain
 
     with (
-        patch("deepCab.obs.slack.notify_flow_event") as mock_notify,
+        patch("deepCab.obs.notify.notify_flow_event") as mock_notify,
         patch.object(retrain, "_preprocess", side_effect=RuntimeError("boom")),
     ):
         try:

@@ -21,8 +21,16 @@ from enum import Enum
 
 
 class AppEnv(str, Enum):
-    """``APP_ENV`` runtime tag — selects which ``.env.<env>`` file is loaded."""
+    """``APP_ENV`` / ``DEEPCAB_ENV`` runtime tag — selects which ``.env.<env>``
+    file is loaded.
 
+    LOCAL means "everything runs in docker-compose on this machine" — api hits
+    ``http://mlflow:5000`` and ``postgres:5432`` over the compose network.
+    DEV/STAGING/PROD point at the corresponding GCP project's Cloud Run URLs
+    and Cloud SQL instance.
+    """
+
+    LOCAL = "local"
     DEV = "dev"
     STAGING = "staging"
     PROD = "prod"

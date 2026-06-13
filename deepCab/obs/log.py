@@ -29,7 +29,12 @@ def configure_logging() -> structlog.stdlib.BoundLogger:
     structlog.configure(
         processors=[*shared, renderer],
         wrapper_class=structlog.make_filtering_bound_logger(logging.INFO),
-        cache_logger_on_first_use=True,
+        # Must stay False: the default PrintLoggerFactory binds to sys.stdout at
+        # logger-construction time. Caching would freeze that binding to whatever
+        # stream was current on first emission — e.g. a CliRunner/pytest capture
+        # buffer — and every later write would hit a closed file once that buffer
+        # is torn down ("I/O operation on closed file" cascading across tests).
+        cache_logger_on_first_use=False,
     )
     return structlog.get_logger("deepcab")
 

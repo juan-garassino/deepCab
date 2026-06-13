@@ -107,8 +107,15 @@ def get_trace_provider() -> TraceProvider:
 # ---------------------------------------------------------------------------
 
 
+def get_optional_model_handle() -> ModelHandle | None:
+    """Like ``get_model_handle`` but returns ``None`` instead of raising 503
+    when no model is loaded. Used by /predict so the endpoint can fall back
+    to a haversine-distance-based stub fare for demos."""
+    return STATE.model
+
+
 def get_prediction_service(
-    model: ModelHandle = Depends(get_model_handle),
+    model: ModelHandle | None = Depends(get_optional_model_handle),
 ) -> PredictionService:
     return PredictionService(model=model)
 

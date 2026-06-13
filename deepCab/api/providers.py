@@ -1,139 +1,27 @@
 """Provider strategies for API services.
 
 This module defines the **injection seams** between services and the outside
-world. Each strategy is a `Protocol` plus one or more concrete implementations
-the test/prod layers swap freely via FastAPI dependency overrides.
+world: a `Protocol` plus concrete implementations the test/prod layers swap
+freely via FastAPI dependency overrides.
 
-Three families:
-  - SlackProvider   — notification side-effect (webhook vs. noop)
-  - ModelHandleProvider — read-side adapter over `app.state.STATE.model`
-  - TraceProvider   — agent-trace persistence (JSONL on disk vs. in-memory null)
+One family today:
+  - TraceProvider — agent-trace persistence (JSONL on disk vs. in-memory null)
+
+Two former families (SlackProvider, ModelHandleProvider) were removed in the
+2026-06-12 refactor: nothing consumed them. Notifications now flow through
+`deepCab.obs.notify` (slack + telegram fan-out) and the model handle is read
+via `deps.get_model_handle` / `deps.get_optional_model_handle` directly over
+`api.state.STATE`. Re-introduce a Protocol here only when a second real
+implementation shows up.
 
 Pattern matches the user's instruction in CLAUDE.md: keep things low-level and
-explicit. Each Protocol is `runtime_checkable` so `isinstance(x, Foo)` works in
+explicit. The Protocol is `runtime_checkable` so `isinstance(x, Foo)` works in
 tests; the concrete classes hold zero business logic — they're shims around
-the existing helpers in `obs/slack.py`, `api/state.py`, and `agent/trace.py`."""
+`agent/trace.py`."""
 
 from __future__ import annotations
 
-import logging
-from collections.abc import Mapping
 from typing import Any, Protocol, runtime_checkable
-
-from deepCab.api.state import STATE, ModelHandle
-
-log = logging.getLogger(__name__)
-
-
-# ---------------------------------------------------------------------------
-# Slack
-# ---------------------------------------------------------------------------
-
-
-@runtime_checkable
-class SlackProvider(Protocol):
-    """Posts short status lines to Slack. Implementations MUST NOT raise on
-    network failure — Slack outages must never break the inference / training
-    path. Logs and swallows."""
-
-    def post(
-        self,
-        text: str,
-        *,
-        tag: str,
-        extra: Mapping[str, Any] | None = None,
-    ) -> None: ...
-
-
-class WebhookSlackProvider:
-    """Concrete Slack provider that POSTs to a webhook URL.
-
-    Mirrors `obs/slack.py::post` byte-for-byte so behavior is unchanged when
-    swapped in. URL lookup is the caller's responsibility (pulled from
-    pydantic-settings at construction time)."""
-
-    def __init__(self, webhook_url: str | None) -> None:
-        self.webhook_url = webhook_url
-
-    def post(
-        self,
-        text: str,
-        *,
-        tag: str,
-        extra: Mapping[str, Any] | None = None,
-    ) -> None:
-        if not self.webhook_url:
-            return
-        body = f"[{tag}] {text}"
-        if extra:
-            body += " — " + " ".join(f"{k}={v}" for k, v in extra.items())
-        try:
-            import requests
-
-            r = requests.post(self.webhook_url, json={"text": body}, timeout=3)
-            if r.status_code >= 300:
-                log.warning("slack webhook returned %s: %s", r.status_code, r.text[:200])
-        except Exception as exc:  # noqa: BLE001 — third-party I/O; never re-raise
-            log.warning("slack webhook failed: %s", exc)
-
-
-class NoopSlackProvider:
-    """Default for tests and dev when no webhook URL is configured.
-
-    Records posted calls on `self.calls` so tests can assert intent without
-    hitting the network."""
-
-    def __init__(self) -> None:
-        self.calls: list[tuple[str, str, Mapping[str, Any] | None]] = []
-
-    def post(
-        self,
-        text: str,
-        *,
-        tag: str,
-        extra: Mapping[str, Any] | None = None,
-    ) -> None:
-        self.calls.append((text, tag, extra))
-
-
-# ---------------------------------------------------------------------------
-# Model handle
-# ---------------------------------------------------------------------------
-
-
-@runtime_checkable
-class ModelHandleProvider(Protocol):
-    """Read-side adapter over the in-process model registry.
-
-    Services depend on this rather than directly poking `STATE.model` so tests
-    can inject a `StubModelHandleProvider` without resetting global state."""
-
-    def get(self) -> ModelHandle | None: ...
-
-
-class StateModelHandleProvider:
-    """The real provider — reads from `deepCab.api.state.STATE.model`.
-
-    There's only ever one in production; the indirection exists for testing."""
-
-    def get(self) -> ModelHandle | None:
-        return STATE.model
-
-
-class StubModelHandleProvider:
-    """Test double — hold a handle (or None) directly. Use with
-    `app.dependency_overrides[get_model_handle_provider] = lambda: StubModelHandleProvider(handle)`."""
-
-    def __init__(self, handle: ModelHandle | None = None) -> None:
-        self.handle = handle
-
-    def get(self) -> ModelHandle | None:
-        return self.handle
-
-
-# ---------------------------------------------------------------------------
-# Trace
-# ---------------------------------------------------------------------------
 
 
 @runtime_checkable

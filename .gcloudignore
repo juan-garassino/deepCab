@@ -1,0 +1,25 @@
+# What `gcloud builds submit` excludes from the source upload.
+# Modeled on .dockerignore + .gitignore. Cuts upload from ~870 MB to ~12 MB.
+
+.git/
+.venv/
+.pytest_cache/
+.ruff_cache/
+.vscode/
+.idea/
+__pycache__/
+**/__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+
+# Local data + state
+.lewagon/
+mlruns/
+runs/
+traces/
+notebooks/
+
+# Sample / dev env files (the image bakes nothing from these)
+.env*
+!.env.dev.sample

@@ -1,0 +1,5 @@
+kind: xgb
+n_estimators: 500
+max_depth: 6
+learning_rate: 0.05
+subsample: 0.8

@@ -58,8 +58,12 @@ jobs:
             'passenger_count': rng.integers(1, 5, n),
           })
           from deepCab.data.io import write_partitioned
-          write_partitioned(df.with_columns(pl.lit('train').alias('split')), 'train_1k')
-          write_partitioned(df.with_columns(pl.lit('val').alias('split')), 'val_1k')
+          # dataset_size='1k' (what scan(size='1k') filters on); train/val are
+          # distinguished by the 'split' column, matching migrate.py's contract.
+          # Single write so val rows don't overwrite train's part files.
+          train = df.with_columns(pl.lit('train').alias('split'))
+          val = df.with_columns(pl.lit('val').alias('split'))
+          write_partitioned(pl.concat([train, val]), '1k')
           "
 
       - name: Train ${{ matrix.backend }} on 1k

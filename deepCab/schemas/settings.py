@@ -132,6 +132,12 @@ class ObsSettings(BaseSettings):
     prom_port: int = 9090
     trace_dir: Path = Path("traces")
     trace_enabled: bool = True
+    # OTLP span export (BatchSpanProcessor → otlp_endpoint). Off by default:
+    # it starts a background thread that retries the collector forever, and in
+    # dev/test (no collector) that thread logs to a stream pytest tears down,
+    # cascading "I/O operation on closed file". Always on in prod (see
+    # api/lifespan._try_init_otel). Env: OBS_OTEL_ENABLED.
+    otel_enabled: bool = False
     redis_url: str | None = None  # opt-in Redis for SHAP cache + future state share
     # Comma-separated origins, e.g. "http://localhost:3000,https://app.example.com".
     # Empty in prod forces explicit allowlist; "*" allowed in dev only.

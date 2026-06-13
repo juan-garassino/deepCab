@@ -8,7 +8,11 @@ from typer.testing import CliRunner
 
 from deepCab.cli import app
 
-runner = CliRunner()
+# COLUMNS=200 so rich/typer renders the options table wide enough that long
+# option names (--input, --dry-run, ...) aren't truncated with an ellipsis.
+# Without it, an 80-col CI terminal abbreviates "--input" to "--inp…" and the
+# substring assertions below fail (they pass locally only by terminal luck).
+runner = CliRunner(env={"COLUMNS": "200"})
 
 SUBCOMMANDS = ("train", "predict", "migrate", "agent", "serve", "status")
 

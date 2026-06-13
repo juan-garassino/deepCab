@@ -36,7 +36,12 @@ def _avail(mod: str) -> bool:
 
 @pytest.fixture
 def client() -> TestClient:
-    return TestClient(create_app())
+    # `with` so the portal/event-loop thread + lifespan are torn down at the end
+    # of each test. A bare `return TestClient(...)` leaks the portal thread,
+    # which closes streams during a later test → pytest capture "I/O operation
+    # on closed file" cascading across the suite.
+    with TestClient(create_app()) as c:
+        yield c
 
 
 # ---- meta + monitor ------------------------------------------------------
